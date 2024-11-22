@@ -14,8 +14,12 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
-            <Link to="/" className="text-2xl font-bold text-primary-500 hover:text-primary-600 transition-colors">
-              INA Trading
+            <Link to="/" className="flex items-center">
+              <img 
+                src="/logo.png" 
+                alt="INA Trading" 
+                className="h-16 w-auto"
+              />
             </Link>
           </div>
 

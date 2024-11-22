@@ -11,6 +11,7 @@ const Home = () => {
   const [promos, setPromos] = useState([]);
   const [news, setNews] = useState([]);
   const [currentMottoIndex, setCurrentMottoIndex] = useState(0);
+  const [isMottoVisible, setIsMottoVisible] = useState(true);
 
   const mottos = [
     "Connecting You to Indonesian Culture",
@@ -19,11 +20,19 @@ const Home = () => {
     "Experience Indonesia Worldwide"
   ];
 
+  // Enhanced motto animation
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentMottoIndex((prev) => (prev + 1) % mottos.length);
-    }, 3000);
-    return () => clearInterval(timer);
+    const intervalId = setInterval(() => {
+      setIsMottoVisible(false);
+      
+      setTimeout(() => {
+        setCurrentMottoIndex((prev) => (prev + 1) % mottos.length);
+        setIsMottoVisible(true);
+      }, 500);
+      
+    }, 4000);
+
+    return () => clearInterval(intervalId);
   }, [mottos.length]);
 
   useEffect(() => {
@@ -96,11 +105,17 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Hero Section with Motto */}
+      {/* Hero Section with Enhanced Motto Animation */}
       <div className="bg-gradient-to-r from-red-600 to-red-800 text-white py-16">
         <div className="container mx-auto px-4">
           <div className="text-center max-w-3xl mx-auto">
-            <h1 className="text-4xl font-bold mb-6 transition-all duration-500">
+            <h1 
+              className={`
+                text-4xl font-bold mb-6
+                transition-all duration-500 ease-in-out
+                ${isMottoVisible ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform -translate-y-4'}
+              `}
+            >
               {mottos[currentMottoIndex]}
             </h1>
             <p className="text-lg opacity-90">
