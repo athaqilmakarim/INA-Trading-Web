@@ -1,1 +1,23 @@
- 
+ echo "# dependencies
+/frontend/node_modules
+/backend/node_modules
+
+# environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+/frontend/.env
+
+# build files
+/frontend/build
+/backend/build
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# misc
+.DS_Store" > .gitignore
