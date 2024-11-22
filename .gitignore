@@ -1,4 +1,4 @@
- echo "# dependencies
+# dependencies
 /frontend/node_modules
 /backend/node_modules
 
@@ -20,4 +20,6 @@ yarn-debug.log*
 yarn-error.log*
 
 # misc
-.DS_Store" > .gitignore
+.DS_Store
+.idea/
+.vscode/
