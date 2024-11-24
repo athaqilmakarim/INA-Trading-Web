@@ -1,237 +1,239 @@
 import React, { useState, useEffect } from 'react';
-import { collection, getDocs, doc, updateDoc, query, orderBy, where } from 'firebase/firestore';
 import { firestore } from '../firebase';
-import { auth } from '../firebase';
-import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { collection, query, getDocs, doc, updateDoc, serverTimestamp } from 'firebase/firestore';
 
 const Admin = () => {
-  const { currentUser } = useAuth();
-  const navigate = useNavigate();
-  
-  // Add admin check
-  useEffect(() => {
-    if (currentUser && currentUser.userType !== 'Admin') {
-      console.log('Non-admin user attempted to access admin page');
-      navigate('/');
-    }
-  }, [currentUser, navigate]);
-
   const [places, setPlaces] = useState([]);
+  const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('pending'); // ['pending', 'approved', 'rejected']
-  const [selectedPlace, setSelectedPlace] = useState(null);
-  const [isUpdating, setIsUpdating] = useState(false);
+  const [error, setError] = useState(null);
+  const [activeTab, setActiveTab] = useState('places'); // ['places', 'products']
+  const [statusFilter, setStatusFilter] = useState('pending'); // ['pending', 'approved', 'rejected']
 
   useEffect(() => {
-    fetchPlaces();
+    fetchAllData();
   }, []);
 
-  const fetchPlaces = async () => {
+  const fetchAllData = async () => {
     try {
       setIsLoading(true);
-      const placesRef = collection(firestore, 'places');
-      const placesQuery = query(placesRef, orderBy('createdAt', 'desc'));
-      const snapshot = await getDocs(placesQuery);
       
-      const placesData = snapshot.docs.map(doc => ({
+      // Fetch all places
+      const placesQuery = query(collection(firestore, 'places'));
+      const placesSnapshot = await getDocs(placesQuery);
+      const placesData = placesSnapshot.docs.map(doc => ({
         id: doc.id,
-        ...doc.data(),
-        createdAt: doc.data().createdAt?.toDate()
+        ...doc.data()
       }));
-      
-      console.log('Fetched places:', placesData);
       setPlaces(placesData);
-    } catch (error) {
-      console.error('Error fetching places:', error);
+
+      // Fetch all products
+      const productsQuery = query(collection(firestore, 'export_products'));
+      const productsSnapshot = await getDocs(productsQuery);
+      const productsData = productsSnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setProducts(productsData);
+
+    } catch (err) {
+      setError(err.message);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleUpdateStatus = async (placeId, newStatus) => {
+  const handleUpdatePlaceStatus = async (placeId, newStatus) => {
     try {
-      setIsUpdating(true);
+      setIsLoading(true);
       const placeRef = doc(firestore, 'places', placeId);
       
-      // Add timestamp for tracking
-      const updateData = {
+      await updateDoc(placeRef, {
         status: newStatus,
-        updatedAt: new Date(),
-        reviewedAt: new Date(),
-        reviewedBy: auth.currentUser?.uid // Add reviewer ID
-      };
-      
-      await updateDoc(placeRef, updateData);
-      
-      // Update local state
-      setPlaces(places.map(place => 
-        place.id === placeId 
-          ? { ...place, status: newStatus }
-          : place
-      ));
+        updatedAt: serverTimestamp()
+      });
 
-      // Show success message
-      alert(`Place ${newStatus} successfully`);
-    } catch (error) {
-      console.error('Error updating status:', error);
+      await fetchAllData();
       
-      // More specific error message
-      if (error.code === 'permission-denied') {
-        alert('You do not have permission to update place status. Please make sure you are logged in as an admin.');
-      } else {
-        alert('Error updating status: ' + error.message);
-      }
+    } catch (err) {
+      console.error('Error updating place status:', err);
+      setError(err.message);
     } finally {
-      setIsUpdating(false);
-      setSelectedPlace(null);
+      setIsLoading(false);
     }
   };
 
-  const filteredPlaces = places.filter(place => {
-    if (activeTab === 'pending') return place.status === 'pending';
-    if (activeTab === 'approved') return place.status === 'approved';
-    if (activeTab === 'rejected') return place.status === 'rejected';
-    return true;
-  });
+  const handleUpdateProductStatus = async (productId, newStatus) => {
+    try {
+      setIsLoading(true);
+      const productRef = doc(firestore, 'export_products', productId);
+      
+      await updateDoc(productRef, {
+        status: newStatus,
+        updatedAt: serverTimestamp()
+      });
+
+      await fetchAllData();
+      
+    } catch (err) {
+      console.error('Error updating product status:', err);
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const filteredPlaces = places.filter(place => place.status === statusFilter);
+  const filteredProducts = products.filter(product => product.status === statusFilter);
 
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-600"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-red-600">Error: {error}</p>
       </div>
     );
   }
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-800">Admin Dashboard</h1>
-        <button
-          onClick={fetchPlaces}
-          className="bg-primary-500 text-white px-4 py-2 rounded-lg hover:bg-primary-600"
-        >
-          Refresh Data
-        </button>
-      </div>
+      <h1 className="text-2xl font-bold mb-6">Admin Dashboard</h1>
 
-      {/* Status Summary */}
-      <div className="grid grid-cols-3 gap-4 mb-8">
-        {['pending', 'approved', 'rejected'].map((status) => (
-          <div key={status} className="bg-white rounded-xl shadow-sm p-4">
-            <div className="text-lg font-medium capitalize">{status}</div>
-            <div className="text-2xl font-bold">
-              {places.filter(place => place.status === status).length}
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Tabs */}
-      <div className="flex border-b mb-6">
-        {['pending', 'approved', 'rejected'].map((tab) => (
+      {/* Main Tabs */}
+      <div className="border-b border-gray-200 mb-6">
+        <nav className="-mb-px flex space-x-8">
           <button
-            key={tab}
-            className={`px-4 py-2 font-medium capitalize ${
-              activeTab === tab
-                ? 'text-primary-500 border-b-2 border-primary-500'
-                : 'text-gray-600 hover:text-primary-500'
-            }`}
-            onClick={() => setActiveTab(tab)}
+            onClick={() => setActiveTab('places')}
+            className={`${
+              activeTab === 'places'
+                ? 'border-red-500 text-red-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+            } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
           >
-            {tab} ({places.filter(place => place.status === tab).length})
+            Places
           </button>
-        ))}
-      </div>
-
-      {/* Places List */}
-      <div className="space-y-4">
-        {filteredPlaces.map(place => (
-          <div 
-            key={place.id} 
-            className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow"
+          <button
+            onClick={() => setActiveTab('products')}
+            className={`${
+              activeTab === 'products'
+                ? 'border-red-500 text-red-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+            } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
           >
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <h3 className="text-xl font-bold text-gray-800">{place.name}</h3>
-                  <p className="text-sm text-gray-500">
-                    Submitted on {place.createdAt?.toLocaleDateString()}
-                  </p>
-                </div>
-                <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                  place.status === 'approved' 
-                    ? 'bg-green-100 text-green-600'
-                    : place.status === 'rejected'
-                    ? 'bg-red-100 text-red-600'
-                    : 'bg-yellow-100 text-yellow-600'
-                }`}>
-                  {place.status.charAt(0).toUpperCase() + place.status.slice(1)}
-                </span>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4 mb-4">
-                <div>
-                  <p className="text-sm font-medium text-gray-500">Type</p>
-                  <p className="text-gray-800">{place.type}</p>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-500">Contact</p>
-                  <p className="text-gray-800">{place.contact}</p>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-500">Address</p>
-                  <p className="text-gray-800">{place.address}</p>
-                </div>
-                {place.type === 'restaurant' && (
-                  <div>
-                    <p className="text-sm font-medium text-gray-500">Menu Items</p>
-                    <p className="text-gray-800">{place.menu?.length || 0} items</p>
-                  </div>
-                )}
-              </div>
-
-              <p className="text-gray-600 mb-4">{place.description}</p>
-
-              {/* Action Buttons */}
-              {place.status === 'pending' && (
-                <div className="flex space-x-4">
-                  <button
-                    onClick={() => handleUpdateStatus(place.id, 'approved')}
-                    disabled={isUpdating}
-                    className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 disabled:opacity-50"
-                  >
-                    Approve
-                  </button>
-                  <button
-                    onClick={() => handleUpdateStatus(place.id, 'rejected')}
-                    disabled={isUpdating}
-                    className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 disabled:opacity-50"
-                  >
-                    Reject
-                  </button>
-                </div>
-              )}
-
-              {place.status !== 'pending' && (
-                <button
-                  onClick={() => handleUpdateStatus(place.id, 'pending')}
-                  disabled={isUpdating}
-                  className="text-gray-600 hover:text-primary-500 disabled:opacity-50"
-                >
-                  Reset to Pending
-                </button>
-              )}
-            </div>
-          </div>
-        ))}
-
-        {filteredPlaces.length === 0 && (
-          <div className="text-center py-12 bg-white rounded-xl shadow-sm">
-            <p className="text-gray-500">No {activeTab} places found</p>
-          </div>
-        )}
+            Export Products
+          </button>
+        </nav>
       </div>
+
+      {/* Status Tabs */}
+      <div className="mb-6">
+        <nav className="flex space-x-4">
+          {['pending', 'approved', 'rejected'].map((status) => (
+            <button
+              key={status}
+              onClick={() => setStatusFilter(status)}
+              className={`${
+                statusFilter === status
+                  ? 'bg-red-100 text-red-700'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              } px-4 py-2 rounded-md capitalize`}
+            >
+              {status} ({activeTab === 'places' 
+                ? places.filter(p => p.status === status).length
+                : products.filter(p => p.status === status).length})
+            </button>
+          ))}
+        </nav>
+      </div>
+
+      {/* Places Content */}
+      {activeTab === 'places' && (
+        <div className="space-y-6">
+          {filteredPlaces.length === 0 ? (
+            <p className="text-gray-500">No {statusFilter} places found.</p>
+          ) : (
+            filteredPlaces.map(place => (
+              <div key={place.id} className="bg-white shadow rounded-lg p-6">
+                <div className="flex justify-between">
+                  <div>
+                    <h3 className="text-lg font-medium">{place.name}</h3>
+                    <p className="text-gray-600">{place.description}</p>
+                    <p className="text-sm text-gray-500 mt-2">Type: {place.type}</p>
+                    <p className="text-sm text-gray-500">Status: {place.status}</p>
+                  </div>
+                  {statusFilter === 'pending' && (
+                    <div className="space-x-2">
+                      <button
+                        onClick={() => handleUpdatePlaceStatus(place.id, 'approved')}
+                        className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+                      >
+                        Approve
+                      </button>
+                      <button
+                        onClick={() => handleUpdatePlaceStatus(place.id, 'rejected')}
+                        className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+                      >
+                        Reject
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      )}
+
+      {/* Products Content */}
+      {activeTab === 'products' && (
+        <div className="space-y-6">
+          {filteredProducts.length === 0 ? (
+            <p className="text-gray-500">No {statusFilter} products found.</p>
+          ) : (
+            filteredProducts.map(product => (
+              <div key={product.id} className="bg-white shadow rounded-lg p-6">
+                <div className="flex justify-between">
+                  <div>
+                    <h3 className="text-lg font-medium">{product.name}</h3>
+                    <p className="text-gray-600">{product.description}</p>
+                    <div className="mt-2 space-y-1">
+                      <p className="text-sm text-gray-500">Category: {product.category}</p>
+                      <p className="text-sm text-gray-500">
+                        Price: {product.price.currency} {product.price.min} - {product.price.max}
+                      </p>
+                      <p className="text-sm text-gray-500">MOQ: {product.minOrderQuantity}</p>
+                      <p className="text-sm text-gray-500">Status: {product.status}</p>
+                    </div>
+                  </div>
+                  {statusFilter === 'pending' && (
+                    <div className="space-x-2">
+                      <button
+                        onClick={() => handleUpdateProductStatus(product.id, 'approved')}
+                        className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+                      >
+                        Approve
+                      </button>
+                      <button
+                        onClick={() => handleUpdateProductStatus(product.id, 'rejected')}
+                        className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+                      >
+                        Reject
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      )}
     </div>
   );
 };

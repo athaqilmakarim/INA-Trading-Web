@@ -11,6 +11,10 @@ import ProtectedRoute from './components/ProtectedRoute';
 import { UserType } from './types/UserType';
 import PlaceDetails from './pages/PlaceDetails';
 import Admin from './pages/Admin';
+import ExportProducts from './pages/ExportProducts';
+import ExportProductDetail from './pages/ExportProductDetail';
+import AddExportProduct from './pages/AddExportProduct';
+import SupplierProfile from './pages/SupplierProfile';
 
 function App() {
   return (
@@ -41,22 +45,26 @@ function App() {
                 } 
               />
               <Route 
-                path="/profile" 
+                path="/add-export-product" 
                 element={
-                  <ProtectedRoute>
-                    <Profile />
+                  <ProtectedRoute allowedUserTypes={[UserType.B2B_SUPPLIER]}>
+                    <AddExportProduct />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/export-products" element={<ExportProducts />} />
+              <Route path="/export-product/:id" element={<ExportProductDetail />} />
+              <Route 
+                path="/supplier-profile" 
+                element={
+                  <ProtectedRoute allowedUserTypes={[UserType.B2B_SUPPLIER]}>
+                    <SupplierProfile />
                   </ProtectedRoute>
                 } 
               />
             </Routes>
           </main>
-          <footer className="bg-white border-t border-gray-200 mt-16">
-            <div className="max-w-7xl mx-auto px-4 py-8">
-              <div className="text-center text-secondary-500">
-                © 2024 INA Trading. All rights reserved.
-              </div>
-            </div>
-          </footer>
         </div>
       </Router>
     </AuthProvider>

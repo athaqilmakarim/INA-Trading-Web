@@ -4,12 +4,14 @@ import { useAuth } from '../context/AuthContext';
 import { collection, getDocs, query, orderBy, limit, where } from 'firebase/firestore';
 import { firestore } from '../firebase';
 import { placeService } from '../services/PlaceService';
+import { ExportProductService } from '../services/ExportProductService';
 
 const Home = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [places, setPlaces] = useState([]);
   const [promos, setPromos] = useState([]);
   const [news, setNews] = useState([]);
+  const [exportProducts, setExportProducts] = useState([]);
   const [currentMottoIndex, setCurrentMottoIndex] = useState(0);
   const [isMottoVisible, setIsMottoVisible] = useState(true);
 
@@ -64,6 +66,15 @@ const Home = () => {
         } catch (error) {
           console.log('No promos collection yet:', error);
           setPromos([]);
+        }
+
+        // Fetch export products
+        try {
+          const exportProductsData = await ExportProductService.getApprovedProducts();
+          setExportProducts(exportProductsData.slice(0, 3)); // Show only first 3 products
+        } catch (error) {
+          console.log('Error fetching export products:', error);
+          setExportProducts([]);
         }
 
         // Set sample news
@@ -177,6 +188,52 @@ const Home = () => {
                   </div>
                   <h3 className="font-bold text-xl mb-2 text-gray-800">{promo.title}</h3>
                   <p className="text-gray-600">{promo.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Export Products Section */}
+        <section className="mb-12">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-bold text-gray-800">Featured Export Products</h2>
+            <Link to="/export-products" className="text-red-600 hover:text-red-700 flex items-center">
+              View All <span className="ml-1">→</span>
+            </Link>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {exportProducts.map(product => (
+              <div key={product.id} 
+                className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+                {product.images?.[0] && (
+                  <div className="h-48 bg-gray-200">
+                    <img 
+                      src={product.images[0]} 
+                      alt={product.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                )}
+                <div className="p-6">
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="font-bold text-xl text-gray-800">{product.name}</h3>
+                    <span className="text-sm font-medium px-2 py-1 bg-gray-100 rounded-full text-gray-600">
+                      {product.category}
+                    </span>
+                  </div>
+                  <p className="text-gray-600 mb-4">{product.description}</p>
+                  <div className="flex items-center justify-between">
+                    <div className="text-sm text-gray-500">
+                      MOQ: {product.minOrderQuantity}
+                    </div>
+                    <Link 
+                      to={`/export-product/${product.id}`}
+                      className="text-red-600 hover:text-red-700 text-sm font-medium"
+                    >
+                      View Details →
+                    </Link>
+                  </div>
                 </div>
               </div>
             ))}
