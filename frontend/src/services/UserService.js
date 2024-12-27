@@ -1,11 +1,12 @@
 import { firestore } from '../firebase';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
 
 export const UserType = {
   B2C_CONSUMER: "B2C Consumer (Foreign Consumer)",
   B2C_BUSINESS_OWNER: "B2C Business Owner",
   B2B_IMPORTER: "B2B Importer",
-  B2B_SUPPLIER: "B2B Supplier/Exporter"
+  B2B_SUPPLIER: "B2B Supplier/Exporter",
+  ADMIN: "Admin"
 };
 
 export const UserService = {
@@ -15,9 +16,30 @@ export const UserService = {
       if (!userDoc.exists()) {
         throw new Error('User not found');
       }
-      return userDoc.data().userType;
+      const userData = userDoc.data();
+      
+      // Check if user is admin
+      if (userData.isAdmin === true) {
+        return UserType.ADMIN;
+      }
+      
+      return userData.userType;
     } catch (error) {
       console.error('Error checking user type:', error);
+      throw error;
+    }
+  },
+
+  async setUserAsAdmin(userId) {
+    try {
+      const userRef = doc(firestore, 'users', userId);
+      await updateDoc(userRef, {
+        isAdmin: true,
+        userType: UserType.ADMIN
+      });
+      return true;
+    } catch (error) {
+      console.error('Error setting user as admin:', error);
       throw error;
     }
   },

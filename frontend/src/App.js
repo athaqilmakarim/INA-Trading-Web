@@ -15,6 +15,7 @@ import ExportProducts from './pages/ExportProducts';
 import ExportProductDetail from './pages/ExportProductDetail';
 import AddExportProduct from './pages/AddExportProduct';
 import SupplierProfile from './pages/SupplierProfile';
+import About from './pages/About';
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <main className="max-w-7xl mx-auto px-4 py-8">
             <Routes>
               <Route path="/" element={<Home />} />
+              <Route path="/about" element={<About />} />
               <Route path="/explore" element={<Explore />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/place/:id" element={<PlaceDetails />} />

@@ -5,6 +5,7 @@ import { collection, getDocs, query, orderBy, limit, where } from 'firebase/fire
 import { firestore } from '../firebase';
 import { placeService } from '../services/PlaceService';
 import { ExportProductService } from '../services/ExportProductService';
+import { motion } from 'framer-motion';
 
 const Home = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -12,93 +13,43 @@ const Home = () => {
   const [promos, setPromos] = useState([]);
   const [news, setNews] = useState([]);
   const [exportProducts, setExportProducts] = useState([]);
-  const [currentMottoIndex, setCurrentMottoIndex] = useState(0);
+  const [currentSlide, setCurrentSlide] = useState(0);
   const [isMottoVisible, setIsMottoVisible] = useState(true);
 
-  const mottos = [
-    "Connecting You to Indonesian Culture",
-    "Discover Authentic Indonesian Experiences",
-    "Your Gateway to Indonesian Heritage",
-    "Experience Indonesia Worldwide"
+  const slides = [
+    {
+      title: "PLATFORM B2B B2C - PERURI",
+      subtitle: "Platform Ekspor untuk UKM, Koperasi & Industri untuk B2B & B2C bagi Aggregator, Eksportir & Importir.",
+      image: "/images/hero-bg.jpg" // Make sure to add this image
+    },
+    {
+      title: "Connecting Global Markets",
+      subtitle: "Empowering Indonesian Businesses to Reach International Markets",
+      image: "/images/hero-bg-2.jpg" // Make sure to add this image
+    }
   ];
 
-  // Enhanced motto animation
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      setIsMottoVisible(false);
-      
-      setTimeout(() => {
-        setCurrentMottoIndex((prev) => (prev + 1) % mottos.length);
-        setIsMottoVisible(true);
-      }, 500);
-      
-    }, 4000);
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
+    }, 5000);
 
-    return () => clearInterval(intervalId);
-  }, [mottos.length]);
+    return () => clearInterval(timer);
+  }, []);
 
   useEffect(() => {
     const setupInitialData = async () => {
       try {
         setIsLoading(true);
-        console.log('Starting to fetch data...');
-
-        // Use PlaceService to fetch approved places
         const placesData = await placeService.getApprovedPlaces();
-        console.log('Fetched places data:', placesData);
-        
-        if (!placesData || placesData.length === 0) {
-          console.log('No approved places found');
-        }
-        
         setPlaces(placesData || []);
 
-        // Fetch promos (if you have any)
-        try {
-          const promosRef = collection(firestore, 'promos');
-          const promosSnapshot = await getDocs(promosRef);
-          const promosData = promosSnapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data()
-          }));
-          console.log('Promos data:', promosData);
-          setPromos(promosData);
-        } catch (error) {
-          console.log('No promos collection yet:', error);
-          setPromos([]);
-        }
+        const exportProductsData = await ExportProductService.getApprovedProducts();
+        setExportProducts(exportProductsData.slice(0, 3));
 
-        // Fetch export products
-        try {
-          const exportProductsData = await ExportProductService.getApprovedProducts();
-          setExportProducts(exportProductsData.slice(0, 3)); // Show only first 3 products
-        } catch (error) {
-          console.log('Error fetching export products:', error);
-          setExportProducts([]);
-        }
-
-        // Set sample news
-        const sampleNews = [
-          {
-            id: '1',
-            title: "New Indonesian Restaurant",
-            description: "Grand opening of Warung Nusantara",
-            date: "15 Nov 2024",
-            imageURL: "news1"
-          },
-          {
-            id: '2',
-            title: "Cultural Exhibition",
-            description: "Indonesian artifacts showcase",
-            date: "20 Nov 2024",
-            imageURL: "news2"
-          }
-        ];
-        setNews(sampleNews);
-
+        setIsLoading(false);
       } catch (error) {
         console.error('Error in setupInitialData:', error);
-      } finally {
         setIsLoading(false);
       }
     };
@@ -115,184 +66,144 @@ const Home = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Hero Section with Enhanced Motto Animation */}
-      <div className="bg-gradient-to-r from-red-600 to-red-800 text-white py-16">
-        <div className="container mx-auto px-4">
-          <div className="text-center max-w-3xl mx-auto">
-            <h1 
-              className={`
-                text-4xl font-bold mb-6
-                transition-all duration-500 ease-in-out
-                ${isMottoVisible ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform -translate-y-4'}
-              `}
+    <div className="min-h-screen bg-white">
+      {/* Hero Section */}
+      <div className="relative h-[90vh] overflow-hidden">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1 }}
+          className="absolute inset-0 bg-gradient-to-r from-blue-900/80 to-black/80"
+        />
+        
+        <motion.div
+          key={currentSlide}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="relative z-10 container mx-auto px-4 h-full flex flex-col justify-center"
+        >
+          <div className="max-w-3xl">
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="text-5xl md:text-6xl font-bold text-white mb-6"
             >
-              {mottos[currentMottoIndex]}
-            </h1>
-            <p className="text-lg opacity-90">
-              Discover authentic Indonesian experiences and connect with local businesses
-            </p>
+              {slides[currentSlide].title}
+            </motion.h1>
+            
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="text-xl text-white/90 mb-8"
+            >
+              {slides[currentSlide].subtitle}
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6 }}
+            >
+              <Link
+                to="/about"
+                className="inline-block bg-red-600 text-white px-8 py-3 rounded-full text-lg font-medium hover:bg-red-700 transition-colors duration-300"
+              >
+                About
+              </Link>
+            </motion.div>
           </div>
+        </motion.div>
+
+        {/* Slide Navigation */}
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-3 z-20">
+          {slides.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentSlide(index)}
+              className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                currentSlide === index ? 'bg-red-600 w-8' : 'bg-white/50'
+              }`}
+            />
+          ))}
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-8">
-        {/* News Section */}
-        <section className="mb-12">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-800">Latest News</h2>
-            <Link to="/news" className="text-red-600 hover:text-red-700 flex items-center">
-              View All <span className="ml-1">→</span>
-            </Link>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {news.map(item => (
-              <div key={item.id} 
-                className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow">
-                {item.imageURL && (
-                  <div className="h-48 bg-gray-200">
-                    <img 
-                      src={item.imageURL} 
-                      alt={item.title}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                )}
-                <div className="p-6">
-                  <h3 className="font-bold text-xl mb-2 text-gray-800">{item.title}</h3>
-                  <p className="text-gray-600 mb-3">{item.description}</p>
-                  <span className="text-sm text-gray-500">{item.date}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
+      {/* Partners Section */}
+      <section className="py-16 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-2xl font-bold text-center text-gray-800 mb-12"
+          >
+            MITRA:
+          </motion.h2>
+          
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 items-center"
+          >
+            {/* Add your partner logos here */}
+            <img src="/path-to-logo1.png" alt="Partner 1" className="h-12 object-contain mx-auto filter grayscale hover:grayscale-0 transition-all duration-300" />
+            <img src="/path-to-logo2.png" alt="Partner 2" className="h-12 object-contain mx-auto filter grayscale hover:grayscale-0 transition-all duration-300" />
+            {/* Add more partner logos */}
+          </motion.div>
+        </div>
+      </section>
 
-        {/* Promos Section */}
-        <section className="mb-12">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-800">Featured Promos</h2>
-            <Link to="/promos" className="text-red-600 hover:text-red-700 flex items-center">
-              View All <span className="ml-1">→</span>
-            </Link>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {promos.map(promo => (
-              <div key={promo.id} 
-                className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow">
-                <div className="p-6">
-                  <div className="mb-4">
-                    <span className="inline-block px-3 py-1 bg-red-100 text-red-600 rounded-full text-sm font-semibold">
-                      {promo.discountPercentage}% OFF
-                    </span>
-                  </div>
-                  <h3 className="font-bold text-xl mb-2 text-gray-800">{promo.title}</h3>
-                  <p className="text-gray-600">{promo.description}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
+      {/* Export Products Section */}
+      <section className="py-16">
+        <div className="container mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <h2 className="text-3xl font-bold text-gray-800 mb-4">Featured Export Products</h2>
+            <p className="text-gray-600">Discover high-quality Indonesian products ready for export</p>
+          </motion.div>
 
-        {/* Export Products Section */}
-        <section className="mb-12">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-800">Featured Export Products</h2>
-            <Link to="/export-products" className="text-red-600 hover:text-red-700 flex items-center">
-              View All <span className="ml-1">→</span>
-            </Link>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {exportProducts.map(product => (
-              <div key={product.id} 
-                className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {exportProducts.map((product, index) => (
+              <motion.div
+                key={product.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-lg transition-shadow duration-300"
+              >
                 {product.images?.[0] && (
-                  <div className="h-48 bg-gray-200">
-                    <img 
-                      src={product.images[0]} 
+                  <div className="relative h-48 overflow-hidden">
+                    <img
+                      src={product.images[0]}
                       alt={product.name}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-300"
                     />
                   </div>
                 )}
                 <div className="p-6">
-                  <div className="flex items-center justify-between mb-2">
-                    <h3 className="font-bold text-xl text-gray-800">{product.name}</h3>
-                    <span className="text-sm font-medium px-2 py-1 bg-gray-100 rounded-full text-gray-600">
-                      {product.category}
-                    </span>
-                  </div>
-                  <p className="text-gray-600 mb-4">{product.description}</p>
-                  <div className="flex items-center justify-between">
-                    <div className="text-sm text-gray-500">
-                      MOQ: {product.minOrderQuantity}
-                    </div>
-                    <Link 
-                      to={`/export-product/${product.id}`}
-                      className="text-red-600 hover:text-red-700 text-sm font-medium"
-                    >
-                      View Details →
-                    </Link>
-                  </div>
+                  <h3 className="font-bold text-xl mb-2 text-gray-800">{product.name}</h3>
+                  <p className="text-gray-600 mb-4 line-clamp-2">{product.description}</p>
+                  <Link
+                    to={`/export-product/${product.id}`}
+                    className="inline-block bg-red-600 text-white px-6 py-2 rounded-full text-sm font-medium hover:bg-red-700 transition-colors duration-300"
+                  >
+                    View Details
+                  </Link>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
-        </section>
-
-        {/* Places Section */}
-        <section>
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-800">Indonesian Places</h2>
-            <Link to="/explore" className="text-red-600 hover:text-red-700 flex items-center">
-              Explore All <span className="ml-1">→</span>
-            </Link>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {places.length > 0 ? (
-              places.map(place => (
-                <div key={place.id} 
-                  className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow">
-                  {place.imageURL && (
-                    <div className="h-48 bg-gray-200">
-                      <img 
-                        src={place.imageURL} 
-                        alt={place.name}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  )}
-                  <div className="p-6">
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="font-bold text-xl text-gray-800">{place.name}</h3>
-                      <span className="text-sm font-medium px-2 py-1 bg-gray-100 rounded-full text-gray-600">
-                        {place.type}
-                      </span>
-                    </div>
-                    <p className="text-gray-600 mb-4">{place.description}</p>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center">
-                        <span className="text-yellow-400">★</span>
-                        <span className="ml-1 text-gray-700">{place.rating?.toFixed(1) || '0.0'}</span>
-                      </div>
-                      <Link 
-                        to={`/place/${place.id}`}
-                        className="text-red-600 hover:text-red-700 text-sm font-medium"
-                      >
-                        View Details →
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <div className="col-span-3 text-center py-12">
-                <div className="text-gray-500">No places available yet</div>
-              </div>
-            )}
-          </div>
-        </section>
-      </div>
+        </div>
+      </section>
     </div>
   );
 };
