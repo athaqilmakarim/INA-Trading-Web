@@ -1,0 +1,19 @@
+# Protect deployment scripts
+<Files "deploy-*.php">
+    Order Allow,Deny
+    Allow from all
+    
+    # Only allow POST requests
+    <LimitExcept POST>
+        Deny from all
+    </LimitExcept>
+</Files>
+
+# Deny access to .git directory
+RedirectMatch 404 /\.git
+
+# Protect .env files
+<FilesMatch "^\.env">
+    Order allow,deny
+    Deny from all
+</FilesMatch> 
