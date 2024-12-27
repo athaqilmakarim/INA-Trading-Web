@@ -1,0 +1,5 @@
+deployment:
+  tasks:
+    - /usr/bin/php /home/u8975595/public_html/artisan migrate
+    - /usr/bin/composer install --no-dev
+    - /usr/bin/npm install && npm run build
