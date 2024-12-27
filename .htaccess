@@ -1,19 +1,23 @@
-# Protect deployment scripts
+RewriteEngine On
+
+# Protect against unauthorized access to deployment scripts
 <Files "deploy-*.php">
     Order Allow,Deny
     Allow from all
     
-    # Only allow POST requests
-    <LimitExcept POST>
-        Deny from all
-    </LimitExcept>
+    # Basic security headers
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "DENY"
+    Header set X-XSS-Protection "1; mode=block"
 </Files>
 
-# Deny access to .git directory
-RedirectMatch 404 /\.git
-
-# Protect .env files
-<FilesMatch "^\.env">
+# Deny access to sensitive files
+<FilesMatch "^\.">
     Order allow,deny
     Deny from all
-</FilesMatch> 
+</FilesMatch>
+
+# Deny access to sensitive directories
+RedirectMatch 403 /\.git
+RedirectMatch 403 /\.github
+RedirectMatch 403 /node_modules 
