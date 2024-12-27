@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { placeService } from '../services/PlaceService';
 import { promoService } from '../services/PromoService';
+import { UserService, UserType } from '../services/UserService';
 import { Link } from 'react-router-dom';
 import PromoList from '../components/Promo/PromoList';
 
@@ -11,6 +12,7 @@ const Profile = () => {
   const [promos, setPromos] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('places');
+  const [userType, setUserType] = useState(null);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -18,13 +20,15 @@ const Profile = () => {
 
       try {
         setIsLoading(true);
-        const [userPlaces, userPromos] = await Promise.all([
+        const [userPlaces, userPromos, type] = await Promise.all([
           placeService.getUserPlaces(currentUser.uid),
-          promoService.getUserPromos(currentUser.uid)
+          promoService.getUserPromos(currentUser.uid),
+          UserService.checkUserType(currentUser.uid)
         ]);
         
         setPlaces(userPlaces);
         setPromos(userPromos);
+        setUserType(type);
       } catch (error) {
         console.error('Error fetching user data:', error);
       } finally {
@@ -138,12 +142,14 @@ const Profile = () => {
                 ) : (
                   <div className="text-center py-8">
                     <p className="text-gray-500 mb-4">You haven't added any places yet</p>
-                    <Link
-                      to="/add-place"
-                      className="inline-block px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-                    >
-                      Add a Place
-                    </Link>
+                    {userType === UserType.B2C_BUSINESS_OWNER && (
+                      <Link
+                        to="/add-place"
+                        className="inline-block px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+                      >
+                        Add a Place
+                      </Link>
+                    )}
                   </div>
                 )}
               </div>

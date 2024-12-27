@@ -26,26 +26,34 @@ function App() {
       <Router>
         <div className="flex flex-col min-h-screen">
           <Navbar />
-          <main className="flex-grow max-w-7xl mx-auto px-4 py-8 w-full">
+          <main className="flex-grow">
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/about" element={<About />} />
               <Route path="/explore" element={<Explore />} />
-              <Route path="/auth" element={<Auth />} />
               <Route path="/place/:id" element={<PlaceDetails />} />
-              <Route 
-                path="/admin" 
-                element={
-                  <ProtectedRoute allowedUserTypes={[UserType.ADMIN]}>
-                    <Admin />
-                  </ProtectedRoute>
-                } 
-              />
+              <Route path="/auth" element={<Auth />} />
               <Route 
                 path="/add-place" 
                 element={
                   <ProtectedRoute allowedUserTypes={[UserType.B2C_BUSINESS_OWNER]}>
                     <AddPlace />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/profile" 
+                element={
+                  <ProtectedRoute>
+                    <Profile />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/admin" 
+                element={
+                  <ProtectedRoute allowedUserTypes={[UserType.ADMIN]}>
+                    <Admin />
                   </ProtectedRoute>
                 } 
               />
@@ -57,7 +65,6 @@ function App() {
                   </ProtectedRoute>
                 } 
               />
-              <Route path="/profile" element={<Profile />} />
               <Route path="/export-products" element={<ExportProducts />} />
               <Route path="/export-product/:id" element={<ExportProductDetail />} />
               <Route 
