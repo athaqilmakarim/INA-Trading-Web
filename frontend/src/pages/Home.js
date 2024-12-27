@@ -7,6 +7,92 @@ import { placeService } from '../services/PlaceService';
 import { ExportProductService } from '../services/ExportProductService';
 import { motion } from 'framer-motion';
 
+const partnerLogos = [
+  { name: 'Peruri', src: '/assets/mitra-images/partners/peruri.png' },
+  { name: 'Kementerian Perdagangan', src: '/assets/mitra-images/partners/kemendag.png' },
+  { name: 'Kementerian Perindustrian', src: '/assets/mitra-images/partners/kemenperin.png' },
+  { name: 'Kementerian Desa', src: '/assets/mitra-images/partners/kemendes.png' },
+  { name: 'Kementerian Koperasi dan UKM', src: '/assets/mitra-images/partners/kemenkopukm.png' },
+  { name: 'Kementerian Pertanian', src: '/assets/mitra-images/partners/kementan.png' },
+  { name: 'Eximbank', src: '/assets/mitra-images/partners/eximbank.png' },
+  { name: 'LPDB', src: '/assets/mitra-images/partners/lpdb.png' },
+  { name: 'IIYH', src: '/assets/mitra-images/partners/iiyh.png' },
+  { name: 'Matrik', src: '/assets/mitra-images/partners/matrik.png' }
+];
+
+const workflowSteps = [
+  { 
+    title: "Sign Up",
+    icon: "M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+  },
+  { 
+    title: "Upload",
+    icon: "M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
+  },
+  { 
+    title: "Sales",
+    icon: "M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+  }
+];
+
+const features = [
+  {
+    title: "INAPAS",
+    description: "Atur dan Kelola Identitas Digital Anda untuk Akses Berbagai Layanan",
+    icon: "M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+  },
+  {
+    title: "INAKU",
+    description: "Akses Berbagai Layanan Pemerintah Dapatkan kemudahan akses berbagai layanan pemerintah melalui satu portal terintegrasi INAku.",
+    icon: "M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+  },
+  {
+    title: "UKM BOX Fulfillment Center",
+    description: "Warehouse & Distribusi / Supply Chain ke seluruh dunia",
+    icon: "M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+  },
+  {
+    title: "International Marketplace",
+    description: "Online Store di beberapa negara",
+    icon: "M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"
+  },
+  {
+    title: "Digital Promotion",
+    description: "Promosi Digital di Media Sosial",
+    icon: "M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"
+  },
+  {
+    title: "Finance Technology",
+    description: "Penggunaan FinTech seperti QRIS, Token & Crypto untuk pembayaran di berbagai negara",
+    icon: "M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+  },
+  {
+    title: "Artificial Intelligence",
+    description: "AI untuk mengelola Supply Chain dan Big Data Buyer",
+    icon: "M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+  },
+  {
+    title: "Blockchain",
+    description: "Digital Security dan Blockchain untuk menjamin Ke-ASLI-an Produk Indonesia",
+    icon: "M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+  }
+];
+
+const stats = [
+  {
+    number: "100000+",
+    label: "Target UKM, Koperasi & Industri"
+  },
+  {
+    number: "500000+",
+    label: "Target Downloader Worldwide"
+  },
+  {
+    number: "24+",
+    label: "24 Hours Transaction"
+  }
+];
+
 const Home = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [places, setPlaces] = useState([]);
@@ -131,29 +217,206 @@ const Home = () => {
         </div>
       </div>
 
-      {/* Partners Section */}
-      <section className="py-16 bg-gray-50">
+      {/* How It Works Section */}
+      <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-2xl font-bold text-center text-gray-800 mb-12"
-          >
-            MITRA:
-          </motion.h2>
-          
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 items-center"
+            className="text-center mb-16"
           >
-            {/* Add your partner logos here */}
-            <img src="/path-to-logo1.png" alt="Partner 1" className="h-12 object-contain mx-auto filter grayscale hover:grayscale-0 transition-all duration-300" />
-            <img src="/path-to-logo2.png" alt="Partner 2" className="h-12 object-contain mx-auto filter grayscale hover:grayscale-0 transition-all duration-300" />
-            {/* Add more partner logos */}
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Cara Kerja INA TRADING</h2>
+            <div className="max-w-3xl mx-auto">
+              <p className="text-gray-600 text-lg mb-8">
+                INA Trading merupakan Ekosistem Perdagangan Dalam & Luar Negeri untuk membantu UKM, KOPERASI & INDUSTRI melakukan Ekspor, Logistic, Fulfillment, Promosi, Marketing & Sales di Luar Negeri.
+              </p>
+              <p className="text-gray-600">
+                Fasilitas bagi UKM, KOPERASI & INDUSTRI untuk mendukung Program Usaha Mikro, Kecil, dan Menengah Berani Inovasi, Siap Adaptasi Ekspor (UMKM BISA Ekspor) dari KEMENTERIAN PERDAGANGAN untuk membantu Aggregator dapat menemukan Buyer di luar negeri.
+              </p>
+            </div>
           </motion.div>
+
+          {/* Workflow Steps */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+            {workflowSteps.map((step, index) => (
+              <motion.div
+                key={step.title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.2 }}
+                className="text-center"
+              >
+                <div className="w-20 h-20 mx-auto mb-6 bg-red-100 rounded-full flex items-center justify-center">
+                  <svg className="w-10 h-10 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={step.icon} />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">{step.title}</h3>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Stats */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 bg-gray-50 rounded-2xl p-8">
+            {stats.map((stat, index) => (
+              <motion.div
+                key={stat.label}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="text-center"
+              >
+                <div className="text-3xl font-bold text-red-600 mb-2">{stat.number}</div>
+                <div className="text-gray-600">{stat.label}</div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="py-20 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Fasilitas & Fitur</h2>
+            <p className="text-gray-600 text-lg">
+              Fitur & Fasilitas yang dimiliki INA TRADING di dalam & Luar Negeri
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {features.map((feature, index) => (
+              <motion.div
+                key={feature.title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300"
+              >
+                <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mb-4">
+                  <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={feature.icon} />
+                  </svg>
+                </div>
+                <h3 className="text-lg font-bold text-gray-900 mb-2">{feature.title}</h3>
+                <p className="text-gray-600 text-sm">{feature.description}</p>
+              </motion.div>
+            ))}
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mt-16 text-center bg-white rounded-2xl p-8 shadow-sm"
+          >
+            <p className="text-gray-600 text-lg">
+              INA TRADING merupakan bagian INA DIGITAL adalah Penyelenggara Keterpaduan Ekosistem Layanan Digital Pemerintah Indonesia Sebagai bagian dari PERURI, kami hadir untuk mewujudkan layanan publik yang lebih berkualitas, tepercaya dan efisien, menjalankan mandat Pemerintah sesuai Perpres No. 82 Tahun 2023.
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Partners Section */}
+      <section className="py-20 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Our Partners</h2>
+            <p className="text-gray-600 text-lg">Trusted by Indonesia's leading institutions</p>
+          </motion.div>
+          
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 items-center"
+          >
+            {partnerLogos.map((partner, index) => (
+              <motion.div
+                key={partner.name}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="flex flex-col items-center group"
+              >
+                <div className="relative w-full h-24 flex items-center justify-center p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
+                  <img
+                    src={partner.src}
+                    alt={partner.name}
+                    className="h-full w-full object-contain filter grayscale group-hover:grayscale-0 transition-all duration-300"
+                  />
+                </div>
+                <span className="mt-2 text-sm text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  {partner.name}
+                </span>
+              </motion.div>
+            ))}
+          </motion.div>
+
+          {/* Trust Indicators */}
+          <div className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center"
+            >
+              <div className="w-16 h-16 mx-auto mb-4 bg-red-100 rounded-full flex items-center justify-center">
+                <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Government Backed</h3>
+              <p className="text-gray-600">Supported by multiple government ministries</p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="text-center"
+            >
+              <div className="w-16 h-16 mx-auto mb-4 bg-red-100 rounded-full flex items-center justify-center">
+                <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Business Support</h3>
+              <p className="text-gray-600">Comprehensive support for SMEs and cooperatives</p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.4 }}
+              className="text-center"
+            >
+              <div className="w-16 h-16 mx-auto mb-4 bg-red-100 rounded-full flex items-center justify-center">
+                <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Global Reach</h3>
+              <p className="text-gray-600">Connected to international markets and partners</p>
+            </motion.div>
+          </div>
         </div>
       </section>
 
