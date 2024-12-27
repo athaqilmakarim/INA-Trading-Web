@@ -1,15 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { firestore } from '../firebase';
 import { collection, query, getDocs, doc, updateDoc, serverTimestamp } from 'firebase/firestore';
+import AddNews from '../components/News/AddNews';
+import NewsService from '../services/NewsService';
+import { Tab, Tabs, Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, CircularProgress } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { toast } from 'react-toastify';
 
 const Admin = () => {
   const [places, setPlaces] = useState([]);
   const [products, setProducts] = useState([]);
   const [suppliers, setSuppliers] = useState([]);
+  const [news, setNews] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [activeTab, setActiveTab] = useState('places'); // ['places', 'products', 'suppliers']
+  const [activeTab, setActiveTab] = useState('places'); // ['places', 'products', 'suppliers', 'news']
   const [statusFilter, setStatusFilter] = useState('pending'); // ['pending', 'approved', 'rejected']
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [newsToDelete, setNewsToDelete] = useState(null);
 
   useEffect(() => {
     fetchAllData();
@@ -45,6 +53,10 @@ const Admin = () => {
         ...doc.data()
       }));
       setSuppliers(suppliersData);
+
+      // Fetch all news
+      const newsData = await NewsService.getAllNews();
+      setNews(newsData);
 
     } catch (err) {
       setError(err.message);
@@ -113,6 +125,31 @@ const Admin = () => {
     }
   };
 
+  const handleNewsAdded = () => {
+    fetchAllData(); // Refresh the news list
+  };
+
+  const handleDeleteNews = async (newsId) => {
+    setNewsToDelete(newsId);
+    setDeleteDialogOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      setIsLoading(true);
+      await NewsService.deleteNews(newsToDelete);
+      toast.success('News deleted successfully');
+      fetchAllData(); // Refresh the news list
+    } catch (error) {
+      console.error('Error deleting news:', error);
+      toast.error('Failed to delete news');
+    } finally {
+      setIsLoading(false);
+      setDeleteDialogOpen(false);
+      setNewsToDelete(null);
+    }
+  };
+
   const filteredPlaces = places.filter(place => place.status === statusFilter);
   const filteredProducts = products.filter(product => product.status === statusFilter);
   const filteredSuppliers = suppliers.filter(supplier => supplier.status === statusFilter);
@@ -137,64 +174,43 @@ const Admin = () => {
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-2xl font-bold mb-6">Admin Dashboard</h1>
 
-      {/* Main Tabs */}
-      <div className="border-b border-gray-200 mb-6">
-        <nav className="-mb-px flex space-x-8">
-          <button
-            onClick={() => setActiveTab('places')}
-            className={`${
-              activeTab === 'places'
-                ? 'border-red-500 text-red-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-            } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
-          >
-            Places
-          </button>
-          <button
-            onClick={() => setActiveTab('products')}
-            className={`${
-              activeTab === 'products'
-                ? 'border-red-500 text-red-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-            } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
-          >
-            Export Products
-          </button>
-          <button
-            onClick={() => setActiveTab('suppliers')}
-            className={`${
-              activeTab === 'suppliers'
-                ? 'border-red-500 text-red-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-            } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
-          >
-            Exporters
-          </button>
-        </nav>
-      </div>
+      <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
+        <Tabs 
+          value={activeTab} 
+          onChange={(_, newValue) => setActiveTab(newValue)}
+          textColor="primary"
+          indicatorColor="primary"
+        >
+          <Tab label="Places" value="places" />
+          <Tab label="Export Products" value="products" />
+          <Tab label="Exporters" value="suppliers" />
+          <Tab label="News Management" value="news" />
+        </Tabs>
+      </Box>
 
-      {/* Status Tabs */}
-      <div className="mb-6">
-        <nav className="flex space-x-4">
-          {['pending', 'approved', 'rejected'].map((status) => (
-            <button
-              key={status}
-              onClick={() => setStatusFilter(status)}
-              className={`${
-                statusFilter === status
-                  ? 'bg-red-100 text-red-700'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              } px-4 py-2 rounded-md capitalize`}
-            >
-              {status} ({activeTab === 'places' 
-                ? places.filter(p => p.status === status).length
-                : activeTab === 'products'
-                ? products.filter(p => p.status === status).length
-                : suppliers.filter(s => s.status === status).length})
-            </button>
-          ))}
-        </nav>
-      </div>
+      {activeTab !== 'news' && (
+        <div className="mb-6">
+          <nav className="flex space-x-4">
+            {['pending', 'approved', 'rejected'].map((status) => (
+              <button
+                key={status}
+                onClick={() => setStatusFilter(status)}
+                className={`${
+                  statusFilter === status
+                    ? 'bg-red-100 text-red-700'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                } px-4 py-2 rounded-md capitalize`}
+              >
+                {status} ({activeTab === 'places' 
+                  ? places.filter(p => p.status === status).length
+                  : activeTab === 'products'
+                  ? products.filter(p => p.status === status).length
+                  : suppliers.filter(s => s.status === status).length})
+              </button>
+            ))}
+          </nav>
+        </div>
+      )}
 
       {/* Places Content */}
       {activeTab === 'places' && (
@@ -330,6 +346,83 @@ const Admin = () => {
               </div>
             ))
           )}
+        </div>
+      )}
+
+      {/* News Management Content */}
+      {activeTab === 'news' && (
+        <div className="space-y-8">
+          <AddNews onNewsAdded={handleNewsAdded} />
+          
+          <div className="mt-8">
+            <h2 className="text-xl font-semibold mb-4">Published Articles</h2>
+            <div className="space-y-4">
+              {news.map((article) => (
+                <div key={article.id} className="bg-white shadow rounded-lg p-6">
+                  <div className="flex justify-between items-start">
+                    <div className="flex-grow">
+                      <h3 className="text-lg font-medium">{article.title}</h3>
+                      <p className="text-gray-600 mt-2">{article.summary}</p>
+                      <div className="mt-2 text-sm text-gray-500">
+                        Published: {new Date(article.createdAt).toLocaleDateString()}
+                      </div>
+                    </div>
+                    {article.imageUrl && (
+                      <img 
+                        src={article.imageUrl} 
+                        alt={article.title}
+                        className="w-32 h-32 object-cover rounded-lg mx-4"
+                      />
+                    )}
+                    <Button
+                      variant="outlined"
+                      color="error"
+                      startIcon={<DeleteIcon />}
+                      onClick={() => handleDeleteNews(article.id)}
+                      sx={{ minWidth: 'auto', ml: 2 }}
+                    >
+                      Delete
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Delete Confirmation Dialog */}
+          <Dialog
+            open={deleteDialogOpen}
+            onClose={() => setDeleteDialogOpen(false)}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle id="alert-dialog-title">
+              {"Delete News Article"}
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                Are you sure you want to delete this news article? This action cannot be undone.
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button 
+                onClick={() => setDeleteDialogOpen(false)} 
+                color="primary"
+                disabled={isLoading}
+              >
+                Cancel
+              </Button>
+              <Button 
+                onClick={confirmDelete} 
+                color="error" 
+                variant="contained"
+                disabled={isLoading}
+                autoFocus
+              >
+                {isLoading ? <CircularProgress size={24} /> : 'Delete'}
+              </Button>
+            </DialogActions>
+          </Dialog>
         </div>
       )}
     </div>

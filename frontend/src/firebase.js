@@ -19,7 +19,12 @@ const app = initializeApp(firebaseConfig);
 // Get Auth, Firestore, and Storage instances
 export const auth = getAuth(app);
 export const firestore = getFirestore(app);
-export const storage = getStorage(app);
+
+// Initialize Storage with CORS configuration
+const storage = getStorage(app);
+storage._customUrlOrRegion = `https://${firebaseConfig.storageBucket}`;
+
+export { storage };
 
 console.log('Firebase initialized with project:', firebaseConfig.projectId);
 
