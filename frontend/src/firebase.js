@@ -20,9 +20,13 @@ const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const firestore = getFirestore(app);
 
-// Initialize Storage with CORS configuration
+// Initialize Storage with proper configuration
 const storage = getStorage(app);
-storage._customUrlOrRegion = `https://${firebaseConfig.storageBucket}`;
+
+// Set custom domain for storage operations
+if (window.location.hostname === 'admin.inatrading.co.id') {
+  storage._customUrlOrRegion = `https://${firebaseConfig.storageBucket}`;
+}
 
 export { storage };
 

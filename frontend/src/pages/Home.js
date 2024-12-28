@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { collection, getDocs, query, orderBy, limit, where } from 'firebase/firestore';
 import { firestore } from '../firebase';
 import { placeService } from '../services/PlaceService';
-import { ExportProductService } from '../services/ExportProductService';
+import ExportProductService from '../services/ExportProductService';
 import { motion } from 'framer-motion';
 
 const partnerLogos = [

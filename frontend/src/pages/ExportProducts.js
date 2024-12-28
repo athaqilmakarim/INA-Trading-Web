@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ExportProductService } from '../services/ExportProductService';
+import ExportProductService from '../services/ExportProductService';
 import { motion } from 'framer-motion';
 
 const ExportProducts = () => {

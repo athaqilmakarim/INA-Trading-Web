@@ -19,11 +19,11 @@ class NewsService {
       const metadata = {
         contentType: imageFile.type,
         customMetadata: {
-          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Origin': 'https://admin.inatrading.co.id'
         }
       };
       
-      const storageRef = ref(storage, `news-images/${Date.now()}-${imageFile.name}`);
+      const storageRef = ref(storage, `news/${Date.now()}-${imageFile.name}`);
       
       // Upload the file with metadata
       const uploadResult = await uploadBytes(storageRef, imageFile, metadata);
@@ -139,8 +139,14 @@ class NewsService {
         }
 
         // Upload new image
-        const storageRef = ref(storage, `news-images/${Date.now()}-${imageFile.name}`);
-        await uploadBytes(storageRef, imageFile);
+        const storageRef = ref(storage, `news/${Date.now()}-${imageFile.name}`);
+        const metadata = {
+          contentType: imageFile.type,
+          customMetadata: {
+            'Access-Control-Allow-Origin': 'https://admin.inatrading.co.id'
+          }
+        };
+        await uploadBytes(storageRef, imageFile, metadata);
         imageUrl = await getDownloadURL(storageRef);
       }
 
