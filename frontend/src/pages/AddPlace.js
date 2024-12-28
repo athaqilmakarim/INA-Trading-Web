@@ -23,10 +23,13 @@ const AddPlace = () => {
   const [contact, setContact] = useState('');
   const [description, setDescription] = useState('');
   const [menuItems, setMenuItems] = useState([]);
-  const [images, setImages] = useState([]);
-  const [previewUrls, setPreviewUrls] = useState([]);
+
+  // Image management
+  const [images, setImages] = useState([]);          // raw File objects
+  const [previewUrls, setPreviewUrls] = useState([]); // local previews
   const [uploadProgress, setUploadProgress] = useState(0);
 
+  // Handle file selection from <input> or drag-drop
   const handleImageChange = useCallback((e) => {
     handleImageSelection(e.target.files, setImages, setPreviewUrls);
   }, []);
@@ -40,11 +43,12 @@ const AddPlace = () => {
     e.preventDefault();
   };
 
+  // Remove an image from the preview list
   const removeImage = (index) => {
-    setImages(prev => prev.filter((_, i) => i !== index));
-    setPreviewUrls(prev => prev.filter((_, i) => i !== index));
+    setImages((prev) => prev.filter((_, i) => i !== index));
+    setPreviewUrls((prev) => prev.filter((_, i) => i !== index));
     toast.success('Image removed', {
-      icon: "🗑️"
+      icon: '🗑️'
     });
   };
 
@@ -55,60 +59,54 @@ const AddPlace = () => {
     setUploadProgress(0);
 
     try {
-      let imageUrls = [];
+      // We'll store the final Firebase download URLs in imageURLs
+      let imageURLs = [];
+
       if (images.length > 0) {
-        console.log('Starting image upload process with:', images.length, 'images');
-        
-        const uploadToast = toast.loading('Preparing to upload images...', {
-          position: "bottom-right"
+        console.log(`Starting image upload with ${images.length} file(s).`);
+        const uploadToast = toast.loading('Uploading images...', {
+          position: 'bottom-right'
         });
 
-        for (const [index, image] of images.entries()) {
+        for (const [index, file] of images.entries()) {
           try {
-            // Ensure we have a valid File object
-            if (!(image instanceof File) || !image.name || !image.type || !image.size) {
-              console.error('Invalid image object:', {
-                isFile: image instanceof File,
-                name: image?.name,
-                type: image?.type,
-                size: image?.size
-              });
-              throw new Error('Invalid image file');
+            // Basic validation
+            if (!(file instanceof File) || !file.name) {
+              console.error('Invalid file object:', file);
+              throw new Error('Invalid file object');
             }
 
-            console.log(`Uploading image ${index + 1}/${images.length}:`, {
-              name: image.name,
-              type: image.type,
-              size: image.size
+            console.log(`Uploading image ${index + 1}/${images.length}`, {
+              name: file.name,
+              type: file.type,
+              size: file.size
             });
 
-            const imageUrl = await placeService.uploadImage(image);
-            imageUrls.push(imageUrl);
-            
+            // Upload to Firebase
+            const downloadUrl = await placeService.uploadImage(file);
+            imageURLs.push(downloadUrl);
+
             // Update progress
             const progress = ((index + 1) / images.length) * 100;
-            setUploadProgress(Math.min(Math.round(progress), 100));
-            
+            setUploadProgress(Math.round(progress));
+
             toast.update(uploadToast, {
               render: `Uploaded ${index + 1} of ${images.length} images`,
-              type: "success",
+              type: 'success',
               isLoading: false
             });
-          } catch (error) {
-            console.error('Failed to upload image:', {
-              index,
-              name: image?.name,
-              error: error.message
-            });
-            toast.error(`Failed to upload image ${index + 1}: ${error.message}`);
+          } catch (uploadErr) {
+            console.error('Image upload error:', uploadErr);
+            toast.error(`Failed to upload image ${index + 1}: ${uploadErr.message}`);
           }
         }
-        
+
         toast.dismiss(uploadToast);
       }
 
-      console.log('Creating place with image URLs:', imageUrls);
+      console.log('Creating place with these URL(s):', imageURLs);
 
+      // Create place in Firestore with imageURLs
       await placeService.createPlace({
         name,
         type,
@@ -116,16 +114,17 @@ const AddPlace = () => {
         contact,
         description,
         menu: type === PlaceType.RESTAURANT ? menuItems : undefined,
-        images: imageUrls
+        imageURLs // <-- Important: pass it here
       });
 
       toast.success('Place added successfully!', {
-        icon: "🎉"
+        icon: '🎉'
       });
       setSuccess(true);
-      
+
       // Reset form
       setName('');
+      setType(PlaceType.RESTAURANT);
       setAddress('');
       setContact('');
       setDescription('');
@@ -147,6 +146,7 @@ const AddPlace = () => {
       <h1 className="text-2xl font-bold mb-6 animate-fadeIn">Add New Place</h1>
 
       <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Name */}
         <div>
           <label className="block text-sm font-medium mb-1">Place Name</label>
           <input
@@ -158,6 +158,7 @@ const AddPlace = () => {
           />
         </div>
 
+        {/* Type */}
         <div>
           <label className="block text-sm font-medium mb-1">Type</label>
           <select
@@ -165,14 +166,15 @@ const AddPlace = () => {
             onChange={(e) => setType(e.target.value)}
             className="w-full p-2 border rounded focus:ring-2 focus:ring-red-500 focus:border-transparent"
           >
-            {Object.entries(PlaceType).map(([key, value]) => (
-              <option key={key} value={value}>
-                {value}
+            {Object.entries(PlaceType).map(([key, val]) => (
+              <option key={key} value={val}>
+                {val}
               </option>
             ))}
           </select>
         </div>
 
+        {/* Address */}
         <div>
           <label className="block text-sm font-medium mb-1">Address</label>
           <input
@@ -184,6 +186,7 @@ const AddPlace = () => {
           />
         </div>
 
+        {/* Contact */}
         <div>
           <label className="block text-sm font-medium mb-1">Contact</label>
           <input
@@ -195,6 +198,7 @@ const AddPlace = () => {
           />
         </div>
 
+        {/* Description */}
         <div>
           <label className="block text-sm font-medium mb-1">Description</label>
           <textarea
@@ -204,6 +208,11 @@ const AddPlace = () => {
             required
           />
         </div>
+
+        {/* Menu Items (for restaurants only, if you wish) */}
+        {/* <div>
+          // Implementation for adding menu items...
+        </div> */}
 
         {/* Image Upload Section */}
         <div className="space-y-4 animate-fadeIn">
@@ -241,11 +250,29 @@ const AddPlace = () => {
         >
           {isLoading ? (
             <span className="flex items-center justify-center">
-              <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              <svg
+                className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
               </svg>
-              {uploadProgress > 0 ? `Uploading... ${uploadProgress}%` : 'Submitting...'}
+              {uploadProgress > 0
+                ? `Uploading... ${uploadProgress}%`
+                : 'Submitting...'}
             </span>
           ) : (
             'Submit Place'
@@ -253,11 +280,18 @@ const AddPlace = () => {
         </button>
       </form>
 
+      {/* Success Modal */}
       {success && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 animate-fadeIn">
           <div className="bg-white p-6 rounded-lg max-w-sm w-full mx-4 animate-slideUp">
             <div className="text-center">
-              <svg className="mx-auto h-12 w-12 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg
+                className="mx-auto h-12 w-12 text-green-600"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
               <h2 className="text-xl font-bold mt-4 mb-2">Success!</h2>
@@ -273,12 +307,22 @@ const AddPlace = () => {
         </div>
       )}
 
+      {/* Error Alert */}
       {error && (
         <div className="fixed bottom-4 right-4 bg-red-100 border-l-4 border-red-600 p-4 rounded shadow-lg animate-slideUp">
           <div className="flex">
             <div className="flex-shrink-0">
-              <svg className="h-5 w-5 text-red-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+              <svg
+                className="h-5 w-5 text-red-600"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                  clipRule="evenodd"
+                />
               </svg>
             </div>
             <div className="ml-3">
@@ -291,8 +335,17 @@ const AddPlace = () => {
                   className="inline-flex rounded-md p-1.5 text-red-600 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-all duration-200"
                 >
                   <span className="sr-only">Dismiss</span>
-                  <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                  <svg
+                    className="h-5 w-5"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 011.414 1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                      clipRule="evenodd"
+                    />
                   </svg>
                 </button>
               </div>
@@ -304,4 +357,4 @@ const AddPlace = () => {
   );
 };
 
-export default AddPlace; 
+export default AddPlace;

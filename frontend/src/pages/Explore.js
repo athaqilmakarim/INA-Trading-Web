@@ -30,17 +30,29 @@ const Explore = () => {
             imageURLs: place.imageURLs
           });
 
+          // Fallback approach: unify images & imageURLs under one array
+          let finalImages;
+          if (place.images && place.images.length > 0) {
+            finalImages = place.images; 
+          } else if (place.imageURLs && place.imageURLs.length > 0) {
+            finalImages = place.imageURLs; 
+          } else {
+            finalImages = [];
+          }
+
           return {
-            id: place.id,
             ...place,
+            id: place.id,
             name: place.name || '',
             type: place.type || 'Restaurant',
             description: place.description || '',
             address: place.address || '',
             contact: place.contact || '',
             rating: place.rating || 0,
-            // IMPORTANT: Use place.imageURLs if that's where your real URLs are stored
-            imageURLs: place.imageURLs || [],
+
+            // Unify under 'images' so the UI always just references `images`
+            images: finalImages,
+
             menu: place.menu || []
           };
         });
@@ -50,15 +62,16 @@ const Explore = () => {
           processedPlaces.map((p) => ({
             id: p.id,
             name: p.name,
-            imageURLs: p.imageURLs
+            images: p.images
           }))
         );
+
         setPlaces(processedPlaces);
 
         // Initialize active image indexes
         const initialIndexes = {};
-        processedPlaces.forEach((place) => {
-          initialIndexes[place.id] = 0;
+        processedPlaces.forEach((p) => {
+          initialIndexes[p.id] = 0;
         });
         setActiveImageIndexes(initialIndexes);
       } catch (error) {
@@ -173,153 +186,124 @@ const Explore = () => {
           /* Places Grid */
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredPlaces.length > 0 ? (
-              filteredPlaces.map((place) => (
-                <Link
-                  to={`/place/${place.id}`}
-                  key={place.id}
-                  className="group bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
-                >
-                  {/* Image Container with carousel */}
-                  <div className="relative h-64 overflow-hidden bg-gray-200">
-                    {place.imageURLs && place.imageURLs.length > 0 ? (
-                      <>
-                        <img
-                          src={place.imageURLs[activeImageIndexes[place.id]]}
-                          alt={`${place.name} - Image ${
-                            activeImageIndexes[place.id] + 1
-                          }`}
-                          className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300"
-                          loading="lazy"
-                          onError={(e) => {
-                            console.error('Image load error:', {
-                              placeId: place.id,
-                              placeName: place.name,
-                              imageUrl:
-                                place.imageURLs[activeImageIndexes[place.id]],
-                              imageIndex: activeImageIndexes[place.id]
-                            });
-                            e.target.onerror = null;
-                            e.target.src =
-                              'https://via.placeholder.com/400x300?text=No+Image+Available';
-                          }}
-                        />
-                        {place.imageURLs.length > 1 && (
-                          <>
-                            {/* Previous button */}
-                            <button
-                              onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                handlePrevImage(e, place.id);
-                              }}
-                              className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors"
-                            >
-                              <svg
-                                className="w-5 h-5"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M15 19l-7-7 7-7"
-                                />
-                              </svg>
-                            </button>
-                            {/* Next button */}
-                            <button
-                              onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                handleNextImage(
-                                  e,
-                                  place.id,
-                                  place.imageURLs.length - 1
-                                );
-                              }}
-                              className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors"
-                            >
-                              <svg
-                                className="w-5 h-5"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M9 5l7 7-7 7"
-                                />
-                              </svg>
-                            </button>
-                            {/* Image counter */}
-                            <div className="absolute bottom-2 right-2 bg-black/50 text-white px-2 py-1 rounded-full text-sm">
-                              {activeImageIndexes[place.id] + 1}/
-                              {place.imageURLs.length}
-                            </div>
-                          </>
-                        )}
-                      </>
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-gray-100">
-                        <span className="text-gray-400">
-                          No image available
-                        </span>
-                      </div>
-                    )}
-                    {/* Type Badge */}
-                    <span className="absolute top-4 right-4 px-3 py-1 bg-white/90 backdrop-blur-sm rounded-full text-sm font-medium text-gray-700">
-                      {place.type}
-                    </span>
-                  </div>
+              filteredPlaces.map((place) => {
+                const { images } = place; // The unified array
+                const activeIndex = activeImageIndexes[place.id] || 0;
 
-                  <div className="p-6">
-                    {/* Title and Rating */}
-                    <div className="flex items-center justify-between mb-3">
-                      <h3 className="font-bold text-xl text-gray-900 group-hover:text-primary-600 transition-colors">
-                        {place.name}
-                      </h3>
-                      <div className="flex items-center bg-yellow-50 px-3 py-1 rounded-full">
-                        <span className="text-yellow-500 mr-1">★</span>
-                        <span className="font-semibold text-gray-700">
-                          {place.rating?.toFixed(1) || '0.0'}
-                        </span>
-                      </div>
+                return (
+                  <Link
+                    to={`/place/${place.id}`}
+                    key={place.id}
+                    className="group bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+                  >
+                    {/* Image Container with carousel */}
+                    <div className="relative h-64 overflow-hidden bg-gray-200">
+                      {images.length > 0 ? (
+                        <>
+                          <img
+                            src={images[activeIndex]}
+                            alt={`${place.name} - Image ${activeIndex + 1}`}
+                            className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300"
+                            loading="lazy"
+                            onError={(e) => {
+                              console.error('Image load error:', {
+                                placeId: place.id,
+                                placeName: place.name,
+                                imageUrl: images[activeIndex],
+                                imageIndex: activeIndex
+                              });
+                              e.target.onerror = null;
+                              e.target.src =
+                                'https://via.placeholder.com/400x300?text=No+Image+Available';
+                            }}
+                          />
+                          {images.length > 1 && (
+                            <>
+                              {/* Previous button */}
+                              <button
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                  handlePrevImage(e, place.id);
+                                }}
+                                className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors"
+                              >
+                                <svg
+                                  className="w-5 h-5"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M15 19l-7-7 7-7"
+                                  />
+                                </svg>
+                              </button>
+                              {/* Next button */}
+                              <button
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                  handleNextImage(e, place.id, images.length - 1);
+                                }}
+                                className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors"
+                              >
+                                <svg
+                                  className="w-5 h-5"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M9 5l7 7-7 7"
+                                  />
+                                </svg>
+                              </button>
+                              {/* Image counter */}
+                              <div className="absolute bottom-2 right-2 bg-black/50 text-white px-2 py-1 rounded-full text-sm">
+                                {activeIndex + 1}/{images.length}
+                              </div>
+                            </>
+                          )}
+                        </>
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center bg-gray-100">
+                          <span className="text-gray-400">No image available</span>
+                        </div>
+                      )}
+                      {/* Type Badge */}
+                      <span className="absolute top-4 right-4 px-3 py-1 bg-white/90 backdrop-blur-sm rounded-full text-sm font-medium text-gray-700">
+                        {place.type}
+                      </span>
                     </div>
 
-                    {/* Description */}
-                    <p className="text-gray-600 mb-4 line-clamp-2">
-                      {place.description}
-                    </p>
-
-                    {/* Location and Contact */}
-                    <div className="space-y-2 text-sm text-gray-500 mb-4">
-                      <div className="flex items-center">
-                        <svg
-                          className="w-4 h-4 mr-2 text-gray-400"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                          />
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                          />
-                        </svg>
-                        <span className="line-clamp-1">{place.address}</span>
+                    <div className="p-6">
+                      {/* Title and Rating */}
+                      <div className="flex items-center justify-between mb-3">
+                        <h3 className="font-bold text-xl text-gray-900 group-hover:text-primary-600 transition-colors">
+                          {place.name}
+                        </h3>
+                        <div className="flex items-center bg-yellow-50 px-3 py-1 rounded-full">
+                          <span className="text-yellow-500 mr-1">★</span>
+                          <span className="font-semibold text-gray-700">
+                            {place.rating?.toFixed(1) || '0.0'}
+                          </span>
+                        </div>
                       </div>
-                      {place.contact && (
+
+                      {/* Description */}
+                      <p className="text-gray-600 mb-4 line-clamp-2">
+                        {place.description}
+                      </p>
+
+                      {/* Location and Contact */}
+                      <div className="space-y-2 text-sm text-gray-500 mb-4">
                         <div className="flex items-center">
                           <svg
                             className="w-4 h-4 mr-2 text-gray-400"
@@ -331,58 +315,82 @@ const Explore = () => {
                               strokeLinecap="round"
                               strokeLinejoin="round"
                               strokeWidth={2}
-                              d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                              d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                            />
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                             />
                           </svg>
-                          <span>{place.contact}</span>
+                          <span className="line-clamp-1">{place.address}</span>
                         </div>
-                      )}
-                    </div>
+                        {place.contact && (
+                          <div className="flex items-center">
+                            <svg
+                              className="w-4 h-4 mr-2 text-gray-400"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                              />
+                            </svg>
+                            <span>{place.contact}</span>
+                          </div>
+                        )}
+                      </div>
 
-                    {/* Action Buttons */}
-                    <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                      <button
-                        onClick={(e) => {
-                          e.preventDefault();
-                          handleViewOnMap(place.address);
-                        }}
-                        className="text-primary-500 hover:text-primary-600 font-medium flex items-center"
-                      >
-                        <svg
-                          className="w-4 h-4 mr-1"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
+                      {/* Action Buttons */}
+                      <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                        <button
+                          onClick={(e) => {
+                            e.preventDefault();
+                            handleViewOnMap(place.address);
+                          }}
+                          className="text-primary-500 hover:text-primary-600 font-medium flex items-center"
                         >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"
-                          />
-                        </svg>
-                        Map
-                      </button>
-                      <span className="text-primary-500 font-medium flex items-center">
-                        View Details
-                        <svg
-                          className="w-4 h-4 ml-1"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M9 5l7 7-7 7"
-                          />
-                        </svg>
-                      </span>
+                          <svg
+                            className="w-4 h-4 mr-1"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"
+                            />
+                          </svg>
+                          Map
+                        </button>
+                        <span className="text-primary-500 font-medium flex items-center">
+                          View Details
+                          <svg
+                            className="w-4 h-4 ml-1"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M9 5l7 7-7 7"
+                            />
+                          </svg>
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                </Link>
-              ))
+                  </Link>
+                );
+              })
             ) : (
               <div className="col-span-3 text-center py-16">
                 <div className="text-gray-500 text-lg">

@@ -1,20 +1,39 @@
-import { collection, addDoc, getDocs, query, where, serverTimestamp, orderBy, doc, updateDoc, getDoc, deleteDoc } from 'firebase/firestore';
+import {
+  collection,
+  addDoc,
+  getDocs,
+  query,
+  where,
+  serverTimestamp,
+  doc,
+  updateDoc,
+  getDoc,
+  deleteDoc
+} from 'firebase/firestore';
 import { firestore, auth, storage } from '../firebase';
-import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
+import {
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  deleteObject
+} from 'firebase/storage';
 import { MapHelper } from '../utils/MapHelper';
 
 class PlaceService {
+  // Upload single image to Firebase Storage
   async uploadImage(imageFile) {
     try {
-      // Initial validation
       if (!imageFile) {
         console.error('No image file provided');
         throw new Error('No image file provided');
       }
 
       // Convert to Blob if needed
-      const blob = imageFile instanceof Blob ? imageFile : new Blob([imageFile], { type: imageFile.type });
-      
+      const blob =
+        imageFile instanceof Blob
+          ? imageFile
+          : new Blob([imageFile], { type: imageFile.type });
+
       // Create a new File object with guaranteed properties
       const file = new File(
         [blob],
@@ -25,7 +44,6 @@ class PlaceService {
         }
       );
 
-      // Log the file we're about to upload
       console.log('Uploading file:', {
         name: file.name,
         type: file.type,
@@ -33,13 +51,11 @@ class PlaceService {
         lastModified: file.lastModified
       });
 
-      // Generate unique filename
       const timestamp = Date.now();
       const uniqueId = Math.random().toString(36).substring(2, 15);
       const extension = file.type.split('/')[1] || 'jpg';
       const uniqueFileName = `places/${timestamp}_${uniqueId}.${extension}`;
 
-      // Set metadata
       const metadata = {
         contentType: file.type,
         customMetadata: {
@@ -48,7 +64,7 @@ class PlaceService {
         }
       };
 
-      // Upload the file
+      // Upload to Firebase Storage
       const storageRef = ref(storage, uniqueFileName);
       const uploadResult = await uploadBytes(storageRef, file, metadata);
       console.log('Upload successful:', uploadResult);
@@ -67,6 +83,47 @@ class PlaceService {
     }
   }
 
+  // Create new place with `imageURLs`
+  async createPlace({
+    name,
+    type,
+    address,
+    contact,
+    description,
+    menu,
+    imageURLs = []
+  }) {
+    try {
+      const coordinate = await MapHelper.getCoordinates(address);
+
+      const placeData = {
+        name,
+        type,
+        address,
+        contact,
+        description,
+        menu: menu || [],
+        rating: 0,
+        createdAt: serverTimestamp(),
+        ownerId: auth.currentUser?.uid,
+        status: 'pending',
+        coordinate,
+
+        // <-- The key field
+        imageURLs
+      };
+
+      console.log('Creating place with data:', placeData);
+      const docRef = await addDoc(collection(firestore, 'places'), placeData);
+      console.log('Place created with ID:', docRef.id);
+      return docRef.id;
+    } catch (error) {
+      console.error('Error creating place:', error);
+      throw error;
+    }
+  }
+
+  // Update existing place (converts from images -> imageURLs if needed)
   async updatePlace(placeId, {
     name,
     type,
@@ -80,29 +137,36 @@ class PlaceService {
     try {
       const docRef = doc(firestore, 'places', placeId);
       const placeDoc = await getDoc(docRef);
-      
       if (!placeDoc.exists()) {
         throw new Error('Place not found');
       }
 
       const currentData = placeDoc.data();
-      let updatedImageUrls = [...(currentData.images || [])];
+
+      // Fallback: if doc used to have `imageURLs`, use them;
+      // else check `images`.
+      let updatedImageURLs = [];
+      if (Array.isArray(currentData.imageURLs) && currentData.imageURLs.length > 0) {
+        updatedImageURLs = [...currentData.imageURLs];
+      } else if (Array.isArray(currentData.images) && currentData.images.length > 0) {
+        updatedImageURLs = [...currentData.images];
+      }
 
       // Delete specified images
-      for (const imageUrl of imagesToDelete) {
-        const imageRef = ref(storage, imageUrl);
+      for (const urlToDelete of imagesToDelete) {
+        const imageRef = ref(storage, urlToDelete);
         try {
           await deleteObject(imageRef);
-          updatedImageUrls = updatedImageUrls.filter(url => url !== imageUrl);
+          updatedImageURLs = updatedImageURLs.filter((url) => url !== urlToDelete);
         } catch (error) {
           console.error('Error deleting image:', error);
         }
       }
 
-      // Upload new images
-      for (const image of newImages) {
-        const imageUrl = await this.uploadImage(image);
-        updatedImageUrls.push(imageUrl);
+      // Upload new images (raw File objects)
+      for (const img of newImages) {
+        const newUrl = await this.uploadImage(img);
+        updatedImageURLs.push(newUrl);
       }
 
       let coordinate = currentData.coordinate;
@@ -117,7 +181,7 @@ class PlaceService {
         contact,
         description,
         menu: menu || currentData.menu,
-        images: updatedImageUrls,
+        imageURLs: updatedImageURLs,  // unify under imageURLs
         coordinate,
         updatedAt: serverTimestamp()
       };
@@ -130,15 +194,25 @@ class PlaceService {
     }
   }
 
+  // Delete all images from a place
   async deletePlaceImages(placeId) {
     try {
       const docRef = doc(firestore, 'places', placeId);
       const placeDoc = await getDoc(docRef);
-      
+
       if (placeDoc.exists()) {
-        const images = placeDoc.data().images || [];
-        for (const imageUrl of images) {
-          const imageRef = ref(storage, imageUrl);
+        const data = placeDoc.data();
+
+        // Fallback to imageURLs or images
+        let existingURLs = [];
+        if (Array.isArray(data.imageURLs) && data.imageURLs.length > 0) {
+          existingURLs = data.imageURLs;
+        } else if (Array.isArray(data.images) && data.images.length > 0) {
+          existingURLs = data.images;
+        }
+
+        for (const url of existingURLs) {
+          const imageRef = ref(storage, url);
           try {
             await deleteObject(imageRef);
           } catch (error) {
@@ -152,87 +226,49 @@ class PlaceService {
     }
   }
 
-  async createPlace({
-    name,
-    type,
-    address,
-    contact,
-    description,
-    menu,
-    images
-  }) {
-    try {
-      const coordinate = await MapHelper.getCoordinates(address);
-      
-      // Upload images if provided
-      const imageUrls = [];
-      if (images && images.length > 0) {
-        for (const image of images) {
-          const imageUrl = await this.uploadImage(image);
-          imageUrls.push(imageUrl);
-        }
-      }
-      
-      const placeData = {
-        name,
-        type,
-        address,
-        contact,
-        description,
-        menu: menu || [],
-        rating: 0,
-        createdAt: serverTimestamp(),
-        ownerId: auth.currentUser?.uid,
-        status: 'pending',
-        coordinate,
-        images: imageUrls
-      };
-
-      console.log('Creating place with data:', placeData);
-      const docRef = await addDoc(collection(firestore, 'places'), placeData);
-      console.log('Place created with ID:', docRef.id);
-      return docRef.id;
-    } catch (error) {
-      console.error('Error creating place:', error);
-      throw error;
-    }
-  }
-
+  // Fetch only "approved" places, fallback to images if no imageURLs
   async getApprovedPlaces() {
     try {
       console.log('Fetching approved places...');
       const placesRef = collection(firestore, 'places');
-      const placesQuery = query(
-        placesRef, 
-        where('status', '==', 'approved')
-      );
-      
+      const placesQuery = query(placesRef, where('status', '==', 'approved'));
+
       const snapshot = await getDocs(placesQuery);
       console.log(`Found ${snapshot.size} approved places`);
-      
-      const places = snapshot.docs.map(doc => {
-        const data = doc.data();
+
+      const places = snapshot.docs.map((docSnap) => {
+        const data = docSnap.data();
+
+        // Fallback logic
+        let finalURLs = [];
+        if (Array.isArray(data.imageURLs) && data.imageURLs.length > 0) {
+          finalURLs = data.imageURLs;
+        } else if (Array.isArray(data.images) && data.images.length > 0) {
+          finalURLs = data.images;
+        }
+
         console.log('Raw place data:', {
-          id: doc.id,
+          id: docSnap.id,
           images: data.images,
           imageURLs: data.imageURLs
         });
-        
+
         return {
-          id: doc.id,
+          id: docSnap.id,
           ...data,
-          images: data.images || [], // Ensure images array exists
+          // unify for the UI if needed
+          imageURLs: finalURLs,
           createdAt: data.createdAt?.toDate?.() || new Date(),
           status: data.status || 'pending'
         };
       });
 
-      console.log('Processed places:', places.map(p => ({
+      console.log('Processed places:', places.map((p) => ({
         id: p.id,
         name: p.name,
-        images: p.images
+        imageURLs: p.imageURLs
       })));
-      
+
       return places;
     } catch (error) {
       console.error('Error fetching approved places:', error);
@@ -240,18 +276,22 @@ class PlaceService {
     }
   }
 
+  // Fetch all places
   async getAllPlaces() {
     try {
       console.log('Fetching all places...');
       const placesRef = collection(firestore, 'places');
       const snapshot = await getDocs(placesRef);
       console.log(`Found ${snapshot.size} total places`);
-      
-      const places = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-        createdAt: doc.data().createdAt?.toDate()
-      }));
+
+      const places = snapshot.docs.map((docSnap) => {
+        const data = docSnap.data();
+        return {
+          id: docSnap.id,
+          ...data,
+          createdAt: data.createdAt?.toDate?.()
+        };
+      });
 
       console.log('All places:', places);
       return places;
@@ -261,18 +301,22 @@ class PlaceService {
     }
   }
 
+  // Fetch places for a specific user
   async getUserPlaces(userId) {
     try {
       console.log('Fetching places for user:', userId);
       const placesRef = collection(firestore, 'places');
       const placesQuery = query(placesRef, where('ownerId', '==', userId));
       const snapshot = await getDocs(placesQuery);
-      
-      const places = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-        createdAt: doc.data().createdAt?.toDate()
-      }));
+
+      const places = snapshot.docs.map((docSnap) => {
+        const data = docSnap.data();
+        return {
+          id: docSnap.id,
+          ...data,
+          createdAt: data.createdAt?.toDate?.()
+        };
+      });
 
       console.log('User places:', places);
       return places;
@@ -283,4 +327,4 @@ class PlaceService {
   }
 }
 
-export const placeService = new PlaceService(); 
+export const placeService = new PlaceService();
