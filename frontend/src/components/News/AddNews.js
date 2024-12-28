@@ -12,9 +12,13 @@ import {
   MenuItem,
   Divider,
   Stack,
-  IconButton
+  IconButton,
+  ImageList,
+  ImageListItem,
+  Tooltip
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import DeleteIcon from '@mui/icons-material/Delete';
 import NewsService from '../../services/NewsService';
 import { toast } from 'react-toastify';
 
@@ -23,9 +27,9 @@ const AddNews = ({ onNewsAdded }) => {
   const [subtitle, setSubtitle] = useState('');
   const [category, setCategory] = useState('general');
   const [content, setContent] = useState('');
-  const [image, setImage] = useState(null);
+  const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [previewUrl, setPreviewUrl] = useState('');
+  const [previewUrls, setPreviewUrls] = useState([]);
 
   const validateImage = (file) => {
     // Check file size (5MB limit)
@@ -44,25 +48,38 @@ const AddNews = ({ onNewsAdded }) => {
   };
 
   const handleImageChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      if (!validateImage(file)) {
-        event.target.value = ''; // Reset input
-        return;
-      }
+    const files = Array.from(event.target.files);
+    const validFiles = [];
+    const validPreviewUrls = [];
 
-      setImage(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreviewUrl(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
+    files.forEach(file => {
+      if (validateImage(file)) {
+        validFiles.push(file);
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          validPreviewUrls.push(reader.result);
+          if (validPreviewUrls.length === validFiles.length) {
+            setPreviewUrls(prev => [...prev, ...validPreviewUrls]);
+          }
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    setImages(prev => [...prev, ...validFiles]);
+    event.target.value = ''; // Reset input
   };
 
-  const removeImage = () => {
-    setImage(null);
-    setPreviewUrl('');
+  const removeImage = (index) => {
+    setImages(prev => prev.filter((_, i) => i !== index));
+    setPreviewUrls(prev => prev.filter((_, i) => i !== index));
+    toast.success('Image removed');
+  };
+
+  const removeAllImages = () => {
+    setImages([]);
+    setPreviewUrls([]);
+    toast.success('All images removed');
   };
 
   const resetForm = () => {
@@ -70,8 +87,8 @@ const AddNews = ({ onNewsAdded }) => {
     setSubtitle('');
     setCategory('general');
     setContent('');
-    setImage(null);
-    setPreviewUrl('');
+    setImages([]);
+    setPreviewUrls([]);
   };
 
   const handleSubmit = async (e) => {
@@ -91,7 +108,7 @@ const AddNews = ({ onNewsAdded }) => {
         summary: content.slice(0, 200) + (content.length > 200 ? '...' : ''),
       };
 
-      await NewsService.createNews(newsData, image);
+      await NewsService.createNews(newsData, images);
       toast.success('News created successfully!');
       
       // Reset form
@@ -160,55 +177,80 @@ const AddNews = ({ onNewsAdded }) => {
               style={{ display: 'none' }}
               id="image-upload"
               type="file"
+              multiple
               onChange={handleImageChange}
               disabled={loading}
             />
-            <label htmlFor="image-upload">
-              <Button
-                variant="outlined"
-                component="span"
-                fullWidth
-                sx={{ height: previewUrl ? 'auto' : '100px' }}
-                disabled={loading}
-              >
-                {previewUrl ? (
-                  <Box sx={{ position: 'relative', width: '100%' }}>
-                    <img 
-                      src={previewUrl} 
-                      alt="Preview" 
-                      style={{ maxWidth: '100%', maxHeight: '200px', objectFit: 'cover' }}
-                    />
-                    {!loading && (
-                      <IconButton
-                        sx={{
-                          position: 'absolute',
-                          top: 8,
-                          right: 8,
-                          backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                          '&:hover': {
-                            backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                          }
-                        }}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          removeImage();
-                        }}
-                        size="small"
-                      >
-                        <CloseIcon />
-                      </IconButton>
-                    )}
-                  </Box>
-                ) : (
+            <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+              <label htmlFor="image-upload" style={{ flexGrow: 1 }}>
+                <Button
+                  variant="outlined"
+                  component="span"
+                  fullWidth
+                  sx={{ height: '100px' }}
+                  disabled={loading}
+                >
                   <Typography color="textSecondary">
-                    Click to upload featured image
+                    Click to upload images
                     <Typography variant="caption" display="block">
-                      Recommended size: 1200x630px, Max size: 5MB
+                      Recommended size: 1200x630px, Max size: 5MB per image
                     </Typography>
                   </Typography>
-                )}
-              </Button>
-            </label>
+                </Button>
+              </label>
+              {previewUrls.length > 0 && (
+                <Tooltip title="Remove all images">
+                  <Button
+                    variant="outlined"
+                    color="error"
+                    onClick={removeAllImages}
+                    disabled={loading}
+                    sx={{ minWidth: 'auto', width: '100px', height: '100px' }}
+                  >
+                    <DeleteIcon />
+                  </Button>
+                </Tooltip>
+              )}
+            </Box>
+
+            {previewUrls.length > 0 && (
+              <Box sx={{ mt: 2 }}>
+                <Typography variant="subtitle2" color="textSecondary" sx={{ mb: 1 }}>
+                  {previewUrls.length} {previewUrls.length === 1 ? 'image' : 'images'} selected
+                </Typography>
+                <ImageList cols={3} rowHeight={200} gap={8}>
+                  {previewUrls.map((url, index) => (
+                    <ImageListItem key={index} sx={{ position: 'relative' }}>
+                      <img
+                        src={url}
+                        alt={`Preview ${index + 1}`}
+                        style={{ height: '200px', objectFit: 'cover', borderRadius: '4px' }}
+                      />
+                      {!loading && (
+                        <Tooltip title="Remove image">
+                          <IconButton
+                            sx={{
+                              position: 'absolute',
+                              top: 8,
+                              right: 8,
+                              backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                              '&:hover': {
+                                backgroundColor: 'rgba(255, 255, 255, 1)',
+                                color: 'error.main'
+                              }
+                            }}
+                            onClick={() => removeImage(index)}
+                            size="small"
+                          >
+                            <CloseIcon />
+                          </IconButton>
+                        </Tooltip>
+                      )}
+                    </ImageListItem>
+                  ))}
+                </ImageList>
+              </Box>
+            )}
           </Box>
 
           <TextField

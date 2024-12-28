@@ -13,9 +13,8 @@ class NewsService {
 
   async uploadImage(imageFile) {
     try {
-      console.log('Starting image upload...', imageFile.name);
+      console.log('Starting news image upload...', imageFile.name);
       
-      // Create a metadata object with CORS settings
       const metadata = {
         contentType: imageFile.type,
         customMetadata: {
@@ -24,12 +23,9 @@ class NewsService {
       };
       
       const storageRef = ref(storage, `news/${Date.now()}-${imageFile.name}`);
-      
-      // Upload the file with metadata
       const uploadResult = await uploadBytes(storageRef, imageFile, metadata);
       console.log('Image uploaded successfully', uploadResult);
       
-      // Get the URL
       const imageUrl = await getDownloadURL(uploadResult.ref);
       console.log('Image URL obtained:', imageUrl);
       
@@ -40,7 +36,7 @@ class NewsService {
     }
   }
 
-  async createNews(newsData, imageFile) {
+  async createNews(newsData, images) {
     try {
       // Check if user is authenticated
       const user = auth.currentUser;
@@ -54,21 +50,20 @@ class NewsService {
         throw new Error('Only admins can create news');
       }
 
-      let imageUrl = '';
+      let imageUrls = [];
       
-      // Upload image if provided
-      if (imageFile) {
-        try {
-          imageUrl = await this.uploadImage(imageFile);
-        } catch (error) {
-          throw new Error(`Image upload failed: ${error.message}`);
+      // Upload images if provided
+      if (images && images.length > 0) {
+        for (const image of images) {
+          const imageUrl = await this.uploadImage(image);
+          imageUrls.push(imageUrl);
         }
       }
 
       // Create the news document
       const newsRef = await addDoc(collection(firestore, NEWS_COLLECTION), {
         ...newsData,
-        imageUrl,
+        images: imageUrls,
         createdBy: user.uid,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
@@ -112,7 +107,7 @@ class NewsService {
     }
   }
 
-  async updateNews(id, newsData, imageFile) {
+  async updateNews(id, newsData, newImages = [], imagesToDelete = []) {
     try {
       // Check if user is authenticated
       const user = auth.currentUser;
@@ -129,30 +124,33 @@ class NewsService {
       const docRef = doc(firestore, NEWS_COLLECTION, id);
       const currentNews = await getDoc(docRef);
       
-      let imageUrl = newsData.imageUrl;
+      if (!currentNews.exists()) {
+        throw new Error('News not found');
+      }
 
-      if (imageFile) {
-        // Delete old image if exists
-        if (currentNews.data().imageUrl) {
-          const oldImageRef = ref(storage, currentNews.data().imageUrl);
-          await deleteObject(oldImageRef);
+      const currentData = currentNews.data();
+      let updatedImageUrls = [...(currentData.images || [])];
+
+      // Delete specified images
+      for (const imageUrl of imagesToDelete) {
+        const imageRef = ref(storage, imageUrl);
+        try {
+          await deleteObject(imageRef);
+          updatedImageUrls = updatedImageUrls.filter(url => url !== imageUrl);
+        } catch (error) {
+          console.error('Error deleting image:', error);
         }
+      }
 
-        // Upload new image
-        const storageRef = ref(storage, `news/${Date.now()}-${imageFile.name}`);
-        const metadata = {
-          contentType: imageFile.type,
-          customMetadata: {
-            'Access-Control-Allow-Origin': 'https://admin.inatrading.co.id'
-          }
-        };
-        await uploadBytes(storageRef, imageFile, metadata);
-        imageUrl = await getDownloadURL(storageRef);
+      // Upload new images
+      for (const image of newImages) {
+        const imageUrl = await this.uploadImage(image);
+        updatedImageUrls.push(imageUrl);
       }
 
       await updateDoc(docRef, {
         ...newsData,
-        imageUrl,
+        images: updatedImageUrls,
         updatedBy: user.uid,
         updatedAt: new Date().toISOString()
       });
@@ -181,9 +179,17 @@ class NewsService {
       const docRef = doc(firestore, NEWS_COLLECTION, id);
       const newsDoc = await getDoc(docRef);
       
-      if (newsDoc.exists() && newsDoc.data().imageUrl) {
-        const imageRef = ref(storage, newsDoc.data().imageUrl);
-        await deleteObject(imageRef);
+      if (newsDoc.exists()) {
+        // Delete all associated images
+        const images = newsDoc.data().images || [];
+        for (const imageUrl of images) {
+          const imageRef = ref(storage, imageUrl);
+          try {
+            await deleteObject(imageRef);
+          } catch (error) {
+            console.error('Error deleting image:', error);
+          }
+        }
       }
 
       await deleteDoc(docRef);
