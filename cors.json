@@ -1,8 +1,10 @@
 [
   {
-    "origin": ["https://admin.inatrading.co.id"],
-    "method": ["GET", "PUT", "POST", "DELETE", "HEAD"],
+    "origin": ["*"],
+    "method": ["GET", "HEAD", "DELETE", "PUT", "POST", "OPTIONS"],
     "maxAgeSeconds": 3600,
-    "responseHeader": ["Content-Type", "Access-Control-Allow-Origin"]
+    "responseHeader": [
+      "*"
+    ]
   }
 ] 
