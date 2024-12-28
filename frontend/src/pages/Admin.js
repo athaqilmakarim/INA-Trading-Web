@@ -3,8 +3,32 @@ import { firestore } from '../firebase';
 import { collection, query, getDocs, doc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import AddNews from '../components/News/AddNews';
 import NewsService from '../services/NewsService';
-import { Tab, Tabs, Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, CircularProgress } from '@mui/material';
+import { 
+  Tab, 
+  Tabs, 
+  Box, 
+  Button, 
+  Dialog, 
+  DialogActions, 
+  DialogContent, 
+  DialogContentText, 
+  DialogTitle, 
+  CircularProgress,
+  Card,
+  CardContent,
+  Grid,
+  Typography,
+  Chip,
+  IconButton,
+  Paper,
+  Tooltip,
+  LinearProgress
+} from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CancelIcon from '@mui/icons-material/Cancel';
+import PendingIcon from '@mui/icons-material/Pending';
+import DashboardIcon from '@mui/icons-material/Dashboard';
 import { toast } from 'react-toastify';
 
 const Admin = () => {
@@ -14,8 +38,8 @@ const Admin = () => {
   const [news, setNews] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [activeTab, setActiveTab] = useState('places'); // ['places', 'products', 'suppliers', 'news']
-  const [statusFilter, setStatusFilter] = useState('pending'); // ['pending', 'approved', 'rejected']
+  const [activeTab, setActiveTab] = useState('places');
+  const [statusFilter, setStatusFilter] = useState('pending');
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [newsToDelete, setNewsToDelete] = useState(null);
 
@@ -154,278 +178,468 @@ const Admin = () => {
   const filteredProducts = products.filter(product => product.status === statusFilter);
   const filteredSuppliers = suppliers.filter(supplier => supplier.status === statusFilter);
 
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'approved':
+        return 'success';
+      case 'rejected':
+        return 'error';
+      default:
+        return 'warning';
+    }
+  };
+
+  const getStatusIcon = (status) => {
+    switch (status) {
+      case 'approved':
+        return <CheckCircleIcon color="success" />;
+      case 'rejected':
+        return <CancelIcon color="error" />;
+      default:
+        return <PendingIcon color="warning" />;
+    }
+  };
+
+  const DashboardStats = () => (
+    <Grid container spacing={3} className="mb-6">
+      <Grid item xs={12} sm={6} md={3}>
+        <Card elevation={3}>
+          <CardContent>
+            <Typography color="textSecondary" gutterBottom>
+              Total Places
+            </Typography>
+            <Typography variant="h4">
+              {places.length}
+            </Typography>
+            <LinearProgress 
+              variant="determinate" 
+              value={(places.filter(p => p.status === 'approved').length / places.length) * 100}
+              className="mt-2"
+            />
+          </CardContent>
+        </Card>
+      </Grid>
+      <Grid item xs={12} sm={6} md={3}>
+        <Card elevation={3}>
+          <CardContent>
+            <Typography color="textSecondary" gutterBottom>
+              Total Products
+            </Typography>
+            <Typography variant="h4">
+              {products.length}
+            </Typography>
+            <LinearProgress 
+              variant="determinate" 
+              value={(products.filter(p => p.status === 'approved').length / products.length) * 100}
+              className="mt-2"
+            />
+          </CardContent>
+        </Card>
+      </Grid>
+      <Grid item xs={12} sm={6} md={3}>
+        <Card elevation={3}>
+          <CardContent>
+            <Typography color="textSecondary" gutterBottom>
+              Total Suppliers
+            </Typography>
+            <Typography variant="h4">
+              {suppliers.length}
+            </Typography>
+            <LinearProgress 
+              variant="determinate" 
+              value={(suppliers.filter(s => s.status === 'approved').length / suppliers.length) * 100}
+              className="mt-2"
+            />
+          </CardContent>
+        </Card>
+      </Grid>
+      <Grid item xs={12} sm={6} md={3}>
+        <Card elevation={3}>
+          <CardContent>
+            <Typography color="textSecondary" gutterBottom>
+              Total News
+            </Typography>
+            <Typography variant="h4">
+              {news.length}
+            </Typography>
+            <LinearProgress 
+              variant="determinate" 
+              value={100}
+              className="mt-2"
+            />
+          </CardContent>
+        </Card>
+      </Grid>
+    </Grid>
+  );
+
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-600"></div>
-      </div>
+      <Box className="flex flex-col items-center justify-center h-screen">
+        <CircularProgress size={60} thickness={4} />
+        <Typography variant="h6" className="mt-4">
+          Loading Dashboard...
+        </Typography>
+      </Box>
     );
   }
 
   if (error) {
     return (
-      <div className="text-center py-12">
-        <p className="text-red-600">Error: {error}</p>
-      </div>
+      <Box className="text-center py-12">
+        <Typography variant="h5" color="error" gutterBottom>
+          Error Loading Dashboard
+        </Typography>
+        <Typography color="textSecondary">{error}</Typography>
+      </Box>
     );
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-6">Admin Dashboard</h1>
+    <Box className="container mx-auto px-4 py-8">
+      <Box className="flex items-center mb-6">
+        <DashboardIcon className="mr-2" fontSize="large" />
+        <Typography variant="h4" component="h1">
+          Admin Dashboard
+        </Typography>
+      </Box>
 
-      <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
+      <DashboardStats />
+
+      <Paper elevation={3} className="mb-6">
         <Tabs 
           value={activeTab} 
           onChange={(_, newValue) => setActiveTab(newValue)}
           textColor="primary"
           indicatorColor="primary"
+          variant="fullWidth"
         >
           <Tab label="Places" value="places" />
           <Tab label="Export Products" value="products" />
           <Tab label="Exporters" value="suppliers" />
           <Tab label="News Management" value="news" />
         </Tabs>
-      </Box>
+      </Paper>
 
       {activeTab !== 'news' && (
-        <div className="mb-6">
-          <nav className="flex space-x-4">
+        <Box className="mb-6">
+          <Grid container spacing={2}>
             {['pending', 'approved', 'rejected'].map((status) => (
-              <button
-                key={status}
-                onClick={() => setStatusFilter(status)}
-                className={`${
-                  statusFilter === status
-                    ? 'bg-red-100 text-red-700'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                } px-4 py-2 rounded-md capitalize`}
-              >
-                {status} ({activeTab === 'places' 
-                  ? places.filter(p => p.status === status).length
-                  : activeTab === 'products'
-                  ? products.filter(p => p.status === status).length
-                  : suppliers.filter(s => s.status === status).length})
-              </button>
+              <Grid item key={status}>
+                <Chip
+                  label={`${status.toUpperCase()} (${
+                    activeTab === 'places' 
+                      ? places.filter(p => p.status === status).length
+                      : activeTab === 'products'
+                      ? products.filter(p => p.status === status).length
+                      : suppliers.filter(s => s.status === status).length
+                  })`}
+                  onClick={() => setStatusFilter(status)}
+                  color={getStatusColor(status)}
+                  variant={statusFilter === status ? 'filled' : 'outlined'}
+                  className="capitalize"
+                />
+              </Grid>
             ))}
-          </nav>
-        </div>
+          </Grid>
+        </Box>
       )}
 
       {/* Places Content */}
       {activeTab === 'places' && (
-        <div className="space-y-6">
+        <Grid container spacing={3}>
           {filteredPlaces.length === 0 ? (
-            <p className="text-gray-500">No {statusFilter} places found.</p>
+            <Grid item xs={12}>
+              <Paper elevation={2} className="p-6 text-center">
+                <Typography color="textSecondary">
+                  No {statusFilter} places found.
+                </Typography>
+              </Paper>
+            </Grid>
           ) : (
             filteredPlaces.map(place => (
-              <div key={place.id} className="bg-white shadow rounded-lg p-6">
-                <div className="flex justify-between">
-                  <div>
-                    <h3 className="text-lg font-medium">{place.name}</h3>
-                    <p className="text-gray-600">{place.description}</p>
-                    <p className="text-sm text-gray-500 mt-2">Type: {place.type}</p>
-                    <p className="text-sm text-gray-500">Status: {place.status}</p>
-                  </div>
-                  {statusFilter === 'pending' && (
-                    <div className="space-x-2">
-                      <button
-                        onClick={() => handleUpdatePlaceStatus(place.id, 'approved')}
-                        className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-                      >
-                        Approve
-                      </button>
-                      <button
-                        onClick={() => handleUpdatePlaceStatus(place.id, 'rejected')}
-                        className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-                      >
-                        Reject
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </div>
+              <Grid item xs={12} md={6} key={place.id}>
+                <Card elevation={3}>
+                  <CardContent>
+                    <Box className="flex justify-between items-start">
+                      <Box>
+                        <Typography variant="h6" gutterBottom>
+                          {place.name}
+                        </Typography>
+                        <Typography variant="body2" color="textSecondary" paragraph>
+                          {place.description}
+                        </Typography>
+                        <Box className="flex gap-2 mt-2">
+                          <Chip 
+                            size="small" 
+                            label={place.type} 
+                            color="primary" 
+                            variant="outlined"
+                          />
+                          <Chip
+                            size="small"
+                            label={place.status}
+                            color={getStatusColor(place.status)}
+                            icon={getStatusIcon(place.status)}
+                          />
+                        </Box>
+                      </Box>
+                      {statusFilter === 'pending' && (
+                        <Box>
+                          <Tooltip title="Approve">
+                            <IconButton
+                              onClick={() => handleUpdatePlaceStatus(place.id, 'approved')}
+                              color="success"
+                              size="small"
+                            >
+                              <CheckCircleIcon />
+                            </IconButton>
+                          </Tooltip>
+                          <Tooltip title="Reject">
+                            <IconButton
+                              onClick={() => handleUpdatePlaceStatus(place.id, 'rejected')}
+                              color="error"
+                              size="small"
+                            >
+                              <CancelIcon />
+                            </IconButton>
+                          </Tooltip>
+                        </Box>
+                      )}
+                    </Box>
+                  </CardContent>
+                </Card>
+              </Grid>
             ))
           )}
-        </div>
+        </Grid>
       )}
 
       {/* Products Content */}
       {activeTab === 'products' && (
-        <div className="space-y-6">
+        <Grid container spacing={3}>
           {filteredProducts.length === 0 ? (
-            <p className="text-gray-500">No {statusFilter} products found.</p>
+            <Grid item xs={12}>
+              <Paper elevation={2} className="p-6 text-center">
+                <Typography color="textSecondary">
+                  No {statusFilter} products found.
+                </Typography>
+              </Paper>
+            </Grid>
           ) : (
             filteredProducts.map(product => (
-              <div key={product.id} className="bg-white shadow rounded-lg p-6">
-                <div className="flex justify-between">
-                  <div>
-                    <h3 className="text-lg font-medium">{product.name}</h3>
-                    <p className="text-gray-600">{product.description}</p>
-                    <div className="mt-2 space-y-1">
-                      <p className="text-sm text-gray-500">Category: {product.category}</p>
-                      <p className="text-sm text-gray-500">
-                        Price: {product.price.currency} {product.price.min} - {product.price.max}
-                      </p>
-                      <p className="text-sm text-gray-500">MOQ: {product.minOrderQuantity}</p>
-                      <p className="text-sm text-gray-500">Status: {product.status}</p>
-                    </div>
-                  </div>
-                  {statusFilter === 'pending' && (
-                    <div className="space-x-2">
-                      <button
-                        onClick={() => handleUpdateProductStatus(product.id, 'approved')}
-                        className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-                      >
-                        Approve
-                      </button>
-                      <button
-                        onClick={() => handleUpdateProductStatus(product.id, 'rejected')}
-                        className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-                      >
-                        Reject
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </div>
+              <Grid item xs={12} md={6} key={product.id}>
+                <Card elevation={3}>
+                  <CardContent>
+                    <Box className="flex justify-between items-start">
+                      <Box>
+                        <Typography variant="h6" gutterBottom>
+                          {product.name}
+                        </Typography>
+                        <Typography variant="body2" color="textSecondary" paragraph>
+                          {product.description}
+                        </Typography>
+                        <div className="mt-2 space-y-1">
+                          <Typography variant="body2" color="textSecondary">
+                            Category: {product.category}
+                          </Typography>
+                          <Typography variant="body2" color="textSecondary">
+                            Price: {product.price.currency} {product.price.min} - {product.price.max}
+                          </Typography>
+                          <Typography variant="body2" color="textSecondary">
+                            MOQ: {product.minOrderQuantity}
+                          </Typography>
+                          <Typography variant="body2" color="textSecondary">
+                            Status: {product.status}
+                          </Typography>
+                        </div>
+                      </Box>
+                      {statusFilter === 'pending' && (
+                        <Box>
+                          <Tooltip title="Approve">
+                            <IconButton
+                              onClick={() => handleUpdateProductStatus(product.id, 'approved')}
+                              color="success"
+                              size="small"
+                            >
+                              <CheckCircleIcon />
+                            </IconButton>
+                          </Tooltip>
+                          <Tooltip title="Reject">
+                            <IconButton
+                              onClick={() => handleUpdateProductStatus(product.id, 'rejected')}
+                              color="error"
+                              size="small"
+                            >
+                              <CancelIcon />
+                            </IconButton>
+                          </Tooltip>
+                        </Box>
+                      )}
+                    </Box>
+                  </CardContent>
+                </Card>
+              </Grid>
             ))
           )}
-        </div>
+        </Grid>
       )}
 
       {/* Suppliers Content */}
       {activeTab === 'suppliers' && (
-        <div className="space-y-6">
+        <Grid container spacing={3}>
           {filteredSuppliers.length === 0 ? (
-            <p className="text-gray-500">No {statusFilter} exporters found.</p>
+            <Grid item xs={12}>
+              <Paper elevation={2} className="p-6 text-center">
+                <Typography color="textSecondary">
+                  No {statusFilter} exporters found.
+                </Typography>
+              </Paper>
+            </Grid>
           ) : (
             filteredSuppliers.map(supplier => (
-              <div key={supplier.id} className="bg-white shadow rounded-lg p-6">
-                <div className="flex justify-between">
-                  <div>
-                    <h3 className="text-lg font-medium">{supplier.companyName}</h3>
-                    <p className="text-gray-600">{supplier.description}</p>
-                    <div className="mt-2 space-y-1">
-                      <p className="text-sm text-gray-500">Email: {supplier.email}</p>
-                      <p className="text-sm text-gray-500">Phone: {supplier.phone}</p>
-                      <p className="text-sm text-gray-500">Location: {supplier.location}</p>
-                      <p className="text-sm text-gray-500">Monthly Capacity: {supplier.monthlyCapacity}</p>
-                      <p className="text-sm text-gray-500">Status: {supplier.status}</p>
-                    </div>
-                    {supplier.certifications?.length > 0 && (
-                      <div className="mt-2">
-                        <p className="text-sm text-gray-500">Certifications:</p>
-                        <div className="flex flex-wrap gap-2 mt-1">
-                          {supplier.certifications.map((cert, index) => (
-                            <span key={index} className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">
-                              {cert}
-                            </span>
-                          ))}
+              <Grid item xs={12} md={6} key={supplier.id}>
+                <Card elevation={3}>
+                  <CardContent>
+                    <Box className="flex justify-between items-start">
+                      <Box>
+                        <Typography variant="h6" gutterBottom>
+                          {supplier.companyName}
+                        </Typography>
+                        <Typography variant="body2" color="textSecondary" paragraph>
+                          {supplier.description}
+                        </Typography>
+                        <div className="mt-2 space-y-1">
+                          <Typography variant="body2" color="textSecondary">
+                            Email: {supplier.email}
+                          </Typography>
+                          <Typography variant="body2" color="textSecondary">
+                            Phone: {supplier.phone}
+                          </Typography>
+                          <Typography variant="body2" color="textSecondary">
+                            Location: {supplier.location}
+                          </Typography>
+                          <Typography variant="body2" color="textSecondary">
+                            Monthly Capacity: {supplier.monthlyCapacity}
+                          </Typography>
+                          <Typography variant="body2" color="textSecondary">
+                            Status: {supplier.status}
+                          </Typography>
                         </div>
-                      </div>
-                    )}
-                  </div>
-                  {statusFilter === 'pending' && (
-                    <div className="space-x-2">
-                      <button
-                        onClick={() => handleUpdateSupplierStatus(supplier.id, 'approved')}
-                        className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-                      >
-                        Approve
-                      </button>
-                      <button
-                        onClick={() => handleUpdateSupplierStatus(supplier.id, 'rejected')}
-                        className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-                      >
-                        Reject
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </div>
+                        {supplier.certifications?.length > 0 && (
+                          <div className="mt-2">
+                            <Typography variant="body2" color="textSecondary">
+                              Certifications:
+                            </Typography>
+                            <div className="flex flex-wrap gap-2 mt-1">
+                              {supplier.certifications.map((cert, index) => (
+                                <Chip
+                                  key={index}
+                                  label={cert}
+                                  color="primary"
+                                  variant="outlined"
+                                />
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </Box>
+                      {statusFilter === 'pending' && (
+                        <Box>
+                          <Tooltip title="Approve">
+                            <IconButton
+                              onClick={() => handleUpdateSupplierStatus(supplier.id, 'approved')}
+                              color="success"
+                              size="small"
+                            >
+                              <CheckCircleIcon />
+                            </IconButton>
+                          </Tooltip>
+                          <Tooltip title="Reject">
+                            <IconButton
+                              onClick={() => handleUpdateSupplierStatus(supplier.id, 'rejected')}
+                              color="error"
+                              size="small"
+                            >
+                              <CancelIcon />
+                            </IconButton>
+                          </Tooltip>
+                        </Box>
+                      )}
+                    </Box>
+                  </CardContent>
+                </Card>
+              </Grid>
             ))
           )}
-        </div>
+        </Grid>
       )}
 
-      {/* News Management Content */}
+      {/* News Management Section */}
       {activeTab === 'news' && (
-        <div className="space-y-8">
-          <AddNews onNewsAdded={handleNewsAdded} />
-          
-          <div className="mt-8">
-            <h2 className="text-xl font-semibold mb-4">Published Articles</h2>
-            <div className="space-y-4">
-              {news.map((article) => (
-                <div key={article.id} className="bg-white shadow rounded-lg p-6">
-                  <div className="flex justify-between items-start">
-                    <div className="flex-grow">
-                      <h3 className="text-lg font-medium">{article.title}</h3>
-                      <p className="text-gray-600 mt-2">{article.summary}</p>
-                      <div className="mt-2 text-sm text-gray-500">
-                        Published: {new Date(article.createdAt).toLocaleDateString()}
-                      </div>
-                    </div>
-                    {article.imageUrl && (
-                      <img 
-                        src={article.imageUrl} 
-                        alt={article.title}
-                        className="w-32 h-32 object-cover rounded-lg mx-4"
-                      />
-                    )}
-                    <Button
-                      variant="outlined"
-                      color="error"
-                      startIcon={<DeleteIcon />}
-                      onClick={() => handleDeleteNews(article.id)}
-                      sx={{ minWidth: 'auto', ml: 2 }}
-                    >
-                      Delete
-                    </Button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+        <Box>
+          <Card elevation={3} className="mb-6">
+            <CardContent>
+              <Typography variant="h6" gutterBottom>
+                Add New Article
+              </Typography>
+              <AddNews onNewsAdded={handleNewsAdded} />
+            </CardContent>
+          </Card>
 
-          {/* Delete Confirmation Dialog */}
-          <Dialog
-            open={deleteDialogOpen}
-            onClose={() => setDeleteDialogOpen(false)}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
-          >
-            <DialogTitle id="alert-dialog-title">
-              {"Delete News Article"}
-            </DialogTitle>
-            <DialogContent>
-              <DialogContentText id="alert-dialog-description">
-                Are you sure you want to delete this news article? This action cannot be undone.
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-              <Button 
-                onClick={() => setDeleteDialogOpen(false)} 
-                color="primary"
-                disabled={isLoading}
-              >
-                Cancel
-              </Button>
-              <Button 
-                onClick={confirmDelete} 
-                color="error" 
-                variant="contained"
-                disabled={isLoading}
-                autoFocus
-              >
-                {isLoading ? <CircularProgress size={24} /> : 'Delete'}
-              </Button>
-            </DialogActions>
-          </Dialog>
-        </div>
+          <Typography variant="h6" gutterBottom className="mt-6">
+            Existing Articles
+          </Typography>
+          <Grid container spacing={3}>
+            {news.map((item) => (
+              <Grid item xs={12} md={6} key={item.id}>
+                <Card elevation={3}>
+                  <CardContent>
+                    <Box className="flex justify-between items-start">
+                      <Box>
+                        <Typography variant="h6" gutterBottom>
+                          {item.title}
+                        </Typography>
+                        <Typography variant="body2" color="textSecondary" noWrap>
+                          {item.content}
+                        </Typography>
+                      </Box>
+                      <Tooltip title="Delete Article">
+                        <IconButton
+                          onClick={() => handleDeleteNews(item.id)}
+                          color="error"
+                          size="small"
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </Box>
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        </Box>
       )}
-    </div>
+
+      <Dialog
+        open={deleteDialogOpen}
+        onClose={() => setDeleteDialogOpen(false)}
+      >
+        <DialogTitle>Confirm Delete</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to delete this news article? This action cannot be undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDeleteDialogOpen(false)}>Cancel</Button>
+          <Button onClick={confirmDelete} color="error" variant="contained">
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </Box>
   );
 };
 
