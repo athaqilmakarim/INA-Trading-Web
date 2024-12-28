@@ -5,31 +5,35 @@ import { getStorage } from 'firebase/storage';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyDt368IH2XlRpBPbfGMi20O-5WUzrIpTlE",
+  apiKey: "AIzaSyDc3ILNEatjIpfpWOrmdMcEpRnFYEZ2eHs",
   authDomain: "ina-trading.firebaseapp.com",
   projectId: "ina-trading",
-  storageBucket: "ina-trading.appspot.com",
+  storageBucket: "ina-trading.firebasestorage.app",
   messagingSenderId: "673699981446",
-  appId: "1:673699981446:ios:dcd23eedd5d76f807a4907"
+  appId: "1:673699981446:web:ea500580ff674d5c7a4907",
+  measurementId: "G-Y6XMZMCRMG"
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-// Get Auth, Firestore, and Storage instances
+// Get Auth instance
 export const auth = getAuth(app);
+
+// Get Firestore instance
 export const firestore = getFirestore(app);
 
-// Initialize Storage with proper configuration
-const storage = getStorage(app);
+// Get Storage instance with custom settings
+const storageInstance = getStorage(app);
 
-// Set custom domain for storage operations
-if (window.location.hostname === 'admin.inatrading.co.id') {
-  storage._customUrlOrRegion = `https://${firebaseConfig.storageBucket}`;
+// Configure Storage settings based on environment
+const isDevelopment = window.location.hostname === 'localhost';
+const isAdmin = window.location.hostname === 'admin.inatrading.co.id';
+
+if (isDevelopment || isAdmin) {
+  storageInstance.maxOperationRetryTime = 30000; // 30 seconds
+  storageInstance.maxUploadRetryTime = 30000; // 30 seconds
 }
 
-export { storage };
-
-console.log('Firebase initialized with project:', firebaseConfig.projectId);
-
+export const storage = storageInstance;
 export default app; 

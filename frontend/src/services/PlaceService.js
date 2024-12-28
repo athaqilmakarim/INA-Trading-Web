@@ -6,25 +6,63 @@ import { MapHelper } from '../utils/MapHelper';
 class PlaceService {
   async uploadImage(imageFile) {
     try {
-      console.log('Starting place image upload...', imageFile.name);
+      // Initial validation
+      if (!imageFile) {
+        console.error('No image file provided');
+        throw new Error('No image file provided');
+      }
+
+      // Convert to Blob if needed
+      const blob = imageFile instanceof Blob ? imageFile : new Blob([imageFile], { type: imageFile.type });
       
+      // Create a new File object with guaranteed properties
+      const file = new File(
+        [blob],
+        imageFile.name || `image-${Date.now()}.jpg`,
+        {
+          type: imageFile.type || 'image/jpeg',
+          lastModified: Date.now()
+        }
+      );
+
+      // Log the file we're about to upload
+      console.log('Uploading file:', {
+        name: file.name,
+        type: file.type,
+        size: file.size,
+        lastModified: file.lastModified
+      });
+
+      // Generate unique filename
+      const timestamp = Date.now();
+      const uniqueId = Math.random().toString(36).substring(2, 15);
+      const extension = file.type.split('/')[1] || 'jpg';
+      const uniqueFileName = `places/${timestamp}_${uniqueId}.${extension}`;
+
+      // Set metadata
       const metadata = {
-        contentType: imageFile.type,
+        contentType: file.type,
         customMetadata: {
-          'Access-Control-Allow-Origin': 'https://admin.inatrading.co.id'
+          originalName: file.name,
+          uploadedAt: new Date().toISOString()
         }
       };
-      
-      const storageRef = ref(storage, `places/${Date.now()}-${imageFile.name}`);
-      const uploadResult = await uploadBytes(storageRef, imageFile, metadata);
-      console.log('Image uploaded successfully', uploadResult);
-      
+
+      // Upload the file
+      const storageRef = ref(storage, uniqueFileName);
+      const uploadResult = await uploadBytes(storageRef, file, metadata);
+      console.log('Upload successful:', uploadResult);
+
+      // Get download URL
       const imageUrl = await getDownloadURL(uploadResult.ref);
-      console.log('Image URL obtained:', imageUrl);
-      
+      console.log('Download URL obtained:', imageUrl);
+
       return imageUrl;
     } catch (error) {
-      console.error('Error uploading image:', error);
+      console.error('Error in uploadImage:', {
+        error: error.message,
+        stack: error.stack
+      });
       throw new Error(`Failed to upload image: ${error.message}`);
     }
   }
@@ -172,21 +210,29 @@ class PlaceService {
       const snapshot = await getDocs(placesQuery);
       console.log(`Found ${snapshot.size} approved places`);
       
-      snapshot.docs.forEach(doc => {
-        console.log('Document data:', doc.id, doc.data());
-      });
-      
       const places = snapshot.docs.map(doc => {
         const data = doc.data();
+        console.log('Raw place data:', {
+          id: doc.id,
+          images: data.images,
+          imageURLs: data.imageURLs
+        });
+        
         return {
           id: doc.id,
           ...data,
+          images: data.images || [], // Ensure images array exists
           createdAt: data.createdAt?.toDate?.() || new Date(),
           status: data.status || 'pending'
         };
       });
 
-      console.log('Processed places:', places);
+      console.log('Processed places:', places.map(p => ({
+        id: p.id,
+        name: p.name,
+        images: p.images
+      })));
+      
       return places;
     } catch (error) {
       console.error('Error fetching approved places:', error);

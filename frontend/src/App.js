@@ -19,6 +19,7 @@ import ExportProductDetail from './pages/ExportProductDetail';
 import AddExportProduct from './pages/AddExportProduct';
 import SupplierProfile from './pages/SupplierProfile';
 import About from './pages/About';
+import NewsDetail from './pages/NewsDetail';
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
               <Route path="/explore" element={<Explore />} />
               <Route path="/place/:id" element={<PlaceDetails />} />
               <Route path="/auth" element={<Auth />} />
+              <Route path="/news/:id" element={<NewsDetail />} />
               <Route 
                 path="/add-place" 
                 element={
@@ -78,7 +80,18 @@ function App() {
             </Routes>
           </main>
           <Footer />
-          <ToastContainer position="bottom-right" />
+          <ToastContainer
+            position="bottom-right"
+            autoClose={3000}
+            hideProgressBar={false}
+            newestOnTop
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+          />
         </div>
       </Router>
     </AuthProvider>

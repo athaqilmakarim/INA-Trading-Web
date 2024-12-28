@@ -23,20 +23,33 @@ const Explore = () => {
         console.log('Fetched places:', placesData);
 
         // Process the data
-        const processedPlaces = placesData.map(place => ({
-          id: place.id,
-          ...place,
-          name: place.name || '',
-          type: place.type || 'Restaurant',
-          description: place.description || '',
-          address: place.address || '',
-          contact: place.contact || '',
-          rating: place.rating || 0,
-          imageURLs: place.imageURLs || [],
-          menu: place.menu || []
-        }));
+        const processedPlaces = placesData.map(place => {
+          console.log('Processing place:', {
+            id: place.id,
+            name: place.name,
+            images: place.images,
+            imageURLs: place.imageURLs
+          });
 
-        console.log('Processed places:', processedPlaces);
+          return {
+            id: place.id,
+            ...place,
+            name: place.name || '',
+            type: place.type || 'Restaurant',
+            description: place.description || '',
+            address: place.address || '',
+            contact: place.contact || '',
+            rating: place.rating || 0,
+            imageURLs: place.images || [], // Use images field directly
+            menu: place.menu || []
+          };
+        });
+
+        console.log('Processed places:', processedPlaces.map(p => ({
+          id: p.id,
+          name: p.name,
+          imageURLs: p.imageURLs
+        })));
         setPlaces(processedPlaces);
 
         // Initialize active image indexes
@@ -165,6 +178,12 @@ const Explore = () => {
                           className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300"
                           loading="lazy"
                           onError={(e) => {
+                            console.error('Image load error:', {
+                              placeId: place.id,
+                              placeName: place.name,
+                              imageUrl: place.imageURLs[activeImageIndexes[place.id]],
+                              imageIndex: activeImageIndexes[place.id]
+                            });
                             e.target.onerror = null;
                             e.target.src = 'https://via.placeholder.com/400x300?text=No+Image+Available';
                           }}
@@ -173,7 +192,11 @@ const Explore = () => {
                           <>
                             {/* Previous button */}
                             <button
-                              onClick={(e) => handlePrevImage(e, place.id)}
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                handlePrevImage(e, place.id);
+                              }}
                               className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors"
                             >
                               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -182,7 +205,11 @@ const Explore = () => {
                             </button>
                             {/* Next button */}
                             <button
-                              onClick={(e) => handleNextImage(e, place.id, place.imageURLs.length - 1)}
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                handleNextImage(e, place.id, place.imageURLs.length - 1);
+                              }}
                               className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors"
                             >
                               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -31,7 +31,7 @@ const PlaceDetails = () => {
           setPlace({
             id: placeDoc.id,
             ...placeDoc.data(),
-            imageURLs: placeDoc.data().imageURLs || []
+            imageURLs: placeDoc.data().images || []
           });
         } else {
           setError('Place not found');

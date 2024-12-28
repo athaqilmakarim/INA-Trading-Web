@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import ExportProductService from '../services/ExportProductService';
+import { exportProductService } from '../services/ExportProductService';
 import { motion } from 'framer-motion';
 
 const ExportProducts = () => {
@@ -16,7 +16,7 @@ const ExportProducts = () => {
       try {
         setIsLoading(true);
         setError(null);
-        const data = await ExportProductService.getApprovedProducts();
+        const data = await exportProductService.getAllExportProducts();
         const approvedProducts = data.filter(product => product.status === 'approved');
         setProducts(approvedProducts);
       } catch (err) {

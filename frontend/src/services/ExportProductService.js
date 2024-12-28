@@ -1,23 +1,41 @@
 import { firestore, storage, auth } from '../firebase';
-import { collection, addDoc, getDocs, doc, deleteDoc, updateDoc, getDoc, query, where, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, getDocs, doc, deleteDoc, updateDoc, getDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
-
-const EXPORT_PRODUCTS_COLLECTION = 'export_products';
-const USERS_COLLECTION = 'users';
 
 class ExportProductService {
   async uploadImage(imageFile) {
     try {
-      console.log('Starting product image upload...', imageFile.name);
+      if (!imageFile || !imageFile.name || !imageFile.type || !imageFile.size) {
+        throw new Error('Invalid image file: missing required properties');
+      }
+
+      console.log('Starting export product image upload...', imageFile.name);
+      
+      // Clean the filename and ensure proper extension
+      const extension = imageFile.name.split('.').pop()?.toLowerCase() || 
+        imageFile.type.split('/')[1] || 'jpg';
+      const baseName = imageFile.name.split('.')[0]
+        .replace(/[^a-zA-Z0-9]/g, '_')
+        .toLowerCase();
+      
+      // Create a unique identifier that includes timestamp and file signature
+      const timestamp = Date.now();
+      const uniqueId = Math.random().toString(36).substring(2, 15);
+      const fileSignature = `${imageFile.size}_${imageFile.lastModified}`.substring(0, 10);
       
       const metadata = {
-        contentType: imageFile.type,
+        contentType: `image/${extension}`,
         customMetadata: {
-          'Access-Control-Allow-Origin': 'https://admin.inatrading.co.id'
+          originalName: imageFile.name,
+          uploadedAt: new Date().toISOString(),
+          fileSignature: fileSignature
         }
       };
       
-      const storageRef = ref(storage, `export_products/${Date.now()}-${imageFile.name}`);
+      const uniqueFileName = `export_products/${timestamp}_${uniqueId}_${baseName}.${extension}`;
+      console.log('Generated unique filename:', uniqueFileName);
+      
+      const storageRef = ref(storage, uniqueFileName);
       const uploadResult = await uploadBytes(storageRef, imageFile, metadata);
       console.log('Image uploaded successfully', uploadResult);
       
@@ -31,57 +49,29 @@ class ExportProductService {
     }
   }
 
-  async createProduct(productData, images) {
+  async createExportProduct(productData) {
     try {
-      // Check if user is authenticated
       const user = auth.currentUser;
       if (!user) {
-        throw new Error('You must be logged in to create a product');
+        throw new Error('You must be logged in to create an export product');
       }
 
-      let imageUrls = [];
-      
-      // Upload images if provided
-      if (images && images.length > 0) {
-        for (const image of images) {
-          const imageUrl = await this.uploadImage(image);
-          imageUrls.push(imageUrl);
-        }
-      }
-
-      // Create the product document
-      const productRef = await addDoc(collection(firestore, EXPORT_PRODUCTS_COLLECTION), {
+      const docRef = await addDoc(collection(firestore, 'export_products'), {
         ...productData,
-        images: imageUrls,
-        sellerId: user.uid,
-        status: 'pending',
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp()
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
       });
 
-      return productRef.id;
+      return docRef.id;
     } catch (error) {
-      console.error('Error creating product:', error);
+      console.error('Error creating export product:', error);
       throw error;
     }
   }
 
-  async getAllProducts() {
+  async getExportProductById(id) {
     try {
-      const querySnapshot = await getDocs(collection(firestore, EXPORT_PRODUCTS_COLLECTION));
-      return querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
-    } catch (error) {
-      console.error('Error getting products:', error);
-      throw error;
-    }
-  }
-
-  async getProductById(id) {
-    try {
-      const docRef = doc(firestore, EXPORT_PRODUCTS_COLLECTION, id);
+      const docRef = doc(firestore, 'export_products', id);
       const docSnap = await getDoc(docRef);
       
       if (docSnap.exists()) {
@@ -92,23 +82,36 @@ class ExportProductService {
       }
       return null;
     } catch (error) {
-      console.error('Error getting product by id:', error);
+      console.error('Error getting export product:', error);
       throw error;
     }
   }
 
-  async updateProduct(id, productData, newImages = [], imagesToDelete = []) {
+  async getAllExportProducts() {
+    try {
+      const querySnapshot = await getDocs(collection(firestore, 'export_products'));
+      return querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+    } catch (error) {
+      console.error('Error getting export products:', error);
+      throw error;
+    }
+  }
+
+  async updateExportProduct(id, productData, newImages = [], imagesToDelete = []) {
     try {
       const user = auth.currentUser;
       if (!user) {
-        throw new Error('You must be logged in to update a product');
+        throw new Error('You must be logged in to update an export product');
       }
 
-      const docRef = doc(firestore, EXPORT_PRODUCTS_COLLECTION, id);
+      const docRef = doc(firestore, 'export_products', id);
       const currentProduct = await getDoc(docRef);
       
       if (!currentProduct.exists()) {
-        throw new Error('Product not found');
+        throw new Error('Export product not found');
       }
 
       const currentData = currentProduct.data();
@@ -134,28 +137,28 @@ class ExportProductService {
       await updateDoc(docRef, {
         ...productData,
         images: updatedImageUrls,
-        updatedAt: serverTimestamp()
+        updatedAt: new Date().toISOString()
       });
 
       return id;
     } catch (error) {
-      console.error('Error updating product:', error);
+      console.error('Error updating export product:', error);
       throw error;
     }
   }
 
-  async deleteProduct(id) {
+  async deleteExportProduct(id) {
     try {
       const user = auth.currentUser;
       if (!user) {
-        throw new Error('You must be logged in to delete a product');
+        throw new Error('You must be logged in to delete an export product');
       }
 
-      const docRef = doc(firestore, EXPORT_PRODUCTS_COLLECTION, id);
+      const docRef = doc(firestore, 'export_products', id);
       const productDoc = await getDoc(docRef);
       
       if (productDoc.exists()) {
-        // Delete associated images
+        // Delete all associated images
         const images = productDoc.data().images || [];
         for (const imageUrl of images) {
           const imageRef = ref(storage, imageUrl);
@@ -169,45 +172,10 @@ class ExportProductService {
 
       await deleteDoc(docRef);
     } catch (error) {
-      console.error('Error deleting product:', error);
-      throw error;
-    }
-  }
-
-  async getSellerProducts(sellerId) {
-    try {
-      const productsRef = collection(firestore, EXPORT_PRODUCTS_COLLECTION);
-      const q = query(productsRef, where('sellerId', '==', sellerId));
-      const querySnapshot = await getDocs(q);
-      
-      return querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
-    } catch (error) {
-      console.error('Error getting seller products:', error);
-      throw error;
-    }
-  }
-
-  async getApprovedProducts() {
-    try {
-      console.log('Fetching approved products...');
-      const productsRef = collection(firestore, EXPORT_PRODUCTS_COLLECTION);
-      const productsQuery = query(productsRef, where('status', '==', 'approved'));
-      const snapshot = await getDocs(productsQuery);
-      
-      return snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-        createdAt: doc.data().createdAt?.toDate?.() || new Date(),
-        updatedAt: doc.data().updatedAt?.toDate?.() || new Date()
-      }));
-    } catch (error) {
-      console.error('Error fetching approved products:', error);
+      console.error('Error deleting export product:', error);
       throw error;
     }
   }
 }
 
-export default new ExportProductService(); 
+export const exportProductService = new ExportProductService(); 
