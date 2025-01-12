@@ -7,6 +7,7 @@ const Navbar = () => {
   const { currentUser } = useAuth();
   const [userType, setUserType] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
@@ -113,9 +114,83 @@ const Navbar = () => {
               </ActionButton>
             )}
           </div>
+
+          {/* Mobile menu button */}
+          <div className="flex items-center sm:hidden">
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-red-500"
+            >
+              <span className="sr-only">Open main menu</span>
+              {!isMobileMenuOpen ? (
+                <svg className="block h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              ) : (
+                <svg className="block h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              )}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile menu */}
+      <div className={`${isMobileMenuOpen ? 'block' : 'hidden'} sm:hidden`}>
+        <div className="pt-2 pb-3 space-y-1">
+          <MobileNavLink to="/about">Tentang</MobileNavLink>
+          <MobileNavLink to="/explore">Explore</MobileNavLink>
+          <MobileNavLink to="/export-products">Export Products</MobileNavLink>
+        </div>
+        
+        {/* Mobile menu auth section */}
+        <div className="pt-4 pb-3 border-t border-gray-200">
+          {!isLoading && currentUser && (
+            <div className="space-y-1">
+              {userType === UserType.B2B_SUPPLIER && (
+                <MobileNavLink to="/add-export-product">Add Product</MobileNavLink>
+              )}
+              {userType === UserType.B2C_BUSINESS_OWNER && (
+                <MobileNavLink to="/add-place">Add Place</MobileNavLink>
+              )}
+              {userType === UserType.ADMIN && (
+                <MobileNavLink to="/admin">Admin Panel</MobileNavLink>
+              )}
+              <MobileNavLink to="/profile">Profile</MobileNavLink>
+            </div>
+          )}
+          {!currentUser && (
+            <div className="px-4">
+              <Link
+                to="/auth"
+                className="block w-full text-center px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700"
+              >
+                Sign In
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </nav>
+  );
+};
+
+const MobileNavLink = ({ to, children }) => {
+  const location = useLocation();
+  const isActive = location.pathname === to;
+  
+  return (
+    <Link
+      to={to}
+      className={`block px-3 py-2 text-base font-medium ${
+        isActive
+          ? 'text-red-600 bg-red-50'
+          : 'text-gray-600 hover:bg-gray-50 hover:text-red-600'
+      }`}
+    >
+      {children}
+    </Link>
   );
 };
 
