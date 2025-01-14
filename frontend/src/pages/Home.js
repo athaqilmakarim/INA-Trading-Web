@@ -8,19 +8,6 @@ import NewsService from '../services/NewsService';
 import { motion } from 'framer-motion';
 import NewsCard from '../components/NewsCard';
 
-const partnerLogos = [
-  { name: 'Peruri', src: '/assets/mitra-images/partners/peruri.png' },
-  { name: 'Kementerian Perdagangan', src: '/assets/mitra-images/partners/kemendag.png' },
-  { name: 'Kementerian Perindustrian', src: '/assets/mitra-images/partners/kemenperin.png' },
-  { name: 'Kementerian Desa', src: '/assets/mitra-images/partners/kemendes.png' },
-  { name: 'Kementerian Koperasi dan UKM', src: '/assets/mitra-images/partners/kemenkopukm.png' },
-  { name: 'Kementerian Pertanian', src: '/assets/mitra-images/partners/kementan.png' },
-  { name: 'Eximbank', src: '/assets/mitra-images/partners/eximbank.png' },
-  { name: 'LPDB', src: '/assets/mitra-images/partners/lpdb.png' },
-  { name: 'IIYH', src: '/assets/mitra-images/partners/iiyh.png' },
-  { name: 'Matrik', src: '/assets/mitra-images/partners/matrik.png' }
-];
-
 const workflowSteps = [
   { 
     title: "Sign Up",
@@ -79,20 +66,6 @@ const features = [
   }
 ];
 
-const stats = [
-  {
-    number: "100000+",
-    label: "Target SMEs, Cooperatives & Industries"
-  },
-  {
-    number: "500000+",
-    label: "Target Downloader Worldwide"
-  },
-  {
-    number: "24+",
-    label: "24 Hours Transaction"
-  }
-];
 
 const Home = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -316,22 +289,7 @@ const Home = () => {
             ))}
           </div>
 
-          {/* Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 bg-gray-50 rounded-2xl p-8">
-            {stats.map((stat, index) => (
-              <motion.div
-                key={stat.label}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="text-center"
-              >
-                <div className="text-3xl font-bold text-red-600 mb-2">{stat.number}</div>
-                <div className="text-gray-600">{stat.label}</div>
-              </motion.div>
-            ))}
-          </div>
+  
         </div>
       </section>
 
@@ -384,100 +342,6 @@ const Home = () => {
               INA Trading is a Domestic & International Trade Ecosystem to help SMEs, COOPERATIVES, INDUSTRIES, EXPORTERS, and AGGREGATORS conduct Export, Logistics, Fulfillment, Promotion, Marketing & Sales Abroad.
             </p>
           </motion.div>
-        </div>
-      </section>
-
-      {/* Partners Section */}
-      <section className="py-20 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Our Partners</h2>
-            <p className="text-gray-600 text-lg">Trusted by Indonesia's leading institutions</p>
-          </motion.div>
-          
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 items-center"
-          >
-            {partnerLogos.map((partner, index) => (
-              <motion.div
-                key={partner.name}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="flex flex-col items-center group"
-              >
-                <div className="relative w-full h-24 flex items-center justify-center p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-300">
-                  <img
-                    src={partner.src}
-                    alt={partner.name}
-                    className="h-full w-full object-contain filter grayscale group-hover:grayscale-0 transition-all duration-300"
-                  />
-                </div>
-                <span className="mt-2 text-sm text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  {partner.name}
-                </span>
-              </motion.div>
-            ))}
-          </motion.div>
-
-          {/* Trust Indicators */}
-          <div className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-8">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-center"
-            >
-              <div className="w-16 h-16 mx-auto mb-4 bg-red-100 rounded-full flex items-center justify-center">
-                <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Government Backed</h3>
-              <p className="text-gray-600">Supported by multiple government ministries</p>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2 }}
-              className="text-center"
-            >
-              <div className="w-16 h-16 mx-auto mb-4 bg-red-100 rounded-full flex items-center justify-center">
-                <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Business Support</h3>
-              <p className="text-gray-600">Comprehensive support for SMEs and cooperatives</p>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.4 }}
-              className="text-center"
-            >
-              <div className="w-16 h-16 mx-auto mb-4 bg-red-100 rounded-full flex items-center justify-center">
-                <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Global Reach</h3>
-              <p className="text-gray-600">Connected to international markets and partners</p>
-            </motion.div>
-          </div>
         </div>
       </section>
 
