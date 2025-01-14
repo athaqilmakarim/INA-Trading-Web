@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { placeService } from '../services/PlaceService';
 import { PlaceType } from '../types/Place';
 import { toast } from 'react-toastify';
+import AddressAutocomplete from '../components/AddressAutocomplete';
 import {
   handleImageSelection,
   ImagePreview,
@@ -51,6 +52,12 @@ const AddPlace = () => {
     toast.success('Image removed', {
       icon: '🗑️'
     });
+  };
+
+  // Handle address selection from autocomplete
+  const handleAddressSelect = (addressData) => {
+    setAddress(addressData);
+    setCoordinates(null); // We're not using coordinates anymore
   };
 
   const handleSubmit = async (e) => {
@@ -116,7 +123,7 @@ const AddPlace = () => {
         description,
         menu: type === PlaceType.RESTAURANT ? menuItems : undefined,
         imageURLs,
-        coordinate: coordinates // Pass the coordinates from Places API
+        // Remove coordinate field since we're not using it
       });
 
       toast.success('Place added successfully!', {
@@ -177,16 +184,12 @@ const AddPlace = () => {
           </select>
         </div>
 
-        {/* Address */}
+        {/* Address with Autocomplete */}
         <div>
           <label className="block text-sm font-medium mb-1">Address</label>
-          <input
-            type="text"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-            className="w-full p-2 border rounded focus:ring-2 focus:ring-red-500 focus:border-transparent"
-            placeholder="Enter address"
-            required
+          <AddressAutocomplete
+            onAddressSelect={handleAddressSelect}
+            placeholder="Start typing the address..."
           />
         </div>
 

@@ -95,13 +95,6 @@ class PlaceService {
     coordinate = null
   }) {
     try {
-      // Only fetch coordinates if not provided
-      const placeCoordinate = coordinate || await MapHelper.getCoordinates(address);
-
-      if (!placeCoordinate || !placeCoordinate.latitude || !placeCoordinate.longitude) {
-        throw new Error('Invalid coordinates. Please select an address from the suggestions.');
-      }
-
       const placeData = {
         name,
         type,
@@ -112,10 +105,14 @@ class PlaceService {
         createdAt: serverTimestamp(),
         ownerId: auth.currentUser?.uid,
         status: 'pending',
-        coordinate: placeCoordinate,
         imageURLs,
         updatedAt: serverTimestamp()
       };
+
+      // Only add coordinate if it exists
+      if (coordinate) {
+        placeData.coordinate = coordinate;
+      }
 
       console.log('Creating place with data:', placeData);
       const docRef = await addDoc(collection(firestore, 'places'), placeData);
