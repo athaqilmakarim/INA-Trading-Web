@@ -12,6 +12,8 @@ const Explore = () => {
   const [selectedSort, setSelectedSort] = useState('rating');
   const [activeImageIndexes, setActiveImageIndexes] = useState({});
   const [location, setLocation] = useState('Detecting...');
+  const [userCity, setUserCity] = useState(null);
+  const [locationLoaded, setLocationLoaded] = useState(false);
 
   useEffect(() => {
     const fetchLocation = async () => {
@@ -19,9 +21,12 @@ const Explore = () => {
         const locationData = await LocationHelper.getCurrentLocation();
         console.log('Location data in component:', locationData);
         setLocation(locationData.address.formatted || 'Location found but address unavailable');
+        setUserCity(locationData.address.locality || null);
+        setLocationLoaded(true);
       } catch (err) {
         console.error('Error in component:', err);
         setLocation(err.message || 'Location not available');
+        setLocationLoaded(true);
       }
     };
 
@@ -44,7 +49,8 @@ const Explore = () => {
             id: place.id,
             name: place.name,
             images: place.images,
-            imageURLs: place.imageURLs
+            imageURLs: place.imageURLs,
+            address: place.address
           });
 
           // Fallback approach: unify images & imageURLs under one array
@@ -66,28 +72,31 @@ const Explore = () => {
             address: place.address || '',
             contact: place.contact || '',
             rating: place.rating || 0,
-
-            // Unify under 'images' so the UI always just references `images`
             images: finalImages,
-
             menu: place.menu || []
           };
         });
 
+        // Filter places by city if userCity is available
+        const cityFilteredPlaces = userCity 
+          ? processedPlaces.filter(place => place.address.toLowerCase().includes(userCity.toLowerCase()))
+          : processedPlaces;
+
         console.log(
-          'Processed places:',
-          processedPlaces.map((p) => ({
+          'Processed and filtered places:',
+          cityFilteredPlaces.map((p) => ({
             id: p.id,
             name: p.name,
-            images: p.images
+            images: p.images,
+            address: p.address
           }))
         );
 
-        setPlaces(processedPlaces);
+        setPlaces(cityFilteredPlaces);
 
         // Initialize active image indexes
         const initialIndexes = {};
-        processedPlaces.forEach((p) => {
+        cityFilteredPlaces.forEach((p) => {
           initialIndexes[p.id] = 0;
         });
         setActiveImageIndexes(initialIndexes);
@@ -98,8 +107,11 @@ const Explore = () => {
       }
     };
 
-    fetchPlaces();
-  }, [selectedSort]);
+    // Only fetch places when location is loaded
+    if (locationLoaded) {
+      fetchPlaces();
+    }
+  }, [selectedSort, userCity, locationLoaded]);
 
   const handleViewOnMap = (address) => {
     MapHelper.openInMaps(address);
