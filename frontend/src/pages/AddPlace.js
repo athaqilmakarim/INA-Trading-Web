@@ -1,8 +1,9 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { placeService } from '../services/PlaceService';
 import { PlaceType } from '../types/Place';
 import { toast } from 'react-toastify';
+import AddressAutocomplete from '../components/AddressAutocomplete';
 import {
   handleImageSelection,
   ImagePreview,
@@ -23,6 +24,7 @@ const AddPlace = () => {
   const [contact, setContact] = useState('');
   const [description, setDescription] = useState('');
   const [menuItems, setMenuItems] = useState([]);
+  const [coordinates, setCoordinates] = useState(null);
 
   // Image management
   const [images, setImages] = useState([]);          // raw File objects
@@ -50,6 +52,12 @@ const AddPlace = () => {
     toast.success('Image removed', {
       icon: '🗑️'
     });
+  };
+
+  // Handle address selection from autocomplete
+  const handleAddressSelect = (addressData) => {
+    setAddress(addressData);
+    setCoordinates(null); // We're not using coordinates anymore
   };
 
   const handleSubmit = async (e) => {
@@ -106,7 +114,7 @@ const AddPlace = () => {
 
       console.log('Creating place with these URL(s):', imageURLs);
 
-      // Create place in Firestore with imageURLs
+      // Create place in Firestore with imageURLs and coordinates
       await placeService.createPlace({
         name,
         type,
@@ -114,7 +122,8 @@ const AddPlace = () => {
         contact,
         description,
         menu: type === PlaceType.RESTAURANT ? menuItems : undefined,
-        imageURLs // <-- Important: pass it here
+        imageURLs,
+        // Remove coordinate field since we're not using it
       });
 
       toast.success('Place added successfully!', {
@@ -132,6 +141,7 @@ const AddPlace = () => {
       setImages([]);
       setPreviewUrls([]);
       setUploadProgress(0);
+      setCoordinates(null);
     } catch (err) {
       console.error('Form submission error:', err);
       setError(err.message || 'An error occurred');
@@ -174,15 +184,12 @@ const AddPlace = () => {
           </select>
         </div>
 
-        {/* Address */}
+        {/* Address with Autocomplete */}
         <div>
           <label className="block text-sm font-medium mb-1">Address</label>
-          <input
-            type="text"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-            className="w-full p-2 border rounded focus:ring-2 focus:ring-red-500 focus:border-transparent"
-            required
+          <AddressAutocomplete
+            onAddressSelect={handleAddressSelect}
+            placeholder="Start typing the address..."
           />
         </div>
 
@@ -208,11 +215,6 @@ const AddPlace = () => {
             required
           />
         </div>
-
-        {/* Menu Items (for restaurants only, if you wish) */}
-        {/* <div>
-          // Implementation for adding menu items...
-        </div> */}
 
         {/* Image Upload Section */}
         <div className="space-y-4 animate-fadeIn">
