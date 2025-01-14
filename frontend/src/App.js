@@ -20,6 +20,7 @@ import AddExportProduct from './pages/AddExportProduct';
 import SupplierProfile from './pages/SupplierProfile';
 import About from './pages/About';
 import NewsDetail from './pages/NewsDetail';
+import NewsList from './pages/NewsList';
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
               <Route path="/place/:id" element={<PlaceDetails />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/news/:id" element={<NewsDetail />} />
+              <Route path="/news" element={<NewsList />} />
               <Route 
                 path="/add-place" 
                 element={

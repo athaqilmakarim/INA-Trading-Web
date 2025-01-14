@@ -91,10 +91,16 @@ class PlaceService {
     contact,
     description,
     menu,
-    imageURLs = []
+    imageURLs = [],
+    coordinate = null
   }) {
     try {
-      const coordinate = await MapHelper.getCoordinates(address);
+      // Only fetch coordinates if not provided
+      const placeCoordinate = coordinate || await MapHelper.getCoordinates(address);
+
+      if (!placeCoordinate || !placeCoordinate.latitude || !placeCoordinate.longitude) {
+        throw new Error('Invalid coordinates. Please select an address from the suggestions.');
+      }
 
       const placeData = {
         name,
@@ -103,14 +109,12 @@ class PlaceService {
         contact,
         description,
         menu: menu || [],
-        rating: 0,
         createdAt: serverTimestamp(),
         ownerId: auth.currentUser?.uid,
         status: 'pending',
-        coordinate,
-
-        // <-- The key field
-        imageURLs
+        coordinate: placeCoordinate,
+        imageURLs,
+        updatedAt: serverTimestamp()
       };
 
       console.log('Creating place with data:', placeData);

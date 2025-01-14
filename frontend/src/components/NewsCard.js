@@ -8,6 +8,10 @@ const NewsCard = ({ news }) => {
     return text.substr(0, maxLength) + '...';
   };
 
+  const capitalizeFirstLetter = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -23,7 +27,7 @@ const NewsCard = ({ news }) => {
           className="w-full h-full object-cover"
         />
         <div className="absolute top-2 right-2 bg-red-600 text-white text-xs px-2 py-1 rounded">
-          {news.category}
+          {capitalizeFirstLetter(news.category)}
         </div>
       </div>
 

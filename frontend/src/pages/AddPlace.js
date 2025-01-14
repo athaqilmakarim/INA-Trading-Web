@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { placeService } from '../services/PlaceService';
 import { PlaceType } from '../types/Place';
@@ -23,6 +23,7 @@ const AddPlace = () => {
   const [contact, setContact] = useState('');
   const [description, setDescription] = useState('');
   const [menuItems, setMenuItems] = useState([]);
+  const [coordinates, setCoordinates] = useState(null);
 
   // Image management
   const [images, setImages] = useState([]);          // raw File objects
@@ -106,7 +107,7 @@ const AddPlace = () => {
 
       console.log('Creating place with these URL(s):', imageURLs);
 
-      // Create place in Firestore with imageURLs
+      // Create place in Firestore with imageURLs and coordinates
       await placeService.createPlace({
         name,
         type,
@@ -114,7 +115,8 @@ const AddPlace = () => {
         contact,
         description,
         menu: type === PlaceType.RESTAURANT ? menuItems : undefined,
-        imageURLs // <-- Important: pass it here
+        imageURLs,
+        coordinate: coordinates // Pass the coordinates from Places API
       });
 
       toast.success('Place added successfully!', {
@@ -132,6 +134,7 @@ const AddPlace = () => {
       setImages([]);
       setPreviewUrls([]);
       setUploadProgress(0);
+      setCoordinates(null);
     } catch (err) {
       console.error('Form submission error:', err);
       setError(err.message || 'An error occurred');
@@ -182,6 +185,7 @@ const AddPlace = () => {
             value={address}
             onChange={(e) => setAddress(e.target.value)}
             className="w-full p-2 border rounded focus:ring-2 focus:ring-red-500 focus:border-transparent"
+            placeholder="Enter address"
             required
           />
         </div>
@@ -208,11 +212,6 @@ const AddPlace = () => {
             required
           />
         </div>
-
-        {/* Menu Items (for restaurants only, if you wish) */}
-        {/* <div>
-          // Implementation for adding menu items...
-        </div> */}
 
         {/* Image Upload Section */}
         <div className="space-y-4 animate-fadeIn">

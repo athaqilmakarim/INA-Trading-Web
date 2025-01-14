@@ -39,42 +39,42 @@ const workflowSteps = [
 const features = [
   {
     title: "INAPAS",
-    description: "Atur dan Kelola Identitas Digital Anda untuk Akses Berbagai Layanan",
+    description: "Manage and Control Your Digital Identity to Access Various Services",
     icon: "M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
   },
   {
     title: "INAKU",
-    description: "Akses Berbagai Layanan Pemerintah Dapatkan kemudahan akses berbagai layanan pemerintah melalui satu portal terintegrasi INAku.",
+    description: "Access Various Government Services through one integrated portal INAku",
     icon: "M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
   },
   {
     title: "UKM BOX Fulfillment Center",
-    description: "Warehouse & Distribusi / Supply Chain ke seluruh dunia",
+    description: "Worldwide Warehouse & Distribution / Supply Chain",
     icon: "M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
   },
   {
     title: "International Marketplace",
-    description: "Online Store di beberapa negara",
+    description: "Online Stores in multiple countries",
     icon: "M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"
   },
   {
     title: "Digital Promotion",
-    description: "Promosi Digital di Media Sosial",
+    description: "Digital Promotion on Social Media",
     icon: "M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"
   },
   {
     title: "Finance Technology",
-    description: "Penggunaan FinTech seperti QRIS, Token & Crypto untuk pembayaran di berbagai negara",
+    description: "Use of FinTech such as QRIS, Tokens & Crypto for payments in various countries",
     icon: "M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
   },
   {
     title: "Artificial Intelligence",
-    description: "AI untuk mengelola Supply Chain dan Big Data Buyer",
+    description: "AI for managing Supply Chain and Buyer Big Data",
     icon: "M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
   },
   {
     title: "Blockchain",
-    description: "Digital Security dan Blockchain untuk menjamin Ke-ASLI-an Produk Indonesia",
+    description: "Digital Security and Blockchain to ensure the AUTHENTICITY of Indonesian Products",
     icon: "M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
   }
 ];
@@ -82,7 +82,7 @@ const features = [
 const stats = [
   {
     number: "100000+",
-    label: "Target UKM, Koperasi & Industri"
+    label: "Target SMEs, Cooperatives & Industries"
   },
   {
     number: "500000+",
@@ -101,6 +101,7 @@ const Home = () => {
   const [news, setNews] = useState([]);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isMottoVisible, setIsMottoVisible] = useState(true);
+  const [isExamplesVisible, setIsExamplesVisible] = useState(false);
 
   const slides = [
     {
@@ -229,14 +230,68 @@ const Home = () => {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Cara Kerja INA TRADING</h2>
-            <div className="max-w-3xl mx-auto">
-              <p className="text-gray-600 text-lg mb-8">
-                INA Trading merupakan Ekosistem Perdagangan Dalam & Luar Negeri untuk membantu UKM, KOPERASI & INDUSTRI melakukan Ekspor, Logistic, Fulfillment, Promosi, Marketing & Sales di Luar Negeri.
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">How INA TRADING Works</h2>
+            <div className="max-w-3xl mx-auto space-y-8">
+              <p className="text-gray-600 text-lg leading-relaxed">
+                INA Trading is a Domestic & International Trade Ecosystem to help SMEs, COOPERATIVES & INDUSTRIES conduct Export, Logistics, Fulfillment, Promotion, Marketing & Sales Abroad.
               </p>
-              <p className="text-gray-600">
-                Fasilitas bagi UKM, KOPERASI & INDUSTRI untuk mendukung Program Usaha Mikro, Kecil, dan Menengah Berani Inovasi, Siap Adaptasi Ekspor (UMKM BISA Ekspor) dari KEMENTERIAN PERDAGANGAN untuk membantu Aggregator dapat menemukan Buyer di luar negeri.
+              <p className="text-gray-600 leading-relaxed">
+                A facility for SMEs, COOPERATIVES & INDUSTRIES to support the Micro, Small, and Medium Enterprises Innovation Ready, Export Adaptation Ready (MSME CAN Export) Program from the MINISTRY OF TRADE to help Aggregators find Buyers abroad.
               </p>
+              <p className="text-gray-600 leading-relaxed">
+                SMEs, Cooperatives, Industries, Importers & Aggregators can conduct direct transactions with Importers, Distributors, Shops, Boutiques, Cafes, Restaurants, and Aggregators located in various countries.
+              </p>
+              
+              <div className="mt-8">
+                <button 
+                  onClick={() => setIsExamplesVisible(!isExamplesVisible)}
+                  className="flex items-center justify-between w-full px-4 py-2 bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-300"
+                >
+                  <span className="text-lg font-semibold text-gray-900">For example:</span>
+                  <svg
+                    className={`w-5 h-5 text-gray-500 transform transition-transform duration-300 ${isExamplesVisible ? 'rotate-180' : ''}`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                
+                <motion.div
+                  initial={false}
+                  animate={{
+                    height: isExamplesVisible ? "auto" : 0,
+                    opacity: isExamplesVisible ? 1 : 0
+                  }}
+                  transition={{
+                    height: { duration: 0.3, ease: "easeOut" },
+                    opacity: { duration: 0.2, ease: "easeInOut" }
+                  }}
+                  className="overflow-hidden"
+                >
+                  <motion.div 
+                    className="mt-4 space-y-4 bg-white p-6 rounded-lg shadow-sm"
+                    animate={{
+                      y: isExamplesVisible ? 0 : -10
+                    }}
+                    transition={{
+                      duration: 0.2,
+                      ease: "easeOut"
+                    }}
+                  >
+                    <p className="text-gray-600">
+                      A lives in Milan, Italy, and wants to eat at a Restaurant that serves Soto Ayam (Indonesian Chicken Soup) and Teh Botol (Indonesian Bottled Tea). A can simply use the Search feature to find Restaurants in Milan, Italy that sell Soto Ayam and Teh Botol.
+                    </p>
+                    <p className="text-gray-600">
+                      B has a cassava chips product in Boyolali, while C lives in Tokyo, Japan. C can order the cassava chips directly from Boyolali to Tokyo.
+                    </p>
+                    <p className="text-gray-600">
+                      D owns a Shop in Madrid, Spain selling ABC Soy Sauce, and E who lives in Barcelona can order directly from D.
+                    </p>
+                  </motion.div>
+                </motion.div>
+              </div>
             </div>
           </motion.div>
 
@@ -289,9 +344,9 @@ const Home = () => {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Fasilitas & Fitur</h2>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Facilities & Features</h2>
             <p className="text-gray-600 text-lg">
-              Fitur & Fasilitas yang dimiliki INA TRADING di dalam & Luar Negeri
+              Features & Facilities available in INA TRADING both Domestically & Internationally
             </p>
           </motion.div>
 
@@ -322,8 +377,11 @@ const Home = () => {
             viewport={{ once: true }}
             className="mt-16 text-center bg-white rounded-2xl p-8 shadow-sm"
           >
+            <p className="text-gray-600 text-lg mb-4">
+              INA TRADING, as part of INA DIGITAL, is the Integrated Digital Services Ecosystem Provider for the Indonesian Government. As part of PERURI, we are here to create higher quality, trustworthy, and efficient public services, carrying out the Government's mandate in accordance with Presidential Regulation No. 82 of 2023.
+            </p>
             <p className="text-gray-600 text-lg">
-              INA TRADING merupakan bagian INA DIGITAL adalah Penyelenggara Keterpaduan Ekosistem Layanan Digital Pemerintah Indonesia Sebagai bagian dari PERURI, kami hadir untuk mewujudkan layanan publik yang lebih berkualitas, tepercaya dan efisien, menjalankan mandat Pemerintah sesuai Perpres No. 82 Tahun 2023.
+              INA Trading is a Domestic & International Trade Ecosystem to help SMEs, COOPERATIVES, INDUSTRIES, EXPORTERS, and AGGREGATORS conduct Export, Logistics, Fulfillment, Promotion, Marketing & Sales Abroad.
             </p>
           </motion.div>
         </div>
