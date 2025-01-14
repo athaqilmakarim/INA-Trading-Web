@@ -91,11 +91,10 @@ class PlaceService {
     contact,
     description,
     menu,
-    imageURLs = []
+    imageURLs = [],
+    coordinate = null
   }) {
     try {
-      const coordinate = await MapHelper.getCoordinates(address);
-
       const placeData = {
         name,
         type,
@@ -103,15 +102,17 @@ class PlaceService {
         contact,
         description,
         menu: menu || [],
-        rating: 0,
         createdAt: serverTimestamp(),
         ownerId: auth.currentUser?.uid,
         status: 'pending',
-        coordinate,
-
-        // <-- The key field
-        imageURLs
+        imageURLs,
+        updatedAt: serverTimestamp()
       };
+
+      // Only add coordinate if it exists
+      if (coordinate) {
+        placeData.coordinate = coordinate;
+      }
 
       console.log('Creating place with data:', placeData);
       const docRef = await addDoc(collection(firestore, 'places'), placeData);

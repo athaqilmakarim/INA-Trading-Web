@@ -78,14 +78,24 @@ class NewsService {
 
   async getAllNews() {
     try {
-      const querySnapshot = await getDocs(collection(firestore, NEWS_COLLECTION));
-      return querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
+      const newsRef = collection(firestore, NEWS_COLLECTION);
+      const snapshot = await getDocs(newsRef);
+      
+      const allNews = snapshot.docs.map(doc => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          ...data,
+          createdAt: data.createdAt ? new Date(data.createdAt) : new Date(),
+          updatedAt: data.updatedAt ? new Date(data.updatedAt) : new Date()
+        };
+      });
+
+      // Sort by newest first
+      return allNews.sort((a, b) => b.createdAt - a.createdAt);
     } catch (error) {
-      console.error('Error getting news:', error);
-      throw error;
+      console.error('Error fetching all news:', error);
+      throw new Error('Failed to fetch news articles');
     }
   }
 

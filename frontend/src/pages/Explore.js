@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { MapHelper } from '../utils/MapHelper';
 import { placeService } from '../services/PlaceService';
+import { LocationHelper } from '../utils/LocationHelper';
 
 const Explore = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -10,6 +11,22 @@ const Explore = () => {
   const [selectedType, setSelectedType] = useState('all');
   const [selectedSort, setSelectedSort] = useState('rating');
   const [activeImageIndexes, setActiveImageIndexes] = useState({});
+  const [location, setLocation] = useState('Detecting...');
+
+  useEffect(() => {
+    const fetchLocation = async () => {
+      try {
+        const locationData = await LocationHelper.getCurrentLocation();
+        console.log('Location data in component:', locationData);
+        setLocation(locationData.address.formatted || 'Location found but address unavailable');
+      } catch (err) {
+        console.error('Error in component:', err);
+        setLocation(err.message || 'Location not available');
+      }
+    };
+
+    fetchLocation();
+  }, []);
 
   useEffect(() => {
     const fetchPlaces = async () => {
@@ -118,14 +135,44 @@ const Explore = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto px-4 py-8">
-        {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-3">
             Explore Indonesian Places
           </h1>
-          <p className="text-lg text-gray-600">
+          <p className="text-lg text-gray-600 mb-6">
             Discover authentic Indonesian experiences near you
           </p>
+          <div className="inline-flex items-center px-4 py-2 bg-white rounded-full shadow-md space-x-2 text-gray-600">
+            <svg
+              className="w-5 h-5 text-red-500"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+              />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+              />
+            </svg>
+            <span className="text-gray-800 font-medium">
+              {location === 'Detecting...' ? (
+                <span className="flex items-center">
+                  <span className="animate-pulse">Detecting location</span>
+                  <span className="animate-bounce ml-1">...</span>
+                </span>
+              ) : (
+                location
+              )}
+            </span>
+          </div>
         </div>
 
         {/* Search and Filters */}

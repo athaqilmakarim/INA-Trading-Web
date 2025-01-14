@@ -72,9 +72,10 @@ const Navbar = () => {
             </Link>
 
             <div className="hidden sm:flex sm:items-center sm:space-x-6">
-              <NavLink to="/about">Tentang</NavLink>
+              <NavLink to="/about">About</NavLink>
               <NavLink to="/explore">Explore</NavLink>
               <NavLink to="/export-products">Export Products</NavLink>
+              <NavLink to="/news">News</NavLink>
             </div>
           </div>
 
@@ -139,9 +140,10 @@ const Navbar = () => {
       {/* Mobile menu */}
       <div className={`${isMobileMenuOpen ? 'block' : 'hidden'} sm:hidden`}>
         <div className="pt-2 pb-3 space-y-1">
-          <MobileNavLink to="/about">Tentang</MobileNavLink>
+          <MobileNavLink to="/about">About</MobileNavLink>
           <MobileNavLink to="/explore">Explore</MobileNavLink>
           <MobileNavLink to="/export-products">Export Products</MobileNavLink>
+          <MobileNavLink to="/news">News</MobileNavLink>
         </div>
         
         {/* Mobile menu auth section */}

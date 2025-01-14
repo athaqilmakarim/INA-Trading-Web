@@ -12,6 +12,10 @@ const NewsDetail = () => {
   const [error, setError] = useState(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
+  const capitalizeFirstLetter = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+  };
+
   useEffect(() => {
     const fetchNews = async () => {
       try {
@@ -111,7 +115,7 @@ const NewsDetail = () => {
             {/* Category Badge */}
             <div className="p-6 pb-0">
               <span className="inline-block bg-red-100 text-red-600 text-sm font-medium px-3 py-1 rounded-full">
-                {news.category}
+                {capitalizeFirstLetter(news.category)}
               </span>
             </div>
 
