@@ -143,6 +143,7 @@ const Navbar = () => {
           <MobileNavLink to="/about">About</MobileNavLink>
           <MobileNavLink to="/explore">Explore</MobileNavLink>
           <MobileNavLink to="/export-products">Export Products</MobileNavLink>
+          <MobileNavLink to="/contact">Contact Us</MobileNavLink>
         </div>
         
         {/* Mobile menu auth section */}
