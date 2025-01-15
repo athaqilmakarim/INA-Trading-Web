@@ -14,14 +14,60 @@ const Explore = () => {
   const [location, setLocation] = useState('Detecting...');
   const [userCity, setUserCity] = useState(null);
   const [locationLoaded, setLocationLoaded] = useState(false);
+  const [error, setError] = useState(null);
+  const [currentLocation, setCurrentLocation] = useState(null);
+
+  const filterPlacesByLocation = async (places, userLocation) => {
+    if (!userLocation || !places.length) {
+      console.log('No location or places to filter:', { userLocation, placesCount: places.length });
+      return places;
+    }
+
+    console.log('Filtering places with user location:', {
+      userAddress: userLocation.formatted_address,
+      userLocality: userLocation.locality,
+      userState: userLocation.administrative_area_level_1,
+      userPostcode: userLocation.postal_code
+    });
+
+    const filteredPlaces = [];
+    for (const place of places) {
+      try {
+        console.log(`Checking place: ${place.name}, Address: ${place.address}`);
+        const isInSameArea = await LocationHelper.isInSameMetropolitanArea(
+          userLocation.formatted_address,
+          place.address
+        );
+        console.log(`Result for ${place.name}: ${isInSameArea ? 'Match' : 'No match'}`);
+        
+        if (isInSameArea) {
+          filteredPlaces.push(place);
+        }
+      } catch (error) {
+        console.error('Error checking location match:', {
+          placeName: place.name,
+          placeAddress: place.address,
+          error: error.message
+        });
+        // If there's an error checking the location, include the place to avoid filtering it out
+        filteredPlaces.push(place);
+      }
+    }
+
+    console.log(`Filtered ${places.length} places down to ${filteredPlaces.length} places`);
+    return filteredPlaces;
+  };
 
   useEffect(() => {
     const fetchLocation = async () => {
       try {
         const locationData = await LocationHelper.getCurrentLocation();
         console.log('Location data in component:', locationData);
-        setLocation(locationData.address.formatted || 'Location found but address unavailable');
-        setUserCity(locationData.address.locality || null);
+        
+        // Handle the location data properly
+        setLocation(locationData.formatted_address || 'Location found but address unavailable');
+        setUserCity(locationData.locality || null);
+        setCurrentLocation(locationData);
         setLocationLoaded(true);
       } catch (err) {
         console.error('Error in component:', err);
@@ -37,81 +83,33 @@ const Explore = () => {
     const fetchPlaces = async () => {
       try {
         setIsLoading(true);
-        console.log('Fetching places for explore page...');
+        setError(null);
 
-        // Get data from your placeService
+        // Fetch places first
         const placesData = await placeService.getApprovedPlaces();
-        console.log('Fetched places:', placesData);
+        
+        // If we have location data, filter places
+        if (currentLocation && currentLocation.formatted_address) {
+          const filteredPlaces = await filterPlacesByLocation(placesData, currentLocation);
+          setPlaces(filteredPlaces);
+        } else {
+          // If no location data, show all places
+          setPlaces(placesData);
+        }
 
-        // Process the data
-        const processedPlaces = placesData.map((place) => {
-          console.log('Processing place:', {
-            id: place.id,
-            name: place.name,
-            images: place.images,
-            imageURLs: place.imageURLs,
-            address: place.address
-          });
-
-          // Fallback approach: unify images & imageURLs under one array
-          let finalImages;
-          if (place.images && place.images.length > 0) {
-            finalImages = place.images; 
-          } else if (place.imageURLs && place.imageURLs.length > 0) {
-            finalImages = place.imageURLs; 
-          } else {
-            finalImages = [];
-          }
-
-          return {
-            ...place,
-            id: place.id,
-            name: place.name || '',
-            type: place.type || 'Restaurant',
-            description: place.description || '',
-            address: place.address || '',
-            contact: place.contact || '',
-            rating: place.rating || 0,
-            images: finalImages,
-            menu: place.menu || []
-          };
-        });
-
-        // Filter places by city if userCity is available
-        const cityFilteredPlaces = userCity 
-          ? processedPlaces.filter(place => place.address.toLowerCase().includes(userCity.toLowerCase()))
-          : processedPlaces;
-
-        console.log(
-          'Processed and filtered places:',
-          cityFilteredPlaces.map((p) => ({
-            id: p.id,
-            name: p.name,
-            images: p.images,
-            address: p.address
-          }))
-        );
-
-        setPlaces(cityFilteredPlaces);
-
-        // Initialize active image indexes
-        const initialIndexes = {};
-        cityFilteredPlaces.forEach((p) => {
-          initialIndexes[p.id] = 0;
-        });
-        setActiveImageIndexes(initialIndexes);
       } catch (error) {
-        console.error('Error fetching places:', error);
+        console.error('Error in fetchPlaces:', error);
+        setError(error.message);
+        // If location fails, still show all places
+        const placesData = await placeService.getApprovedPlaces();
+        setPlaces(placesData);
       } finally {
         setIsLoading(false);
       }
     };
 
-    // Only fetch places when location is loaded
-    if (locationLoaded) {
-      fetchPlaces();
-    }
-  }, [selectedSort, userCity, locationLoaded]);
+    fetchPlaces();
+  }, [currentLocation]); // Only re-run when currentLocation changes
 
   const handleViewOnMap = (address) => {
     MapHelper.openInMaps(address);
@@ -135,11 +133,11 @@ const Explore = () => {
 
   const filteredPlaces = places.filter((place) => {
     const matchesSearch =
-      place.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      place.description.toLowerCase().includes(searchTerm.toLowerCase());
+      place.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      place.description?.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesType =
       selectedType === 'all' ||
-      place.type.toLowerCase() === selectedType.toLowerCase();
+      place.type?.toLowerCase() === selectedType.toLowerCase();
 
     return matchesSearch && matchesType;
   });
@@ -246,7 +244,8 @@ const Explore = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredPlaces.length > 0 ? (
               filteredPlaces.map((place) => {
-                const { images } = place; // The unified array
+                // Safely handle images array
+                const images = place.imageURLs || place.images || [];
                 const activeIndex = activeImageIndexes[place.id] || 0;
 
                 return (
@@ -257,11 +256,11 @@ const Explore = () => {
                   >
                     {/* Image Container with carousel */}
                     <div className="relative h-64 overflow-hidden bg-gray-200">
-                      {images.length > 0 ? (
+                      {images && images.length > 0 ? (
                         <>
                           <img
                             src={images[activeIndex]}
-                            alt={`${place.name} - Image ${activeIndex + 1}`}
+                            alt={`${place.name || 'Place'} - Image ${activeIndex + 1}`}
                             className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300"
                             loading="lazy"
                             onError={(e) => {
@@ -338,7 +337,7 @@ const Explore = () => {
                       )}
                       {/* Type Badge */}
                       <span className="absolute top-4 right-4 px-3 py-1 bg-white/90 backdrop-blur-sm rounded-full text-sm font-medium text-gray-700">
-                        {place.type}
+                        {place.type || 'Unknown'}
                       </span>
                     </div>
 
@@ -346,7 +345,7 @@ const Explore = () => {
                       {/* Title and Rating */}
                       <div className="flex items-center justify-between mb-3">
                         <h3 className="font-bold text-xl text-gray-900 group-hover:text-primary-600 transition-colors">
-                          {place.name}
+                          {place.name || 'Unnamed Place'}
                         </h3>
                         <div className="flex items-center bg-yellow-50 px-3 py-1 rounded-full">
                           <span className="text-yellow-500 mr-1">★</span>
@@ -358,7 +357,7 @@ const Explore = () => {
 
                       {/* Description */}
                       <p className="text-gray-600 mb-4 line-clamp-2">
-                        {place.description}
+                        {place.description || 'No description available'}
                       </p>
 
                       {/* Location and Contact */}
@@ -383,7 +382,7 @@ const Explore = () => {
                               d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                             />
                           </svg>
-                          <span className="line-clamp-1">{place.address}</span>
+                          <span className="line-clamp-1">{place.address || 'Address not available'}</span>
                         </div>
                         {place.contact && (
                           <div className="flex items-center">
