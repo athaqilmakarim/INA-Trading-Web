@@ -75,7 +75,6 @@ const Navbar = () => {
               <NavLink to="/about">About</NavLink>
               <NavLink to="/explore">Explore</NavLink>
               <NavLink to="/export-products">Export Products</NavLink>
-              <NavLink to="/news">News</NavLink>
             </div>
           </div>
 
@@ -143,7 +142,6 @@ const Navbar = () => {
           <MobileNavLink to="/about">About</MobileNavLink>
           <MobileNavLink to="/explore">Explore</MobileNavLink>
           <MobileNavLink to="/export-products">Export Products</MobileNavLink>
-          <MobileNavLink to="/news">News</MobileNavLink>
         </div>
         
         {/* Mobile menu auth section */}

@@ -4,9 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { collection, getDocs, query, orderBy, limit, where } from 'firebase/firestore';
 import { firestore } from '../firebase';
 import { placeService } from '../services/PlaceService';
-import NewsService from '../services/NewsService';
 import { motion } from 'framer-motion';
-import NewsCard from '../components/NewsCard';
 
 const workflowSteps = [
   { 
@@ -71,7 +69,6 @@ const Home = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [places, setPlaces] = useState([]);
   const [promos, setPromos] = useState([]);
-  const [news, setNews] = useState([]);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isMottoVisible, setIsMottoVisible] = useState(true);
   const [isExamplesVisible, setIsExamplesVisible] = useState(false);
@@ -103,13 +100,6 @@ const Home = () => {
         setIsLoading(true);
         const placesData = await placeService.getApprovedPlaces();
         setPlaces(placesData || []);
-
-        const newsData = await NewsService.getAllNews();
-        const latestNews = newsData
-          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-          .slice(0, 3);
-        setNews(latestNews);
-
         setIsLoading(false);
       } catch (error) {
         console.error('Error in setupInitialData:', error);
@@ -341,43 +331,6 @@ const Home = () => {
             <p className="text-gray-600 text-lg">
               INA Trading is a Domestic & International Trade Ecosystem to help SMEs, COOPERATIVES, INDUSTRIES, EXPORTERS, and AGGREGATORS conduct Export, Logistics, Fulfillment, Promotion, Marketing & Sales Abroad.
             </p>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Featured News Section */}
-      <section className="py-20 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Latest News</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              Stay updated with the latest news, updates, and insights about Indonesian trade and business opportunities.
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {news.map((item, index) => (
-              <NewsCard key={item.id} news={item} />
-            ))}
-          </div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mt-12"
-          >
-            <Link
-              to="/news"
-              className="inline-block bg-red-600 text-white px-8 py-3 rounded-full text-lg font-medium hover:bg-red-700 transition-colors duration-300"
-            >
-              View All News
-            </Link>
           </motion.div>
         </div>
       </section>
