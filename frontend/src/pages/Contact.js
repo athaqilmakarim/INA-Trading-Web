@@ -148,7 +148,7 @@ ${formData.message}`
                       onChange={handleInputChange}
                       className="form-radio text-red-600"
                     />
-                    <span className="ml-2">UMKM</span>
+                    <span className="ml-2">MSMEs</span>
                   </label>
                   <label className="inline-flex items-center">
                     <input
@@ -159,7 +159,7 @@ ${formData.message}`
                       onChange={handleInputChange}
                       className="form-radio text-red-600"
                     />
-                    <span className="ml-2">KOPERASI</span>
+                    <span className="ml-2">Cooperative</span>
                   </label>
                   <label className="inline-flex items-center">
                     <input
@@ -170,7 +170,7 @@ ${formData.message}`
                       onChange={handleInputChange}
                       className="form-radio text-red-600"
                     />
-                    <span className="ml-2">INDUSTRI</span>
+                    <span className="ml-2">Industry</span>
                   </label>
                   <label className="inline-flex items-center">
                     <input
@@ -200,7 +200,7 @@ ${formData.message}`
                       onChange={handleInputChange}
                       className="form-radio text-red-600"
                     />
-                    <span className="ml-2">Exportir</span>
+                    <span className="ml-2">Exporter</span>
                   </label>
                   <label className="inline-flex items-center">
                     <input
@@ -211,7 +211,7 @@ ${formData.message}`
                       onChange={handleInputChange}
                       className="form-radio text-red-600"
                     />
-                    <span className="ml-2">Importir</span>
+                    <span className="ml-2">Importer</span>
                   </label>
                   <label className="inline-flex items-center">
                     <input

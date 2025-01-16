@@ -196,13 +196,13 @@ const Home = () => {
             <h2 className="text-3xl font-bold text-gray-900 mb-4">How INA TRADING Works</h2>
             <div className="max-w-3xl mx-auto space-y-8">
               <p className="text-gray-600 text-lg leading-relaxed">
-                INA Trading is a Domestic & International Trade Ecosystem to help SMEs, COOPERATIVES & INDUSTRIES conduct Export, Logistics, Fulfillment, Promotion, Marketing & Sales Abroad.
+                INA Trading is a Domestic & International Trade Ecosystem to help MSMEs, COOPERATIVES & INDUSTRIES conduct Export, Logistics, Fulfillment, Promotion, Marketing & Sales Abroad.
               </p>
               <p className="text-gray-600 leading-relaxed">
-                A facility for SMEs, COOPERATIVES & INDUSTRIES to support the Micro, Small, and Medium Enterprises Innovation Ready, Export Adaptation Ready (MSME CAN Export) Program from the MINISTRY OF TRADE to help Aggregators find Buyers abroad.
+                A facility for MSMEs, COOPERATIVES & INDUSTRIES to support the Micro, Small, and Medium Enterprises Innovation Ready, Export Adaptation Ready (MSME CAN Export) Program from the MINISTRY OF TRADE to help Aggregators find Buyers abroad.
               </p>
               <p className="text-gray-600 leading-relaxed">
-                SMEs, Cooperatives, Industries, Importers & Aggregators can conduct direct transactions with Importers, Distributors, Shops, Boutiques, Cafes, Restaurants, and Aggregators located in various countries.
+              MSMEs, Cooperatives, Industries, Importers & Aggregators can conduct direct transactions with Importers, Distributors, Shops, Boutiques, Cafes, Restaurants, and Aggregators located in various countries.
               </p>
               
               <div className="mt-8">
@@ -329,7 +329,7 @@ const Home = () => {
               INA TRADING, as part of INA DIGITAL, is the Integrated Digital Services Ecosystem Provider for the Indonesian Government. As part of PERURI, we are here to create higher quality, trustworthy, and efficient public services, carrying out the Government's mandate in accordance with Presidential Regulation No. 82 of 2023.
             </p>
             <p className="text-gray-600 text-lg">
-              INA Trading is a Domestic & International Trade Ecosystem to help SMEs, COOPERATIVES, INDUSTRIES, EXPORTERS, and AGGREGATORS conduct Export, Logistics, Fulfillment, Promotion, Marketing & Sales Abroad.
+              INA Trading is a Domestic & International Trade Ecosystem to help MSMEs, COOPERATIVES, INDUSTRIES, EXPORTERS, and AGGREGATORS conduct Export, Logistics, Fulfillment, Promotion, Marketing & Sales Abroad.
             </p>
           </motion.div>
         </div>
