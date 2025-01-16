@@ -15,6 +15,42 @@ const Profile = () => {
   const [userType, setUserType] = useState(null);
   const [userData, setUserData] = useState(null);
 
+  // Group places by main city/state
+  const placesByLocation = places.reduce((acc, place) => {
+    const addressParts = place.address.split(',').map(part => part.trim());
+    
+    // For Australian addresses, group by state capital city
+    // For other countries, group by the main city
+    let mainLocation;
+    if (addressParts[addressParts.length - 1]?.includes('Australia')) {
+      // Check state and map to capital city
+      const statePostcode = addressParts[addressParts.length - 2] || '';
+      if (statePostcode.includes('NSW')) {
+        mainLocation = 'Sydney, Australia';
+      } else if (statePostcode.includes('QLD')) {
+        mainLocation = 'Brisbane, Australia';
+      } else if (statePostcode.includes('VIC')) {
+        mainLocation = 'Melbourne, Australia';
+      } else {
+        mainLocation = 'Australia'; // fallback
+      }
+    } else {
+      // For non-Australian addresses, use the main city and country
+      const country = addressParts[addressParts.length - 1] || 'Unknown Country';
+      const city = addressParts[addressParts.length - 2]?.split(' ')[0] || 'Unknown City'; // Take first word as city name
+      mainLocation = `${city}, ${country}`;
+    }
+    
+    if (!acc[mainLocation]) {
+      acc[mainLocation] = [];
+    }
+    acc[mainLocation].push(place);
+    return acc;
+  }, {});
+
+  // Sort locations alphabetically
+  const sortedLocations = Object.keys(placesByLocation).sort();
+
   useEffect(() => {
     const fetchUserData = async () => {
       if (!currentUser) return;
@@ -158,49 +194,60 @@ const Profile = () => {
             </div>
 
             <div className="p-6">
-              <div className="space-y-6">
+              <div className="space-y-8">
                 {places.length > 0 ? (
-                  places.map(place => (
-                    <div
-                      key={place.id}
-                      className="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors"
-                    >
-                      <div className="flex justify-between items-start">
-                        <Link 
-                          to={`/place/${place.id}`}
-                          className="flex-1 cursor-pointer"
-                        >
-                          <div>
-                            <h3 className="font-semibold text-gray-900">{place.name}</h3>
-                            <p className="text-gray-600 mt-1">{place.type}</p>
-                            <p className="text-sm text-gray-500 mt-2">{place.address}</p>
+                  sortedLocations.map(location => (
+                    <div key={location} className="space-y-4">
+                      <h3 className="text-lg font-semibold text-gray-800 border-b border-gray-200 pb-2">
+                        {location}
+                      </h3>
+                      <div className="space-y-4 pl-4">
+                        {placesByLocation[location].map(place => (
+                          <div
+                            key={place.id}
+                            className="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors"
+                          >
+                            <div className="flex justify-between items-start">
+                              <Link 
+                                to={`/place/${place.id}`}
+                                className="flex-1 cursor-pointer"
+                              >
+                                <div>
+                                  <h3 className="font-semibold text-gray-900">{place.name}</h3>
+                                  <p className="text-gray-600 mt-1">{place.type}</p>
+                                  <p className="text-sm text-gray-500 mt-2">
+                                    {place.address.split(',')[0].trim()}
+                                  </p>
+                                </div>
+                              </Link>
+                              <div className="flex space-x-4 ml-4">
+                                <button
+                                  onClick={() => navigate(`/edit-place/${place.id}`)}
+                                  className="text-blue-600 hover:text-blue-700"
+                                  title="Edit"
+                                >
+                                  <FaEdit size={20} />
+                                </button>
+                                <button
+                                  onClick={() => handleDeletePlace(place.id)}
+                                  className="text-red-600 hover:text-red-700"
+                                  title="Delete"
+                                >
+                                  <FaTrash size={20} />
+                                </button>
+                                <span className={`px-2 py-1 rounded text-sm ${
+                                  place.status === 'approved'
+                                    ? 'bg-green-100 text-green-800'
+                                    : place.status === 'rejected'
+                                    ? 'bg-red-100 text-red-800'
+                                    : 'bg-yellow-100 text-yellow-800'
+                                }`}>
+                                  {place.status.charAt(0).toUpperCase() + place.status.slice(1)}
+                                </span>
+                              </div>
+                            </div>
                           </div>
-                        </Link>
-                        <div className="flex space-x-4 ml-4">
-                          <button
-                            onClick={() => navigate(`/edit-place/${place.id}`)}
-                            className="text-blue-600 hover:text-blue-700"
-                            title="Edit"
-                          >
-                            <FaEdit size={20} />
-                          </button>
-                          <button
-                            onClick={() => handleDeletePlace(place.id)}
-                            className="text-red-600 hover:text-red-700"
-                            title="Delete"
-                          >
-                            <FaTrash size={20} />
-                          </button>
-                          <span className={`px-2 py-1 rounded text-sm ${
-                            place.status === 'approved'
-                              ? 'bg-green-100 text-green-800'
-                              : place.status === 'rejected'
-                              ? 'bg-red-100 text-red-800'
-                              : 'bg-yellow-100 text-yellow-800'
-                          }`}>
-                            {place.status.charAt(0).toUpperCase() + place.status.slice(1)}
-                          </span>
-                        </div>
+                        ))}
                       </div>
                     </div>
                   ))

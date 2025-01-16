@@ -22,6 +22,7 @@ import About from './pages/About';
 import NewsDetail from './pages/NewsDetail';
 import NewsList from './pages/NewsList';
 import Contact from './pages/Contact';
+import EditPlace from './pages/EditPlace';
 
 function App() {
   return (
@@ -81,6 +82,14 @@ function App() {
                 element={
                   <ProtectedRoute allowedUserTypes={[UserType.B2B_SUPPLIER]}>
                     <SupplierProfile />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/edit-place/:placeId" 
+                element={
+                  <ProtectedRoute allowedUserTypes={[UserType.B2C_BUSINESS_OWNER]}>
+                    <EditPlace />
                   </ProtectedRoute>
                 } 
               />
