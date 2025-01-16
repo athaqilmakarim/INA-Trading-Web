@@ -37,6 +37,26 @@ const Navbar = () => {
               Add Export Product
             </Link>
           )}
+          <Link
+            to="/export-products"
+            className={`px-4 py-2 text-sm font-medium ${
+              location.pathname === '/export-products'
+                ? 'text-red-600'
+                : 'text-gray-700 hover:text-red-600'
+            }`}
+          >
+            Export Products
+          </Link>
+          <Link
+            to="/contact"
+            className={`px-4 py-2 text-sm font-medium ${
+              location.pathname === '/contact'
+                ? 'text-red-600'
+                : 'text-gray-700 hover:text-red-600'
+            }`}
+          >
+            Contact Us
+          </Link>
           {/* Add other navigation links here */}
         </div>
       </div>

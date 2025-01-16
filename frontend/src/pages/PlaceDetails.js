@@ -28,10 +28,13 @@ const PlaceDetails = () => {
         const placeDoc = await getDoc(doc(firestore, 'places', id));
         
         if (placeDoc.exists()) {
+          const data = placeDoc.data();
+          // Handle both imageURLs and legacy images field
+          const images = data.imageURLs || data.images || [];
           setPlace({
             id: placeDoc.id,
-            ...placeDoc.data(),
-            imageURLs: placeDoc.data().images || []
+            ...data,
+            imageURLs: images
           });
         } else {
           setError('Place not found');
@@ -185,7 +188,7 @@ const PlaceDetails = () => {
           {/* Image Gallery */}
           <div className="relative h-[500px] bg-gray-200">
             <AnimatePresence mode="wait">
-              {place.imageURLs && place.imageURLs.length > 0 ? (
+              {place?.imageURLs && place.imageURLs.length > 0 ? (
                 <motion.img 
                   key={activeImageIndex}
                   src={place.imageURLs[activeImageIndex]} 
@@ -196,18 +199,24 @@ const PlaceDetails = () => {
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.3 }}
                   onError={(e) => {
+                    console.error('Image load error:', {
+                      placeId: place.id,
+                      placeName: place.name,
+                      imageUrl: place.imageURLs[activeImageIndex],
+                      imageIndex: activeImageIndex
+                    });
                     e.target.onerror = null;
                     e.target.src = 'https://via.placeholder.com/800x400?text=No+Image+Available';
                   }}
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center bg-gray-100">
-                  <span className="text-gray-400">No images available</span>
+                  <span className="text-gray-400">No image available</span>
                 </div>
               )}
             </AnimatePresence>
 
-            {place.imageURLs && place.imageURLs.length > 1 && (
+            {place?.imageURLs && place.imageURLs.length > 1 && (
               <>
                 <button
                   onClick={handlePrevImage}

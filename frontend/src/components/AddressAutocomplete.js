@@ -1,10 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-const AddressAutocomplete = ({ onAddressSelect, placeholder = "Enter address..." }) => {
+const AddressAutocomplete = ({ onAddressSelect, placeholder = "Enter address...", initialValue = "" }) => {
   const inputRef = useRef(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [error, setError] = useState(null);
-  const [selectedFromDropdown, setSelectedFromDropdown] = useState(false);
+  const [selectedFromDropdown, setSelectedFromDropdown] = useState(true);
+  const [value, setValue] = useState(initialValue);
+
+  useEffect(() => {
+    setValue(initialValue);
+    setSelectedFromDropdown(!!initialValue);
+  }, [initialValue]);
 
   useEffect(() => {
     const checkGoogleMapsLoaded = () => {
@@ -91,6 +97,7 @@ const AddressAutocomplete = ({ onAddressSelect, placeholder = "Enter address..."
   }, [onAddressSelect]);
 
   const handleInputChange = (e) => {
+    setValue(e.target.value);
     if (e.target.value === '') {
       setSelectedFromDropdown(false);
       onAddressSelect(''); // Clear the address when input is cleared
@@ -103,6 +110,7 @@ const AddressAutocomplete = ({ onAddressSelect, placeholder = "Enter address..."
       <input
         ref={inputRef}
         type="text"
+        value={value}
         placeholder={isLoaded ? placeholder : "Loading address autocomplete..."}
         className={`w-full p-2 border rounded focus:ring-2 focus:ring-red-500 focus:border-transparent ${error ? 'border-red-500' : ''}`}
         autoComplete="off"

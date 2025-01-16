@@ -21,6 +21,8 @@ import SupplierProfile from './pages/SupplierProfile';
 import About from './pages/About';
 import NewsDetail from './pages/NewsDetail';
 import NewsList from './pages/NewsList';
+import Contact from './pages/Contact';
+import EditPlace from './pages/EditPlace';
 
 function App() {
   return (
@@ -33,7 +35,11 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/about" element={<About />} />
               <Route path="/explore" element={<Explore />} />
+              <Route path="/export-products" element={<ExportProducts />} />
+              <Route path="/contact" element={<Contact />} />
               <Route path="/place/:id" element={<PlaceDetails />} />
+              <Route path="/admin" element={<Admin />} />
+              <Route path="/profile" element={<Profile />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/news/:id" element={<NewsDetail />} />
               <Route path="/news" element={<NewsList />} />
@@ -76,6 +82,14 @@ function App() {
                 element={
                   <ProtectedRoute allowedUserTypes={[UserType.B2B_SUPPLIER]}>
                     <SupplierProfile />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/edit-place/:placeId" 
+                element={
+                  <ProtectedRoute allowedUserTypes={[UserType.B2C_BUSINESS_OWNER]}>
+                    <EditPlace />
                   </ProtectedRoute>
                 } 
               />

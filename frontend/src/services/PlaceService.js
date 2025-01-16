@@ -144,15 +144,9 @@ class PlaceService {
 
       const currentData = placeDoc.data();
 
-      // Fallback: if doc used to have `imageURLs`, use them;
-      // else check `images`.
-      let updatedImageURLs = [];
-      if (Array.isArray(currentData.imageURLs) && currentData.imageURLs.length > 0) {
-        updatedImageURLs = [...currentData.imageURLs];
-      } else if (Array.isArray(currentData.images) && currentData.images.length > 0) {
-        updatedImageURLs = [...currentData.images];
-      }
-
+      // Handle images
+      let updatedImageURLs = [...(currentData.imageURLs || [])];
+      
       // Delete specified images
       for (const urlToDelete of imagesToDelete) {
         const imageRef = ref(storage, urlToDelete);
@@ -164,17 +158,13 @@ class PlaceService {
         }
       }
 
-      // Upload new images (raw File objects)
+      // Upload new images
       for (const img of newImages) {
         const newUrl = await this.uploadImage(img);
         updatedImageURLs.push(newUrl);
       }
 
-      let coordinate = currentData.coordinate;
-      if (address && address !== currentData.address) {
-        coordinate = await MapHelper.getCoordinates(address);
-      }
-
+      // Only update allowed fields according to Firebase rules
       const placeData = {
         name,
         type,
@@ -182,8 +172,7 @@ class PlaceService {
         contact,
         description,
         menu: menu || currentData.menu,
-        imageURLs: updatedImageURLs,  // unify under imageURLs
-        coordinate,
+        imageURLs: updatedImageURLs,
         updatedAt: serverTimestamp()
       };
 
@@ -310,20 +299,102 @@ class PlaceService {
       const placesQuery = query(placesRef, where('ownerId', '==', userId));
       const snapshot = await getDocs(placesQuery);
 
-      const places = snapshot.docs.map((docSnap) => {
+      const places = [];
+      for (const docSnap of snapshot.docs) {
         const data = docSnap.data();
-        return {
+        
+        // Verify each image URL
+        if (data.imageURLs && Array.isArray(data.imageURLs)) {
+          const validImageURLs = [];
+          for (const url of data.imageURLs) {
+            const isValid = await this.verifyImageURL(url);
+            if (isValid) {
+              validImageURLs.push(url);
+            }
+          }
+          
+          // If some images were invalid, update the document
+          if (validImageURLs.length !== data.imageURLs.length) {
+            await updateDoc(doc(firestore, 'places', docSnap.id), {
+              imageURLs: validImageURLs
+            });
+            data.imageURLs = validImageURLs;
+          }
+        }
+
+        places.push({
           id: docSnap.id,
           ...data,
           createdAt: data.createdAt?.toDate?.()
-        };
-      });
+        });
+      }
 
       console.log('User places:', places);
       return places;
     } catch (error) {
       console.error('Error fetching user places:', error);
       throw error;
+    }
+  }
+
+  async deletePlace(placeId) {
+    try {
+      const docRef = doc(firestore, 'places', placeId);
+      await deleteDoc(docRef);
+    } catch (error) {
+      console.error('Error deleting place:', error);
+      throw error;
+    }
+  }
+
+  async getPlaceById(placeId) {
+    try {
+      const docRef = doc(firestore, 'places', placeId);
+      const docSnap = await getDoc(docRef);
+      
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        
+        // Verify each image URL
+        if (data.imageURLs && Array.isArray(data.imageURLs)) {
+          const validImageURLs = [];
+          for (const url of data.imageURLs) {
+            const isValid = await this.verifyImageURL(url);
+            if (isValid) {
+              validImageURLs.push(url);
+            }
+          }
+          
+          // If some images were invalid, update the document
+          if (validImageURLs.length !== data.imageURLs.length) {
+            await updateDoc(docRef, {
+              imageURLs: validImageURLs
+            });
+            data.imageURLs = validImageURLs;
+          }
+        }
+
+        return {
+          id: docSnap.id,
+          ...data
+        };
+      }
+      return null;
+    } catch (error) {
+      console.error('Error getting place:', error);
+      throw error;
+    }
+  }
+
+  // Helper method to check if image URL is valid
+  async verifyImageURL(url) {
+    try {
+      const imageRef = ref(storage, url);
+      await getDownloadURL(imageRef); // This will throw an error if the file doesn't exist
+      return true;
+    } catch (error) {
+      console.log('Image not found:', url);
+      return false;
     }
   }
 }
