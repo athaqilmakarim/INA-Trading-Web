@@ -30,6 +30,22 @@ export const UserService = {
     }
   },
 
+  async getUserProfile(userId) {
+    try {
+      const userDoc = await getDoc(doc(firestore, 'users', userId));
+      if (!userDoc.exists()) {
+        return null;
+      }
+      return {
+        ...userDoc.data(),
+        id: userDoc.id
+      };
+    } catch (error) {
+      console.error('Error getting user profile:', error);
+      throw error;
+    }
+  },
+
   async setUserAsAdmin(userId) {
     try {
       const userRef = doc(firestore, 'users', userId);

@@ -1,5 +1,5 @@
 import { firestore, storage, auth } from '../firebase';
-import { collection, addDoc, getDocs, doc, deleteDoc, updateDoc, getDoc } from 'firebase/firestore';
+import { collection, addDoc, getDocs, doc, deleteDoc, updateDoc, getDoc, query, where } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 
 class ExportProductService {
@@ -173,6 +173,21 @@ class ExportProductService {
       await deleteDoc(docRef);
     } catch (error) {
       console.error('Error deleting export product:', error);
+      throw error;
+    }
+  }
+
+  async getUserExportProducts(userId) {
+    try {
+      const querySnapshot = await getDocs(
+        query(collection(firestore, 'export_products'), where('createdBy', '==', userId))
+      );
+      return querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+    } catch (error) {
+      console.error('Error getting user export products:', error);
       throw error;
     }
   }

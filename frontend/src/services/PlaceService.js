@@ -326,6 +326,16 @@ class PlaceService {
       throw error;
     }
   }
+
+  async deletePlace(placeId) {
+    try {
+      const docRef = doc(firestore, 'places', placeId);
+      await deleteDoc(docRef);
+    } catch (error) {
+      console.error('Error deleting place:', error);
+      throw error;
+    }
+  }
 }
 
 export const placeService = new PlaceService();
