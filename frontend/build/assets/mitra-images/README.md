@@ -49,7 +49,7 @@ The following institutional partner logos are stored in the `partners/` director
 - iiyh.png
 - kemendag.png - Ministry of Trade
 - kemendes.png - Ministry of Village Affairs
-- kemenkopukm.png - Ministry of Cooperatives and SMEs
+- kemenkopukm.png - Ministry of Cooperatives and MSMEs
 - kemenperin.png - Ministry of Industry
 - kementan.png - Ministry of Agriculture
 - lpdb.png - LPDB
