@@ -244,7 +244,14 @@ const Profile = () => {
                           <h3 className="font-semibold text-gray-900">{product.name}</h3>
                           <p className="text-gray-600 mt-1">{product.category}</p>
                           <p className="text-sm text-gray-500 mt-2">
-                            Price: ${product.price} per {product.unit}
+                            Price: {typeof product.price === 'object' ? 
+                              `${product.price.min.toLocaleString()} - ${product.price.max.toLocaleString()} ${product.price.currency}` :
+                              product.price}
+                          </p>
+                          <p className="text-sm text-gray-500">
+                            Minimum Order: {typeof product.minOrder === 'object' ? 
+                              `${product.minOrder.quantity.toLocaleString()} ${product.minOrder.unit}` :
+                              product.minOrder}
                           </p>
                         </div>
                         <div className="flex space-x-4">

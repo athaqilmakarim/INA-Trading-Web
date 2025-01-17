@@ -134,7 +134,9 @@ const ExportProductDetail = () => {
                   <div className="bg-gray-50 p-4 rounded-lg">
                     <div className="text-sm text-gray-500">Price Range</div>
                     <div className="text-lg font-medium text-gray-900">
-                      {product.price.min.toLocaleString()} - {product.price.max.toLocaleString()} {product.price.currency}
+                      {typeof product.price === 'object' ? 
+                        `${product.price.min.toLocaleString()} - ${product.price.max.toLocaleString()} ${product.price.currency}` :
+                        product.price}
                     </div>
                     <div className="text-sm text-gray-500 mt-1">Per unit</div>
                   </div>
