@@ -9,7 +9,7 @@ export default function Register() {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
-    userType: UserType.CUSTOMER
+    userType: UserType.B2C_CONSUMER
   });
 
   const handleSubmit = async (e) => {
@@ -99,9 +99,10 @@ export default function Register() {
                 disabled={loading}
                 className="w-full px-4 py-2 bg-white bg-opacity-20 border border-gray-300 border-opacity-20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200"
               >
-                <option value={UserType.CUSTOMER} className="text-gray-900">Foreign Consumer (B2C)</option>
-                <option value={UserType.B2C_BUSINESS_OWNER} className="text-gray-900">Business Owner (B2C)</option>
-                <option value={UserType.B2B_SUPPLIER} className="text-gray-900">Supplier (B2B)</option>
+                <option value={UserType.B2C_CONSUMER} className="text-gray-900">B2C Consumer (Foreign Consumer)</option>
+                <option value={UserType.B2C_BUSINESS_OWNER} className="text-gray-900">B2C Business Owner</option>
+                <option value={UserType.B2B_IMPORTER} className="text-gray-900">B2B Importer</option>
+                <option value={UserType.B2B_SUPPLIER} className="text-gray-900">B2B Supplier/Exporter</option>
               </select>
             </div>
           </div>
