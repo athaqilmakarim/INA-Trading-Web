@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { placeService } from '../services/PlaceService';
-import { UserService, UserType } from '../services/UserService';
+import userService, { UserType } from '../services/UserService';
 import { exportProductService } from '../services/ExportProductService';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 
@@ -26,8 +26,8 @@ const Profile = () => {
         setIsLoading(true);
         const [userPlaces, type, profile] = await Promise.all([
           placeService.getUserPlaces(currentUser.uid),
-          UserService.checkUserType(currentUser.uid),
-          UserService.getUserProfile(currentUser.uid)
+          userService.checkUserType(currentUser.uid),
+          userService.getUserProfile(currentUser.uid)
         ]);
         
         setPlaces(userPlaces);

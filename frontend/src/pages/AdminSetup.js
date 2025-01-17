@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { UserService } from '../services/UserService';
+import userService from '../services/UserService';
 import { useNavigate } from 'react-router-dom';
 
 const AdminSetup = () => {
@@ -19,7 +19,7 @@ const AdminSetup = () => {
       setIsLoading(true);
       setError('');
       
-      await UserService.setUserAsAdmin(currentUser.uid);
+      await userService.setUserAsAdmin(currentUser.uid);
       navigate('/admin');
     } catch (error) {
       setError('Failed to set up admin: ' + error.message);
