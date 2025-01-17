@@ -23,6 +23,7 @@ import VerifyEmailRequired from './pages/VerifyEmailRequired';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import { UserType } from './services/UserService';
+import ForgotPassword from './pages/ForgotPassword';
 
 // Wrapper component to handle navbar visibility
 function AppContent() {
@@ -43,6 +44,7 @@ function AppContent() {
         <Route path="/register" element={<Register />} />
         <Route path="/auth/verify-email" element={<Auth />} />
         <Route path="/verify-email-required" element={<VerifyEmailRequired />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
         
         {/* Protected Routes */}
         <Route

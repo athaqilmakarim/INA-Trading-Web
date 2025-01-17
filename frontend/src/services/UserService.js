@@ -4,6 +4,7 @@ import {
   signInWithEmailAndPassword,
   sendEmailVerification,
   applyActionCode,
+  sendPasswordResetEmail,
   signOut
 } from 'firebase/auth';
 import { doc, setDoc, getDoc, updateDoc } from 'firebase/firestore';
@@ -159,6 +160,30 @@ class UserService {
       return true;
     } catch (error) {
       console.error('Error setting user as admin:', error);
+      throw error;
+    }
+  }
+
+  async sendPasswordReset(email) {
+    try {
+      const actionCodeSettings = {
+        url: window.location.origin + '/login',
+        handleCodeInApp: false
+      };
+      
+      await sendPasswordResetEmail(auth, email, actionCodeSettings);
+      
+      return {
+        success: true,
+        message: 'Password reset email sent successfully.'
+      };
+    } catch (error) {
+      console.error('Error sending password reset:', error);
+      if (error.code === 'auth/user-not-found') {
+        throw new Error('No account exists with this email address.');
+      } else if (error.code === 'auth/invalid-email') {
+        throw new Error('Invalid email address. Please check your email and try again.');
+      }
       throw error;
     }
   }
