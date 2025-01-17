@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { placeService } from '../services/PlaceService';
-import { UserService, UserType } from '../services/UserService';
+import userService, { UserType } from '../services/UserService';
 import { exportProductService } from '../services/ExportProductService';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 
@@ -26,8 +26,8 @@ const Profile = () => {
         setIsLoading(true);
         const [userPlaces, type, profile] = await Promise.all([
           placeService.getUserPlaces(currentUser.uid),
-          UserService.checkUserType(currentUser.uid),
-          UserService.getUserProfile(currentUser.uid)
+          userService.checkUserType(currentUser.uid),
+          userService.getUserProfile(currentUser.uid)
         ]);
         
         setPlaces(userPlaces);
@@ -244,7 +244,14 @@ const Profile = () => {
                           <h3 className="font-semibold text-gray-900">{product.name}</h3>
                           <p className="text-gray-600 mt-1">{product.category}</p>
                           <p className="text-sm text-gray-500 mt-2">
-                            Price: ${product.price} per {product.unit}
+                            Price: {typeof product.price === 'object' ? 
+                              `${product.price.min.toLocaleString()} - ${product.price.max.toLocaleString()} ${product.price.currency}` :
+                              product.price}
+                          </p>
+                          <p className="text-sm text-gray-500">
+                            Minimum Order: {typeof product.minOrder === 'object' ? 
+                              `${product.minOrder.quantity.toLocaleString()} ${product.minOrder.unit}` :
+                              product.minOrder}
                           </p>
                         </div>
                         <div className="flex space-x-4">

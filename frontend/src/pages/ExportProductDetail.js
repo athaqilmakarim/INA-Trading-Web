@@ -130,20 +130,55 @@ const ExportProductDetail = () => {
               <div className="border-t border-gray-100 pt-6">
                 <h2 className="text-lg font-semibold mb-4">Product Details</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="bg-gray-50 p-4 rounded-lg">
-                    <div className="text-sm text-gray-500">Minimum Order Quantity</div>
-                    <div className="text-lg font-medium text-gray-900">{product.minOrderQuantity}</div>
-                  </div>
-                  <div className="bg-gray-50 p-4 rounded-lg">
-                    <div className="text-sm text-gray-500">Monthly Capacity</div>
-                    <div className="text-lg font-medium text-gray-900">{product.monthlyCapacity}</div>
-                  </div>
+                  {/* Price Range */}
                   <div className="bg-gray-50 p-4 rounded-lg">
                     <div className="text-sm text-gray-500">Price Range</div>
                     <div className="text-lg font-medium text-gray-900">
-                      {product.price.currency} {product.price.min} - {product.price.max}
+                      {typeof product.price === 'object' ? 
+                        `${product.price.min.toLocaleString()} - ${product.price.max.toLocaleString()} ${product.price.currency}` :
+                        product.price}
+                    </div>
+                    <div className="text-sm text-gray-500 mt-1">Per unit</div>
+                  </div>
+
+                  {/* Category */}
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <div className="text-sm text-gray-500">Category</div>
+                    <div className="text-lg font-medium text-gray-900">{product.category}</div>
+                  </div>
+
+                  {/* Minimum Order */}
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <div className="text-sm text-gray-500">Minimum Order</div>
+                    <div className="text-lg font-medium text-gray-900">
+                      {typeof product.minOrder === 'object' ? 
+                        `${product.minOrder.quantity.toLocaleString()} ${product.minOrder.unit}` :
+                        product.minOrder}
                     </div>
                   </div>
+
+                  {/* Monthly Capacity */}
+                  <div className="bg-gray-50 p-4 rounded-lg group relative">
+                    <div className="flex items-center space-x-1">
+                      <div className="text-sm text-gray-500">Monthly Production Capacity</div>
+                      <div className="relative">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-400 cursor-help" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <div className="invisible group-hover:visible absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-48 p-2 bg-gray-900 text-white text-xs rounded shadow-lg z-10">
+                          Maximum amount the supplier can produce or supply per month
+                          <div className="absolute left-1/2 -translate-x-1/2 top-full w-2 h-2 bg-gray-900 transform rotate-45"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="text-lg font-medium text-gray-900">
+                      {typeof product.monthlyCapacity === 'object' ? 
+                        `${product.monthlyCapacity.quantity.toLocaleString()} ${product.monthlyCapacity.unit}` :
+                        product.monthlyCapacity}
+                    </div>
+                  </div>
+
+                  {/* Additional Specifications */}
                   {product.specifications && Object.entries(product.specifications).map(([key, value]) => (
                     <div key={key} className="bg-gray-50 p-4 rounded-lg">
                       <div className="text-sm text-gray-500">{key.charAt(0).toUpperCase() + key.slice(1)}</div>
@@ -169,10 +204,18 @@ const ExportProductDetail = () => {
                 </div>
               )}
 
+              {/* Contact Section */}
               <div className="border-t border-gray-100 pt-6">
+                <div className="mb-6">
+                  <h2 className="text-lg font-semibold mb-4">Contact Supplier</h2>
+                  <p className="text-gray-600">
+                    Interested in this product? Contact the supplier to discuss your requirements,
+                    request samples, or get more information about bulk orders.
+                  </p>
+                </div>
                 <button
                   className="w-full bg-red-600 text-white py-3 px-8 rounded-lg hover:bg-red-700 transition-colors flex items-center justify-center space-x-2"
-                  onClick={() => window.location.href = `mailto:?subject=Inquiry about ${product.name}&body=I am interested in your product: ${product.name}`}
+                  onClick={() => window.location.href = `mailto:?subject=Inquiry about ${product.name}&body=I am interested in your product: ${product.name}%0D%0A%0D%0AProduct Details:%0D%0A- Category: ${product.category}%0D%0A- Price Range: ${product.price.min.toLocaleString()} - ${product.price.max.toLocaleString()} ${product.price.currency}%0D%0A- Minimum Order: ${product.minOrder.quantity.toLocaleString()} ${product.minOrder.unit}%0D%0A%0D%0APlease provide more information about this product.`}
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />

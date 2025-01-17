@@ -1,7 +1,10 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { exportProductService } from '../services/ExportProductService';
 import { toast } from 'react-toastify';
+import { ref, deleteObject } from 'firebase/storage';
+import { storage } from '../firebase';
 import {
   handleImageSelection,
   ImagePreview,
@@ -9,11 +12,12 @@ import {
   ImageUploadZone
 } from '../utils/imageUtils';
 
-const AddExportProduct = () => {
+const EditExportProduct = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
   const { currentUser } = useAuth();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(false);
 
   // Form states
   const [name, setName] = useState('');
@@ -30,6 +34,46 @@ const AddExportProduct = () => {
   const [images, setImages] = useState([]);
   const [previewUrls, setPreviewUrls] = useState([]);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [existingImages, setExistingImages] = useState([]);
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const product = await exportProductService.getExportProductById(id);
+        if (!product) {
+          setError('Product not found');
+          return;
+        }
+
+        // Set form data
+        setName(product.name);
+        setDescription(product.description);
+        setCategory(product.category);
+        if (product.price) {
+          setPriceMin(product.price.min.toString());
+          setPriceMax(product.price.max.toString());
+          setCurrency(product.price.currency);
+        }
+        if (product.monthlyCapacity) {
+          setMonthlyCapacity(product.monthlyCapacity.quantity.toString());
+          setMonthlyCapacityUnit(product.monthlyCapacity.unit);
+        }
+        if (product.minOrder) {
+          setMinOrderQuantity(product.minOrder.quantity.toString());
+          setMinOrderUnit(product.minOrder.unit);
+        }
+        if (product.images) {
+          setExistingImages(product.images);
+        }
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProduct();
+  }, [id]);
 
   const handleImageChange = useCallback((e) => {
     handleImageSelection(e.target.files, setImages, setPreviewUrls);
@@ -52,6 +96,13 @@ const AddExportProduct = () => {
     });
   };
 
+  const removeExistingImage = (index) => {
+    setExistingImages(prev => prev.filter((_, i) => i !== index));
+    toast.success('Existing image removed', {
+      icon: "🗑️"
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -59,19 +110,18 @@ const AddExportProduct = () => {
     setUploadProgress(0);
 
     try {
-      let imageUrls = [];
+      let imageUrls = [...existingImages];
       if (images.length > 0) {
-        const uploadToast = toast.loading('Uploading images...', {
+        const uploadToast = toast.loading('Uploading new images...', {
           position: "bottom-right"
         });
 
-        // Upload images one by one and track progress
+        // Upload new images
         for (const [index, image] of images.entries()) {
           try {
             const imageUrl = await exportProductService.uploadImage(image);
             imageUrls.push(imageUrl);
             
-            // Update progress
             const progress = ((index + 1) / images.length) * 100;
             setUploadProgress(Math.min(Math.round(progress), 100));
             
@@ -92,7 +142,21 @@ const AddExportProduct = () => {
         customCategory.charAt(0).toUpperCase() + customCategory.slice(1) : 
         category;
 
-      await exportProductService.createExportProduct({
+      // Get the current product to compare images
+      const currentProduct = await exportProductService.getExportProductById(id);
+      const imagesToDelete = currentProduct.images?.filter(url => !existingImages.includes(url)) || [];
+
+      // Delete removed images from storage
+      for (const imageUrl of imagesToDelete) {
+        try {
+          const imageRef = ref(storage, imageUrl);
+          await deleteObject(imageRef);
+        } catch (error) {
+          console.error('Error deleting image:', error);
+        }
+      }
+
+      await exportProductService.updateExportProduct(id, {
         name,
         description,
         category: finalCategory,
@@ -112,27 +176,12 @@ const AddExportProduct = () => {
         images: imageUrls
       });
 
-      toast.success('Export product added successfully!', {
+      toast.success('Export product updated successfully!', {
         icon: "🎉",
         className: "animate-slideUp"
       });
-      setSuccess(true);
       
-      // Reset form
-      setName('');
-      setDescription('');
-      setCategory('');
-      setCustomCategory('');
-      setPriceMin('');
-      setPriceMax('');
-      setCurrency('USD');
-      setMonthlyCapacity('');
-      setMonthlyCapacityUnit('KG');
-      setMinOrderQuantity('');
-      setMinOrderUnit('KG');
-      setImages([]);
-      setPreviewUrls([]);
-      setUploadProgress(0);
+      navigate('/profile');
     } catch (err) {
       toast.error(err.message || 'An error occurred', {
         className: "animate-slideDown"
@@ -143,12 +192,37 @@ const AddExportProduct = () => {
     }
   };
 
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-[60vh]">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-600"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-[60vh] flex items-center justify-center">
+        <div className="text-center p-8 bg-red-50 rounded-lg">
+          <h3 className="text-xl font-semibold text-red-800 mb-2">Error</h3>
+          <p className="text-red-600">{error}</p>
+          <button
+            onClick={() => navigate('/profile')}
+            className="mt-4 px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+          >
+            Back to Profile
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-3xl mx-auto">
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
           <div className="bg-red-600 px-6 py-4">
-            <h1 className="text-2xl font-bold text-white">Add New Export Product</h1>
+            <h1 className="text-2xl font-bold text-white">Edit Export Product</h1>
           </div>
 
           <form onSubmit={handleSubmit} className="p-6 space-y-8">
@@ -380,38 +454,77 @@ const AddExportProduct = () => {
             {/* Image Upload Section */}
             <div className="space-y-6 animate-fadeIn">
               <h2 className="text-xl font-semibold text-gray-800 pb-2 border-b">Product Images</h2>
-              <ImageUploadZone
-                onDrop={handleDrop}
-                onDragOver={handleDragOver}
-                onChange={handleImageChange}
-              />
-
-              {/* Image Previews */}
-              {previewUrls.length > 0 && (
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  {previewUrls.map((url, index) => (
-                    <ImagePreview
-                      key={index}
-                      url={url}
-                      index={index}
-                      onRemove={() => removeImage(index)}
-                    />
-                  ))}
+              
+              {/* Existing Images */}
+              {existingImages.length > 0 && (
+                <div>
+                  <h3 className="text-sm font-medium text-gray-700 mb-2">Existing Images</h3>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                    {existingImages.map((url, index) => (
+                      <div key={index} className="relative group">
+                        <img
+                          src={url}
+                          alt={`Existing ${index + 1}`}
+                          className="w-full aspect-square object-cover rounded-lg"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => removeExistingImage(index)}
+                          className="absolute top-2 right-2 p-1 bg-red-600 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
 
-              {/* Upload Progress */}
-              {uploadProgress > 0 && uploadProgress < 100 && (
-                <UploadProgress progress={uploadProgress} />
-              )}
+              {/* New Image Upload */}
+              <div>
+                <h3 className="text-sm font-medium text-gray-700 mb-2">Add New Images</h3>
+                <ImageUploadZone
+                  onDrop={handleDrop}
+                  onDragOver={handleDragOver}
+                  onChange={handleImageChange}
+                />
+
+                {/* Image Previews */}
+                {previewUrls.length > 0 && (
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+                    {previewUrls.map((url, index) => (
+                      <ImagePreview
+                        key={index}
+                        url={url}
+                        index={index}
+                        onRemove={() => removeImage(index)}
+                      />
+                    ))}
+                  </div>
+                )}
+
+                {/* Upload Progress */}
+                {uploadProgress > 0 && uploadProgress < 100 && (
+                  <UploadProgress progress={uploadProgress} />
+                )}
+              </div>
             </div>
 
             {/* Submit Button */}
-            <div className="pt-6">
+            <div className="pt-6 flex space-x-4">
+              <button
+                type="button"
+                onClick={() => navigate('/profile')}
+                className="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors"
+              >
+                Cancel
+              </button>
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-red-600 text-white py-3 px-4 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+                className="flex-1 bg-red-600 text-white py-3 px-4 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
               >
                 {isLoading ? (
                   <span className="flex items-center justify-center">
@@ -419,10 +532,10 @@ const AddExportProduct = () => {
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
-                    {uploadProgress > 0 ? `Uploading... ${uploadProgress}%` : 'Processing...'}
+                    {uploadProgress > 0 ? `Uploading... ${uploadProgress}%` : 'Saving...'}
                   </span>
                 ) : (
-                  'Add Product'
+                  'Save Changes'
                 )}
               </button>
             </div>
@@ -433,4 +546,4 @@ const AddExportProduct = () => {
   );
 };
 
-export default AddExportProduct; 
+export default EditExportProduct; 

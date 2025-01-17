@@ -441,41 +441,40 @@ const Admin = () => {
             <Card elevation={3}>
               <CardContent>
                 <Box className="flex justify-between items-start">
-                  <Box>
-                    <Typography variant="h6" gutterBottom>
-                      {item.name || item.title}
-                    </Typography>
-                    <Typography variant="body2" color="textSecondary" paragraph>
-                      {item.description}
-                    </Typography>
-                    {item.type && (
+                  <Box sx={{ flex: 1 }}>
+                    <Box display="flex" alignItems="center" gap={1} mb={1}>
+                      <Typography variant="h6" component="h3" sx={{ fontSize: '1.1rem' }}>
+                        {item.name || item.title}
+                      </Typography>
                       <Chip 
                         size="small" 
-                        label={item.type} 
-                        color="primary" 
-                        variant="outlined"
-                        sx={{ mr: 1 }}
+                        label={item.type || type}
+                        sx={{ backgroundColor: 'rgba(0, 0, 0, 0.08)' }}
                       />
+                    </Box>
+                    {item.address && (
+                      <Typography 
+                        variant="body2" 
+                        color="textSecondary"
+                        sx={{
+                          mb: 1,
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap'
+                        }}
+                      >
+                        {item.address}
+                      </Typography>
                     )}
                     <Chip
                       size="small"
-                      label={item.status}
+                      label={item.status.charAt(0).toUpperCase() + item.status.slice(1)}
                       color={getStatusColor(item.status)}
                       icon={getStatusIcon(item.status)}
                     />
-                    {item.category && (
-                      <Typography variant="body2" color="textSecondary" sx={{ mt: 1 }}>
-                        Category: {item.category}
-                      </Typography>
-                    )}
-                    {item.price && (
-                      <Typography variant="body2" color="textSecondary">
-                        Price: {item.price.currency} {item.price.min} - {item.price.max}
-                      </Typography>
-                    )}
                   </Box>
                   {statusFilter === 'pending' && (
-                    <Box>
+                    <Box sx={{ ml: 2, display: 'flex', gap: 1 }}>
                       <Tooltip title="Approve">
                         <IconButton
                           onClick={() => type === 'place' 
@@ -521,7 +520,8 @@ const Admin = () => {
           '&:hover': {
             backgroundColor: 'rgba(0, 0, 0, 0.04)',
             transition: 'background-color 0.2s'
-          }
+          },
+          py: 2
         }}
       >
         <Checkbox
@@ -530,39 +530,53 @@ const Admin = () => {
         />
         <ListItemText
           primary={
-            <Typography variant="subtitle1">
-              {item.name || item.title}
-            </Typography>
+            <div className="flex items-center space-x-2">
+              <Typography variant="subtitle1" component="span">
+                {item.name || item.title}
+              </Typography>
+              <Chip
+                size="small"
+                label={item.type || type}
+                sx={{ backgroundColor: 'rgba(0, 0, 0, 0.08)' }}
+              />
+            </div>
           }
           secondary={
-            <React.Fragment>
-              <Typography component="span" variant="body2" color="textSecondary">
-                {item.status && `Status: ${item.status}`}
-                {item.description && ` • ${item.description}`}
+            item.address && (
+              <Typography 
+                component="span" 
+                variant="body2" 
+                color="textSecondary"
+                sx={{ 
+                  display: 'block',
+                  mt: 0.5,
+                  maxWidth: '90%',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap'
+                }}
+              >
+                {item.address}
               </Typography>
-            </React.Fragment>
+            )
           }
         />
         <ListItemSecondaryAction>
-          {item.status && (
-            <Chip
-              label={item.status}
-              color={getStatusColor(item.status)}
-              style={{ marginRight: 8 }}
-              size="small"
-            />
-          )}
-          <Tooltip title="Delete">
-            <IconButton
-              edge="end"
-              aria-label="delete"
-              onClick={() => handleDelete(item.id, type)}
-              color="error"
-              size="small"
-            >
-              <DeleteIcon />
-            </IconButton>
-          </Tooltip>
+          <Chip
+            size="small"
+            label={item.status.charAt(0).toUpperCase() + item.status.slice(1)}
+            color={getStatusColor(item.status)}
+            sx={{ mr: 1 }}
+          />
+          <IconButton
+            edge="end"
+            aria-label="delete"
+            onClick={() => handleDelete(item.id, type)}
+            color="error"
+            size="small"
+          >
+            <DeleteIcon />
+          </IconButton>
         </ListItemSecondaryAction>
       </ListItem>
     </motion.div>
@@ -571,29 +585,29 @@ const Admin = () => {
   const renderCleanupMode = (items, type) => (
     <Paper elevation={3} sx={{ p: 2 }}>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-        <Typography variant="h6">
-          {type.charAt(0).toUpperCase() + type.slice(1)}s Management
-        </Typography>
-        <Box>
-          {selectedItems.length > 0 && (
-            <Zoom in={selectedItems.length > 0}>
-              <Button
-                variant="contained"
-                color="error"
-                startIcon={<DeleteIcon />}
-                onClick={handleBulkDelete}
-                sx={{ mr: 1 }}
-              >
-                Delete Selected ({selectedItems.length})
-              </Button>
-            </Zoom>
-          )}
+        <Box display="flex" alignItems="center">
           <Checkbox
             checked={selectedItems.length === items.length}
             indeterminate={selectedItems.length > 0 && selectedItems.length < items.length}
             onChange={() => handleSelectAll(items)}
+            sx={{ mr: 1 }}
           />
+          <Typography variant="body1" color="textSecondary">
+            Select All
+          </Typography>
         </Box>
+        {selectedItems.length > 0 && (
+          <Zoom in={selectedItems.length > 0}>
+            <Button
+              variant="contained"
+              color="error"
+              startIcon={<DeleteIcon />}
+              onClick={handleBulkDelete}
+            >
+              Delete Selected ({selectedItems.length})
+            </Button>
+          </Zoom>
+        )}
       </Box>
       <List>
         <AnimatePresence>

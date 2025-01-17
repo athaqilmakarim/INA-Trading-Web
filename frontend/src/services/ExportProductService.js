@@ -1,5 +1,5 @@
 import { firestore, storage, auth } from '../firebase';
-import { collection, addDoc, getDocs, doc, deleteDoc, updateDoc, getDoc, query, where } from 'firebase/firestore';
+import { collection, addDoc, getDocs, doc, deleteDoc, updateDoc, getDoc, query, where, serverTimestamp } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 
 class ExportProductService {
@@ -58,8 +58,11 @@ class ExportProductService {
 
       const docRef = await addDoc(collection(firestore, 'export_products'), {
         ...productData,
+        sellerId: user.uid,
+        createdBy: user.uid,
         createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
+        updatedAt: new Date().toISOString(),
+        status: 'pending'
       });
 
       return docRef.id;
@@ -74,33 +77,18 @@ class ExportProductService {
       const docRef = doc(firestore, 'export_products', id);
       const docSnap = await getDoc(docRef);
       
-      if (docSnap.exists()) {
-        return {
-          id: docSnap.id,
-          ...docSnap.data()
-        };
+      if (!docSnap.exists()) {
+        throw new Error('Product not found');
       }
-      return null;
+      
+      return { id: docSnap.id, ...docSnap.data() };
     } catch (error) {
       console.error('Error getting export product:', error);
       throw error;
     }
   }
 
-  async getAllExportProducts() {
-    try {
-      const querySnapshot = await getDocs(collection(firestore, 'export_products'));
-      return querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
-    } catch (error) {
-      console.error('Error getting export products:', error);
-      throw error;
-    }
-  }
-
-  async updateExportProduct(id, productData, newImages = [], imagesToDelete = []) {
+  async updateExportProduct(id, data) {
     try {
       const user = auth.currentUser;
       if (!user) {
@@ -114,35 +102,27 @@ class ExportProductService {
         throw new Error('Export product not found');
       }
 
-      const currentData = currentProduct.data();
-      let updatedImageUrls = [...(currentData.images || [])];
-
-      // Delete specified images
-      for (const imageUrl of imagesToDelete) {
-        const imageRef = ref(storage, imageUrl);
-        try {
-          await deleteObject(imageRef);
-          updatedImageUrls = updatedImageUrls.filter(url => url !== imageUrl);
-        } catch (error) {
-          console.error('Error deleting image:', error);
-        }
-      }
-
-      // Upload new images
-      for (const image of newImages) {
-        const imageUrl = await this.uploadImage(image);
-        updatedImageUrls.push(imageUrl);
-      }
-
+      const timestamp = serverTimestamp();
+      
       await updateDoc(docRef, {
-        ...productData,
-        images: updatedImageUrls,
-        updatedAt: new Date().toISOString()
+        ...data,
+        updatedAt: timestamp
       });
-
-      return id;
     } catch (error) {
       console.error('Error updating export product:', error);
+      throw error;
+    }
+  }
+
+  async getAllExportProducts() {
+    try {
+      const querySnapshot = await getDocs(collection(firestore, 'export_products'));
+      return querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+    } catch (error) {
+      console.error('Error getting export products:', error);
       throw error;
     }
   }

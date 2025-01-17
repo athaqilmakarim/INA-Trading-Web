@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { UserService, UserType } from '../../services/UserService';
+import userService, { UserType } from '../../services/UserService';
 
 const Navbar = () => {
   const { currentUser } = useAuth();
@@ -15,7 +15,7 @@ const Navbar = () => {
       if (currentUser) {
         try {
           setIsLoading(true);
-          const type = await UserService.checkUserType(currentUser.uid);
+          const type = await userService.checkUserType(currentUser.uid);
           setUserType(type);
         } catch (error) {
           console.error('Error fetching user type:', error);
@@ -110,7 +110,7 @@ const Navbar = () => {
             )}
             
             {!currentUser && (
-              <ActionButton to="/auth">
+              <ActionButton to="/login">
                 Sign In
               </ActionButton>
             )}
@@ -165,7 +165,7 @@ const Navbar = () => {
           {!currentUser && (
             <div className="px-4">
               <Link
-                to="/auth"
+                to="/login"
                 className="block w-full text-center px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700"
               >
                 Sign In

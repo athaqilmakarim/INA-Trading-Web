@@ -1,11 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { 
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword, 
-  signOut as firebaseSignOut,
-  onAuthStateChanged 
-} from 'firebase/auth';
+import { onAuthStateChanged, signOut as firebaseSignOut } from 'firebase/auth';
 import { auth } from '../firebase';
+import userService from '../services/UserService';
 
 const AuthContext = createContext();
 
@@ -18,13 +14,13 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   // Sign Up function
-  const signUp = async (email, password) => {
-    return createUserWithEmailAndPassword(auth, email, password);
+  const signUp = async (email, password, userType) => {
+    return userService.register(email, password, userType);
   };
 
   // Sign In function
   const signIn = async (email, password) => {
-    return signInWithEmailAndPassword(auth, email, password);
+    return userService.login(email, password);
   };
 
   // Sign Out function
