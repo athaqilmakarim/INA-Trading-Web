@@ -8,34 +8,44 @@ import { FaEdit, FaTrash } from 'react-icons/fa';
 
 const Profile = () => {
   const navigate = useNavigate();
-  const { currentUser, signOut } = useAuth();
+  const { currentUser, signOut, userType } = useAuth();
   const [places, setPlaces] = useState([]);
   const [exportProducts, setExportProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [userType, setUserType] = useState(null);
   const [userData, setUserData] = useState(null);
 
   // Sort places alphabetically by name
   const sortedPlaces = [...places].sort((a, b) => a.name.localeCompare(b.name));
 
   useEffect(() => {
+    console.log('Profile useEffect - currentUser:', currentUser?.uid, 'userType:', userType);
     const fetchUserData = async () => {
-      if (!currentUser) return;
+      if (!currentUser) {
+        console.log('No current user, skipping data fetch');
+        setIsLoading(false);
+        return;
+      }
+
+      if (!userType) {
+        console.log('No user type yet, waiting...');
+        return;
+      }
 
       try {
+        console.log('Fetching user data...');
         setIsLoading(true);
-        const [userPlaces, type, profile] = await Promise.all([
+        const [userPlaces, profile] = await Promise.all([
           placeService.getUserPlaces(currentUser.uid),
-          userService.checkUserType(currentUser.uid),
           userService.getUserProfile(currentUser.uid)
         ]);
         
+        console.log('Setting places:', userPlaces.length);
         setPlaces(userPlaces);
-        setUserType(type);
         setUserData(profile);
 
         // Fetch export products if user is a B2B supplier
-        if (type === UserType.B2B_SUPPLIER) {
+        if (userType === UserType.B2B_SUPPLIER) {
+          console.log('Fetching export products for B2B supplier');
           const products = await exportProductService.getUserExportProducts(currentUser.uid);
           setExportProducts(products);
         }
@@ -47,7 +57,7 @@ const Profile = () => {
     };
 
     fetchUserData();
-  }, [currentUser]);
+  }, [currentUser, userType]); // Dependencies include both currentUser and userType
 
   const handleDeletePlace = async (placeId) => {
     if (window.confirm('Are you sure you want to delete this place?')) {

@@ -83,17 +83,17 @@ const Navbar = () => {
           <div className="hidden sm:flex sm:items-center sm:space-x-4">
             {!isLoading && currentUser && (
               <>
-                {(userType === UserType.B2B_SUPPLIER || userType === "B2B Supplier/Exporter") && (
+                {(userType === UserType.B2B_SUPPLIER && userType === "B2B Supplier/Exporter" || userType === UserType.ADMIN && userType === "Admin") && (
                   <ActionButton to="/add-export-product">
                     Add Product
                   </ActionButton>
                 )}
-                {(userType === UserType.B2C_BUSINESS_OWNER || userType === "B2C Business Owner") && (
+                {(userType === UserType.B2C_BUSINESS_OWNER || userType === "B2C Business Owner" || userType === UserType.ADMIN || userType === "Admin") && (
                   <ActionButton to="/add-place">
                     Add Place
                   </ActionButton>
                 )}
-                {(userType === UserType.ADMIN || userType === "Admin") && (
+                {(userType === UserType.ADMIN && userType === "Admin") && (
                   <Link
                     to="/admin"
                     className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-full hover:bg-red-700 transition-colors duration-200 flex items-center space-x-2"
