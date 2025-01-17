@@ -7,7 +7,7 @@ import {
   sendPasswordResetEmail,
   signOut
 } from 'firebase/auth';
-import { doc, setDoc, getDoc, updateDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
 
 export const UserType = {
   ADMIN: 'Admin',
@@ -39,8 +39,10 @@ class UserService {
       // Create user profile in Firestore
       await setDoc(doc(firestore, 'users', user.uid), {
         email: user.email,
+        id: user.uid,
         userType: userType,
-        createdAt: new Date().toISOString(),
+        createdAt: serverTimestamp(),
+        lastUpdated: serverTimestamp(),
         emailVerified: false
       });
 
