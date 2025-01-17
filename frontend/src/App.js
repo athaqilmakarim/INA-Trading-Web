@@ -23,6 +23,7 @@ import NewsDetail from './pages/NewsDetail';
 import NewsList from './pages/NewsList';
 import Contact from './pages/Contact';
 import EditPlace from './pages/EditPlace';
+import EditExportProduct from './pages/EditExportProduct';
 
 function App() {
   return (
@@ -92,6 +93,14 @@ function App() {
                     <EditPlace />
                   </ProtectedRoute>
                 } 
+              />
+              <Route
+                path="/edit-export-product/:id"
+                element={
+                  <ProtectedRoute allowedUserTypes={[UserType.B2B_SUPPLIER]}>
+                    <EditExportProduct />
+                  </ProtectedRoute>
+                }
               />
             </Routes>
           </main>
