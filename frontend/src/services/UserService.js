@@ -10,10 +10,11 @@ import {
 import { doc, setDoc, getDoc, updateDoc } from 'firebase/firestore';
 
 export const UserType = {
-  ADMIN: 'ADMIN',
-  B2C_BUSINESS_OWNER: 'B2C_BUSINESS_OWNER',
-  B2B_SUPPLIER: 'B2B_SUPPLIER',
-  CUSTOMER: 'CUSTOMER'
+  ADMIN: 'Admin',
+  B2C_CONSUMER: 'B2C Consumer (Foreign Consumer)',
+  B2C_BUSINESS_OWNER: 'B2C Business Owner',
+  B2B_IMPORTER: 'B2B Importer',
+  B2B_SUPPLIER: 'B2B Supplier/Exporter'
 };
 
 class UserService {
