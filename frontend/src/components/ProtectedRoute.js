@@ -45,7 +45,9 @@ const ProtectedRoute = ({ children, allowedUserTypes }) => {
     return <Navigate to="/auth" />;
   }
 
-  if (allowedUserTypes && !allowedUserTypes.includes(userType)) {
+  if (allowedUserTypes && !allowedUserTypes.some(allowedType => 
+    userType === allowedType || userType === allowedType.toString()
+  )) {
     console.log('User type not allowed:', userType, 'Allowed types:', allowedUserTypes); // Debug log
     return <Navigate to="/" />;
   }

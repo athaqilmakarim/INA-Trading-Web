@@ -104,20 +104,24 @@ class UserService {
 
   async login(email, password) {
     try {
+      console.log('Attempting login for:', email);
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
       // Check if email is verified
       if (!user.emailVerified) {
+        console.log('Email not verified, signing out');
         await signOut(auth);
         throw new Error('Please verify your email before logging in.');
       }
 
       // Update user's emailVerified status in Firestore
       await setDoc(doc(firestore, 'users', user.uid), {
-        emailVerified: true
+        emailVerified: true,
+        lastLogin: serverTimestamp()
       }, { merge: true });
 
+      console.log('Login successful for user:', user.uid);
       return user;
     } catch (error) {
       console.error('Error in login:', error);
@@ -127,10 +131,14 @@ class UserService {
 
   async checkUserType(userId) {
     try {
+      console.log('Checking user type for:', userId);
       const userDoc = await getDoc(doc(firestore, 'users', userId));
       if (userDoc.exists()) {
-        return userDoc.data().userType;
+        const type = userDoc.data().userType;
+        console.log('User type found:', type);
+        return type;
       }
+      console.log('No user document found');
       return null;
     } catch (error) {
       console.error('Error checking user type:', error);
