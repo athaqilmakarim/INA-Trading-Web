@@ -83,17 +83,17 @@ const Navbar = () => {
           <div className="hidden sm:flex sm:items-center sm:space-x-4">
             {!isLoading && currentUser && (
               <>
-                {userType === UserType.B2B_SUPPLIER && (
+                {(userType === UserType.B2B_SUPPLIER || userType === "B2B Supplier/Exporter") && (
                   <ActionButton to="/add-export-product">
                     Add Product
                   </ActionButton>
                 )}
-                {userType === UserType.B2C_BUSINESS_OWNER && (
+                {(userType === UserType.B2C_BUSINESS_OWNER || userType === "B2C Business Owner") && (
                   <ActionButton to="/add-place">
                     Add Place
                   </ActionButton>
                 )}
-                {userType === UserType.ADMIN && (
+                {(userType === UserType.ADMIN || userType === "Admin") && (
                   <Link
                     to="/admin"
                     className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-full hover:bg-red-700 transition-colors duration-200 flex items-center space-x-2"
@@ -150,13 +150,13 @@ const Navbar = () => {
         <div className="pt-4 pb-3 border-t border-gray-200">
           {!isLoading && currentUser && (
             <div className="space-y-1">
-              {userType === UserType.B2B_SUPPLIER && (
+              {(userType === UserType.B2B_SUPPLIER && userType === "B2B Supplier/Exporter") && (
                 <MobileNavLink to="/add-export-product">Add Product</MobileNavLink>
               )}
-              {userType === UserType.B2C_BUSINESS_OWNER && (
+              {(userType === UserType.B2C_BUSINESS_OWNER && userType === "B2C Business Owner") && (
                 <MobileNavLink to="/add-place">Add Place</MobileNavLink>
               )}
-              {userType === UserType.ADMIN && (
+              {(userType === UserType.ADMIN && userType === "Admin") && (
                 <MobileNavLink to="/admin">Admin Panel</MobileNavLink>
               )}
               <MobileNavLink to="/profile">Profile</MobileNavLink>
