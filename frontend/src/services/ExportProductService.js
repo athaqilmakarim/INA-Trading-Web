@@ -58,8 +58,11 @@ class ExportProductService {
 
       const docRef = await addDoc(collection(firestore, 'export_products'), {
         ...productData,
+        sellerId: user.uid,
+        createdBy: user.uid,
         createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
+        updatedAt: new Date().toISOString(),
+        status: 'pending'
       });
 
       return docRef.id;

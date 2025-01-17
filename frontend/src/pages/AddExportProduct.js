@@ -19,8 +19,14 @@ const AddExportProduct = () => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState('');
-  const [price, setPrice] = useState('');
-  const [minOrder, setMinOrder] = useState('');
+  const [customCategory, setCustomCategory] = useState('');
+  const [priceMin, setPriceMin] = useState('');
+  const [priceMax, setPriceMax] = useState('');
+  const [currency, setCurrency] = useState('USD');
+  const [monthlyCapacity, setMonthlyCapacity] = useState('');
+  const [monthlyCapacityUnit, setMonthlyCapacityUnit] = useState('KG');
+  const [minOrderQuantity, setMinOrderQuantity] = useState('');
+  const [minOrderUnit, setMinOrderUnit] = useState('KG');
   const [images, setImages] = useState([]);
   const [previewUrls, setPreviewUrls] = useState([]);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -81,14 +87,29 @@ const AddExportProduct = () => {
         toast.dismiss(uploadToast);
       }
 
+      // Determine the final category value
+      const finalCategory = category === 'Other' ? 
+        customCategory.charAt(0).toUpperCase() + customCategory.slice(1) : 
+        category;
+
       await exportProductService.createExportProduct({
         name,
         description,
-        category,
-        price,
-        minOrder,
-        images: imageUrls,
-        supplierId: currentUser.uid
+        category: finalCategory,
+        price: {
+          min: Number(priceMin),
+          max: Number(priceMax),
+          currency
+        },
+        monthlyCapacity: {
+          quantity: Number(monthlyCapacity),
+          unit: monthlyCapacityUnit
+        },
+        minOrder: {
+          quantity: Number(minOrderQuantity),
+          unit: minOrderUnit
+        },
+        images: imageUrls
       });
 
       toast.success('Export product added successfully!', {
@@ -101,8 +122,14 @@ const AddExportProduct = () => {
       setName('');
       setDescription('');
       setCategory('');
-      setPrice('');
-      setMinOrder('');
+      setCustomCategory('');
+      setPriceMin('');
+      setPriceMax('');
+      setCurrency('USD');
+      setMonthlyCapacity('');
+      setMonthlyCapacityUnit('KG');
+      setMinOrderQuantity('');
+      setMinOrderUnit('KG');
       setImages([]);
       setPreviewUrls([]);
       setUploadProgress(0);
@@ -139,19 +166,35 @@ const AddExportProduct = () => {
                     onChange={(e) => setName(e.target.value)}
                   />
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
-                  <select
-                    required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
-                    value={category}
-                    onChange={(e) => setCategory(e.target.value)}
-                  >
-                    <option value="Textiles">Textiles</option>
-                    <option value="Handicrafts">Handicrafts</option>
-                    <option value="Furniture">Furniture</option>
-                    <option value="Food">Food</option>
-                  </select>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                    <select
+                      required
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+                      value={category}
+                      onChange={(e) => setCategory(e.target.value)}
+                    >
+                      <option value="">Select a category</option>
+                      <option value="Textiles">Textiles</option>
+                      <option value="Handicrafts">Handicrafts</option>
+                      <option value="Furniture">Furniture</option>
+                      <option value="Food">Food</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+                  {category === 'Other' && (
+                    <div>
+                      <input
+                        type="text"
+                        required
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+                        value={customCategory}
+                        onChange={(e) => setCustomCategory(e.target.value)}
+                        placeholder="Enter category name"
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -169,29 +212,167 @@ const AddExportProduct = () => {
               />
             </div>
 
-            {/* Capacity and Order Section */}
+            {/* Price Section */}
             <div className="space-y-6">
-              <h2 className="text-xl font-semibold text-gray-800 pb-2 border-b">Capacity & Orders</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <h2 className="text-xl font-semibold text-gray-800 pb-2 border-b">Price Range</h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Monthly Capacity</label>
-                  <input
-                    type="text"
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Currency</label>
+                  <select
                     required
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
-                    value={price}
-                    onChange={(e) => setPrice(e.target.value)}
+                    value={currency}
+                    onChange={(e) => setCurrency(e.target.value)}
+                  >
+                    <option value="USD">USD - US Dollar</option>
+                    <option value="EUR">EUR - Euro</option>
+                    <option value="GBP">GBP - British Pound</option>
+                    <option value="JPY">JPY - Japanese Yen</option>
+                    <option value="AUD">AUD - Australian Dollar</option>
+                    <option value="CAD">CAD - Canadian Dollar</option>
+                    <option value="CHF">CHF - Swiss Franc</option>
+                    <option value="CNY">CNY - Chinese Yuan</option>
+                    <option value="HKD">HKD - Hong Kong Dollar</option>
+                    <option value="NZD">NZD - New Zealand Dollar</option>
+                    <option value="SEK">SEK - Swedish Krona</option>
+                    <option value="KRW">KRW - South Korean Won</option>
+                    <option value="SGD">SGD - Singapore Dollar</option>
+                    <option value="NOK">NOK - Norwegian Krone</option>
+                    <option value="MXN">MXN - Mexican Peso</option>
+                    <option value="INR">INR - Indian Rupee</option>
+                    <option value="RUB">RUB - Russian Ruble</option>
+                    <option value="ZAR">ZAR - South African Rand</option>
+                    <option value="TRY">TRY - Turkish Lira</option>
+                    <option value="BRL">BRL - Brazilian Real</option>
+                    <option value="TWD">TWD - Taiwan Dollar</option>
+                    <option value="DKK">DKK - Danish Krone</option>
+                    <option value="PLN">PLN - Polish Zloty</option>
+                    <option value="THB">THB - Thai Baht</option>
+                    <option value="IDR">IDR - Indonesian Rupiah</option>
+                    <option value="HUF">HUF - Hungarian Forint</option>
+                    <option value="CZK">CZK - Czech Koruna</option>
+                    <option value="ILS">ILS - Israeli Shekel</option>
+                    <option value="CLP">CLP - Chilean Peso</option>
+                    <option value="PHP">PHP - Philippine Peso</option>
+                    <option value="AED">AED - UAE Dirham</option>
+                    <option value="COP">COP - Colombian Peso</option>
+                    <option value="SAR">SAR - Saudi Riyal</option>
+                    <option value="MYR">MYR - Malaysian Ringgit</option>
+                    <option value="RON">RON - Romanian Leu</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Minimum Price</label>
+                  <input
+                    type="number"
+                    required
+                    min="0"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+                    value={priceMin}
+                    onChange={(e) => setPriceMin(e.target.value)}
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Minimum Order Quantity</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Maximum Price</label>
                   <input
-                    type="text"
+                    type="number"
                     required
+                    min="0"
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
-                    value={minOrder}
-                    onChange={(e) => setMinOrder(e.target.value)}
+                    value={priceMax}
+                    onChange={(e) => setPriceMax(e.target.value)}
                   />
+                </div>
+              </div>
+            </div>
+
+            {/* Capacity and Order Section */}
+            <div className="space-y-6">
+              <h2 className="text-xl font-semibold text-gray-800 pb-2 border-b">Capacity & Orders</h2>
+              <div className="grid grid-cols-1 gap-6">
+                {/* Minimum Order */}
+                <div className="space-y-4">
+                  <label className="block text-sm font-medium text-gray-700">Minimum Order</label>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Quantity</label>
+                      <input
+                        type="number"
+                        required
+                        min="1"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+                        value={minOrderQuantity}
+                        onChange={(e) => setMinOrderQuantity(e.target.value)}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Unit</label>
+                      <select
+                        required
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+                        value={minOrderUnit}
+                        onChange={(e) => setMinOrderUnit(e.target.value)}
+                      >
+                        <option value="KG">Kilogram (KG)</option>
+                        <option value="M3">Cubic Meter (M³)</option>
+                        <option value="CONTAINER_20">20ft Container</option>
+                        <option value="CONTAINER_40">40ft Container</option>
+                        <option value="CONTAINER_40HC">40ft HC Container</option>
+                        <option value="PALLET">Pallet</option>
+                        <option value="TON">Metric Ton</option>
+                        <option value="PCS">Pieces (PCS)</option>
+                        <option value="BOX">Box</option>
+                        <option value="CARTON">Carton</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Monthly Capacity */}
+                <div>
+                  <div className="flex items-center space-x-1 mb-2">
+                    <label className="block text-sm font-medium text-gray-700">Monthly Production Capacity</label>
+                    <div className="relative group">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-400 cursor-help" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <div className="invisible group-hover:visible absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-48 p-2 bg-gray-900 text-white text-xs rounded shadow-lg z-10">
+                        Maximum amount the supplier can produce or supply per month
+                        <div className="absolute left-1/2 -translate-x-1/2 top-full w-2 h-2 bg-gray-900 transform rotate-45"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <input
+                        type="number"
+                        required
+                        min="1"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+                        value={monthlyCapacity}
+                        onChange={(e) => setMonthlyCapacity(e.target.value)}
+                      />
+                    </div>
+                    <div>
+                      <select
+                        required
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+                        value={monthlyCapacityUnit}
+                        onChange={(e) => setMonthlyCapacityUnit(e.target.value)}
+                      >
+                        <option value="KG">Kilogram (KG)</option>
+                        <option value="M3">Cubic Meter (M³)</option>
+                        <option value="CONTAINER_20">20ft Container</option>
+                        <option value="CONTAINER_40">40ft Container</option>
+                        <option value="CONTAINER_40HC">40ft HC Container</option>
+                        <option value="PALLET">Pallet</option>
+                        <option value="TON">Metric Ton</option>
+                        <option value="PCS">Pieces (PCS)</option>
+                        <option value="BOX">Box</option>
+                        <option value="CARTON">Carton</option>
+                      </select>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
