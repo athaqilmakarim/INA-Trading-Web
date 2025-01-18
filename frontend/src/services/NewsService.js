@@ -1,5 +1,5 @@
 import { firestore, storage } from '../firebase';
-import { collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, query, orderBy } from 'firebase/firestore';
+import { collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, query, orderBy, serverTimestamp } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 
 class NewsService {
@@ -66,15 +66,18 @@ class NewsService {
       }
 
       const docRef = await addDoc(this.collection, {
-        title: newsData.title,
-        subtitle: newsData.subtitle,
-        summary: newsData.summary,
+        ...newsData,
         images: imageUrls,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        createdBy: newsData.createdBy
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+        status: 'published'
       });
-      return docRef.id;
+      
+      return {
+        id: docRef.id,
+        ...newsData,
+        images: imageUrls
+      };
     } catch (error) {
       console.error('Error creating news:', error);
       throw new Error('Failed to create news article');
@@ -96,9 +99,12 @@ class NewsService {
 
       // Delete old images if specified
       for (const imageUrl of imagesToDelete) {
-        const imageRef = ref(storage, imageUrl);
         try {
-          await deleteObject(imageRef);
+          // Only delete if the image URL is from Firebase Storage
+          if (imageUrl.includes('firebasestorage.googleapis.com')) {
+            const imageRef = ref(storage, imageUrl);
+            await deleteObject(imageRef);
+          }
           updatedImages = updatedImages.filter(url => url !== imageUrl);
         } catch (error) {
           console.error('Error deleting image:', error);
@@ -111,11 +117,19 @@ class NewsService {
         updatedImages.push(imageUrl);
       }
 
-      await updateDoc(docRef, {
+      const updatedData = {
         ...newsData,
         images: updatedImages,
-        updatedAt: new Date().toISOString()
-      });
+        updatedAt: serverTimestamp()
+      };
+
+      await updateDoc(docRef, updatedData);
+
+      return {
+        id,
+        ...updatedData,
+        images: updatedImages
+      };
     } catch (error) {
       console.error('Error updating news:', error);
       throw new Error('Failed to update news article');
@@ -132,9 +146,12 @@ class NewsService {
         // Delete associated images first
         const images = newsDoc.data().images || [];
         for (const imageUrl of images) {
-          const imageRef = ref(storage, imageUrl);
           try {
-            await deleteObject(imageRef);
+            // Only delete if the image URL is from Firebase Storage
+            if (imageUrl.includes('firebasestorage.googleapis.com')) {
+              const imageRef = ref(storage, imageUrl);
+              await deleteObject(imageRef);
+            }
           } catch (error) {
             console.error('Error deleting image:', error);
           }
@@ -142,6 +159,7 @@ class NewsService {
       }
       
       await deleteDoc(docRef);
+      return id;
     } catch (error) {
       console.error('Error deleting news:', error);
       throw new Error('Failed to delete news article');

@@ -26,6 +26,7 @@ import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import { UserType } from './services/UserService';
 import ForgotPassword from './pages/ForgotPassword';
+import EditNews from './pages/EditNews';
 
 // Wrapper component to handle navbar visibility
 function AppContent() {
@@ -44,6 +45,14 @@ function AppContent() {
         <Route path="/export-products" element={<ExportProducts />} />
         <Route path="/news" element={<NewsList />} />
         <Route path="/news/:id" element={<NewsDetail />} />
+        <Route
+          path="/admin/news/edit/:id"
+          element={
+            <ProtectedRoute allowedUserTypes={[UserType.ADMIN]}>
+              <EditNews />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/auth/verify-email" element={<Auth />} />

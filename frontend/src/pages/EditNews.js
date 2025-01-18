@@ -1,44 +1,53 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
+  Box,
   TextField,
   Button,
   Paper,
   Typography,
-  Box,
-  CircularProgress,
   FormControl,
   InputLabel,
   Select,
   MenuItem,
-  Divider,
-  Stack,
   IconButton,
   ImageList,
   ImageListItem,
   Tooltip,
+  CircularProgress,
+  Fade,
   Zoom,
+  Stack,
+  Divider,
 } from '@mui/material';
 import {
   AddPhotoAlternate as AddPhotoIcon,
   Delete as DeleteIcon,
-  Send as SendIcon,
-  Clear as ClearIcon,
+  Save as SaveIcon,
+  ArrowBack as ArrowBackIcon,
+  Edit as EditIcon,
   Add as AddIcon,
 } from '@mui/icons-material';
 import { motion, AnimatePresence } from 'framer-motion';
-import NewsService from '../../services/NewsService';
+import NewsService from '../services/NewsService';
 import { toast } from 'react-toastify';
 
-const AddNews = ({ onNewsAdded }) => {
+const EditNews = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [news, setNews] = useState(null);
   const [title, setTitle] = useState('');
   const [subtitle, setSubtitle] = useState('');
+  const [content, setContent] = useState('');
   const [category, setCategory] = useState('general');
+  const [currentImages, setCurrentImages] = useState([]);
+  const [newImages, setNewImages] = useState([]);
+  const [imagesToDelete, setImagesToDelete] = useState([]);
+  const [previewUrls, setPreviewUrls] = useState([]);
   const [customCategory, setCustomCategory] = useState('');
   const [showCustomCategory, setShowCustomCategory] = useState(false);
-  const [content, setContent] = useState('');
-  const [images, setImages] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [previewUrls, setPreviewUrls] = useState([]);
 
   // Predefined categories
   const categories = [
@@ -49,6 +58,75 @@ const AddNews = ({ onNewsAdded }) => {
     'industry',
     'custom'
   ];
+
+  useEffect(() => {
+    fetchNews();
+  }, [id]);
+
+  const fetchNews = async () => {
+    try {
+      const newsData = await NewsService.getNewsById(id);
+      setNews(newsData);
+      setTitle(newsData.title);
+      setSubtitle(newsData.subtitle || '');
+      setContent(newsData.content || '');
+      
+      // Handle custom category
+      const newsCategory = newsData.category || 'general';
+      if (categories.includes(newsCategory)) {
+        setCategory(newsCategory);
+        setShowCustomCategory(false);
+      } else {
+        setCategory(newsCategory);
+        setCustomCategory(newsCategory);
+        setShowCustomCategory(true);
+      }
+      
+      setCurrentImages(newsData.images || []);
+      setPreviewUrls(newsData.images || []);
+    } catch (error) {
+      toast.error('Failed to fetch news article');
+      navigate('/admin');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleImageChange = (event) => {
+    const files = Array.from(event.target.files);
+    const validFiles = files.filter(file => {
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error(`${file.name} is too large (max 5MB)`);
+        return false;
+      }
+      if (!file.type.startsWith('image/')) {
+        toast.error(`${file.name} is not an image`);
+        return false;
+      }
+      return true;
+    });
+
+    setNewImages(prev => [...prev, ...validFiles]);
+
+    validFiles.forEach(file => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewUrls(prev => [...prev, reader.result]);
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const removeImage = (index) => {
+    if (index < currentImages.length) {
+      setImagesToDelete(prev => [...prev, currentImages[index]]);
+      setCurrentImages(prev => prev.filter((_, i) => i !== index));
+    } else {
+      const newIndex = index - currentImages.length;
+      setNewImages(prev => prev.filter((_, i) => i !== newIndex));
+    }
+    setPreviewUrls(prev => prev.filter((_, i) => i !== index));
+  };
 
   const handleCategoryChange = (event) => {
     const value = event.target.value;
@@ -67,75 +145,6 @@ const AddNews = ({ onNewsAdded }) => {
     setCategory(value);
   };
 
-  const validateImage = (file) => {
-    // Check file size (5MB limit)
-    if (file.size > 5 * 1024 * 1024) {
-      toast.error(`${file.name} is too large (max 5MB)`);
-      return false;
-    }
-
-    // Check file type
-    if (!file.type.startsWith('image/')) {
-      toast.error(`${file.name} is not an image`);
-      return false;
-    }
-
-    return true;
-  };
-
-  const handleImageChange = (event) => {
-    const files = Array.from(event.target.files);
-    const validFiles = [];
-    const validPreviewUrls = [];
-
-    files.forEach(file => {
-      if (validateImage(file)) {
-        validFiles.push(file);
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          validPreviewUrls.push(reader.result);
-          if (validPreviewUrls.length === validFiles.length) {
-            setPreviewUrls(prev => [...prev, ...validPreviewUrls]);
-          }
-        };
-        reader.readAsDataURL(file);
-      }
-    });
-
-    setImages(prev => [...prev, ...validFiles]);
-    event.target.value = ''; // Reset input
-  };
-
-  const removeImage = (index) => {
-    setImages(prev => prev.filter((_, i) => i !== index));
-    setPreviewUrls(prev => prev.filter((_, i) => i !== index));
-    toast.success('Image removed', {
-      icon: "🗑️"
-    });
-  };
-
-  const removeAllImages = () => {
-    setImages([]);
-    setPreviewUrls([]);
-    toast.success('All images removed', {
-      icon: "🗑️"
-    });
-  };
-
-  const resetForm = () => {
-    setTitle('');
-    setSubtitle('');
-    setCategory('general');
-    setCustomCategory('');
-    setShowCustomCategory(false);
-    setContent('');
-    setImages([]);
-    setPreviewUrls([]);
-    toast.info('Form cleared', {
-      icon: "🔄"
-    });
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!title.trim() || !content.trim()) {
@@ -148,34 +157,33 @@ const AddNews = ({ onNewsAdded }) => {
       return;
     }
 
-    setLoading(true);
+    setSaving(true);
     try {
       const newsData = {
         title: title.trim(),
         subtitle: subtitle.trim(),
-        category: showCustomCategory ? customCategory.trim() : category,
         content: content.trim(),
+        category: showCustomCategory ? customCategory.trim() : category,
         summary: content.slice(0, 200) + (content.length > 200 ? '...' : ''),
       };
 
-      await NewsService.createNews(newsData, images);
-      toast.success('News created successfully!', {
-        icon: "🎉"
-      });
-      
-      // Reset form
-      resetForm();
-      
-      if (onNewsAdded) {
-        onNewsAdded();
-      }
+      await NewsService.updateNews(id, newsData, newImages, imagesToDelete);
+      toast.success('News article updated successfully!');
+      navigate('/admin');
     } catch (error) {
-      console.error('Error creating news:', error);
-      toast.error(error.message || 'Failed to create news. Please try again.');
+      toast.error('Failed to update news article');
     } finally {
-      setLoading(false);
+      setSaving(false);
     }
   };
+
+  if (loading) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="60vh">
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
     <motion.div
@@ -184,10 +192,15 @@ const AddNews = ({ onNewsAdded }) => {
       exit={{ opacity: 0, y: -20 }}
     >
       <Paper elevation={3} sx={{ p: 4, maxWidth: 800, mx: 'auto', my: 4 }}>
-        <Typography variant="h5" component="h2" gutterBottom sx={{ mb: 3 }}>
-          Create New Article
-        </Typography>
-        
+        <Box display="flex" alignItems="center" mb={3}>
+          <IconButton onClick={() => navigate('/admin')} sx={{ mr: 2 }}>
+            <ArrowBackIcon />
+          </IconButton>
+          <Typography variant="h5" component="h2">
+            Edit News Article
+          </Typography>
+        </Box>
+
         <form onSubmit={handleSubmit}>
           <Stack spacing={3}>
             <TextField
@@ -197,9 +210,7 @@ const AddNews = ({ onNewsAdded }) => {
               onChange={(e) => setTitle(e.target.value)}
               required
               variant="outlined"
-              placeholder="Enter a compelling title"
-              helperText="A clear and engaging title for your article"
-              disabled={loading}
+              disabled={saving}
             />
 
             <TextField
@@ -208,18 +219,17 @@ const AddNews = ({ onNewsAdded }) => {
               value={subtitle}
               onChange={(e) => setSubtitle(e.target.value)}
               variant="outlined"
-              placeholder="Enter a brief subtitle"
-              helperText="A short description that appears below the title"
-              disabled={loading}
+              disabled={saving}
             />
 
             <Box>
-              <FormControl fullWidth disabled={loading}>
+              <FormControl fullWidth>
                 <InputLabel>Category</InputLabel>
                 <Select
                   value={showCustomCategory ? 'custom' : category}
                   label="Category"
                   onChange={handleCategoryChange}
+                  disabled={saving}
                 >
                   {categories.map((cat) => (
                     <MenuItem key={cat} value={cat}>
@@ -242,7 +252,7 @@ const AddNews = ({ onNewsAdded }) => {
                   label="New Category Name"
                   value={customCategory}
                   onChange={handleCustomCategoryChange}
-                  disabled={loading}
+                  disabled={saving}
                   sx={{ mt: 2, display: showCustomCategory ? 'block' : 'none' }}
                   placeholder="Enter a new category name"
                   helperText="Create a unique category name"
@@ -258,42 +268,20 @@ const AddNews = ({ onNewsAdded }) => {
                 type="file"
                 multiple
                 onChange={handleImageChange}
-                disabled={loading}
+                disabled={saving}
               />
-              <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
-                <label htmlFor="image-upload" style={{ flexGrow: 1 }}>
-                  <Button
-                    variant="outlined"
-                    component="span"
-                    fullWidth
-                    startIcon={<AddPhotoIcon />}
-                    disabled={loading}
-                    sx={{ height: '100px' }}
-                  >
-                    <Box>
-                      <Typography>
-                        Click to upload images
-                      </Typography>
-                      <Typography variant="caption" display="block" color="textSecondary">
-                        Recommended size: 1200x630px, Max size: 5MB per image
-                      </Typography>
-                    </Box>
-                  </Button>
-                </label>
-                {previewUrls.length > 0 && (
-                  <Tooltip title="Remove all images">
-                    <Button
-                      variant="outlined"
-                      color="error"
-                      onClick={removeAllImages}
-                      disabled={loading}
-                      sx={{ minWidth: 'auto', width: '100px', height: '100px' }}
-                    >
-                      <DeleteIcon />
-                    </Button>
-                  </Tooltip>
-                )}
-              </Box>
+              <label htmlFor="image-upload">
+                <Button
+                  variant="outlined"
+                  component="span"
+                  fullWidth
+                  startIcon={<AddPhotoIcon />}
+                  disabled={saving}
+                  sx={{ height: '100px' }}
+                >
+                  Add Images
+                </Button>
+              </label>
 
               <AnimatePresence>
                 {previewUrls.length > 0 && (
@@ -302,7 +290,7 @@ const AddNews = ({ onNewsAdded }) => {
                     animate={{ opacity: 1, height: 'auto' }}
                     exit={{ opacity: 0, height: 0 }}
                   >
-                    <ImageList cols={3} gap={8}>
+                    <ImageList cols={3} gap={8} sx={{ mt: 2 }}>
                       {previewUrls.map((url, index) => (
                         <ImageListItem key={index}>
                           <motion.div
@@ -353,35 +341,29 @@ const AddNews = ({ onNewsAdded }) => {
               multiline
               rows={12}
               variant="outlined"
-              placeholder="Write your article content here..."
-              helperText="Use clear paragraphs and keep your content engaging"
-              disabled={loading}
+              disabled={saving}
             />
 
-            <Divider sx={{ my: 2 }} />
+            <Divider />
 
-            <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
+            <Box display="flex" justifyContent="flex-end" gap={2}>
               <Button
-                type="button"
                 variant="outlined"
-                onClick={resetForm}
-                disabled={loading}
-                startIcon={<ClearIcon />}
+                onClick={() => navigate('/admin')}
+                disabled={saving}
+                startIcon={<ArrowBackIcon />}
               >
-                Clear
+                Cancel
               </Button>
-              <Zoom in={!loading}>
-                <Button
-                  type="submit"
-                  variant="contained"
-                  color="primary"
-                  disabled={loading}
-                  startIcon={loading ? <CircularProgress size={20} /> : <SendIcon />}
-                  sx={{ minWidth: 120 }}
-                >
-                  {loading ? 'Publishing...' : 'Publish'}
-                </Button>
-              </Zoom>
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                disabled={saving}
+                startIcon={saving ? <CircularProgress size={20} /> : <SaveIcon />}
+              >
+                {saving ? 'Saving...' : 'Save Changes'}
+              </Button>
             </Box>
           </Stack>
         </form>
@@ -390,4 +372,4 @@ const AddNews = ({ onNewsAdded }) => {
   );
 };
 
-export default AddNews; 
+export default EditNews; 
