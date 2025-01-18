@@ -158,7 +158,7 @@ const Profile = () => {
         </div>
 
         {/* Places */}
-        {userType === UserType.B2C_BUSINESS_OWNER && (
+        {(userType === UserType.B2C_BUSINESS_OWNER || userType === UserType.ADMIN) && (
           <div className="bg-white rounded-2xl shadow-lg overflow-hidden mb-8">
             <div className="border-b border-gray-200 p-6 flex justify-between items-center">
               <h2 className="text-xl font-semibold">My Places</h2>
@@ -229,7 +229,7 @@ const Profile = () => {
         )}
 
         {/* Export Products */}
-        {userType === UserType.B2B_SUPPLIER && (
+        {(userType === UserType.B2B_SUPPLIER || userType === UserType.ADMIN) && (
           <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
             <div className="border-b border-gray-200 p-6 flex justify-between items-center">
               <h2 className="text-xl font-semibold">My Export Products</h2>

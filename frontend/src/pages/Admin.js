@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { firestore } from '../firebase';
 import { collection, query, getDocs, doc, updateDoc, serverTimestamp, deleteDoc } from 'firebase/firestore';
+import { useNavigate } from 'react-router-dom';
 import AddNews from '../components/News/AddNews';
 import NewsService from '../services/NewsService';
 import { placeService } from '../services/PlaceService';
@@ -68,6 +69,7 @@ import { toast } from 'react-toastify';
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
 const Admin = () => {
+  const navigate = useNavigate();
   const [places, setPlaces] = useState([]);
   const [products, setProducts] = useState([]);
   const [suppliers, setSuppliers] = useState([]);
@@ -438,7 +440,18 @@ const Admin = () => {
         .filter(item => item.status === statusFilter)
         .map(item => (
           <Grid item xs={12} md={6} key={item.id}>
-            <Card elevation={3}>
+            <Card 
+              elevation={3}
+              onClick={() => type === 'place' ? handlePlaceClick(item.id) : null}
+              sx={{ 
+                cursor: type === 'place' ? 'pointer' : 'default',
+                '&:hover': type === 'place' ? {
+                  transform: 'translateY(-2px)',
+                  boxShadow: 4,
+                  transition: 'all 0.2s ease-in-out'
+                } : {}
+              }}
+            >
               <CardContent>
                 <Box className="flex justify-between items-start">
                   <Box sx={{ flex: 1 }}>
@@ -477,9 +490,12 @@ const Admin = () => {
                     <Box sx={{ ml: 2, display: 'flex', gap: 1 }}>
                       <Tooltip title="Approve">
                         <IconButton
-                          onClick={() => type === 'place' 
-                            ? handleUpdatePlaceStatus(item.id, 'approved')
-                            : handleUpdateProductStatus(item.id, 'approved')}
+                          onClick={(e) => {
+                            e.stopPropagation(); // Prevent card click when clicking buttons
+                            type === 'place' 
+                              ? handleUpdatePlaceStatus(item.id, 'approved')
+                              : handleUpdateProductStatus(item.id, 'approved');
+                          }}
                           color="success"
                           size="small"
                         >
@@ -488,9 +504,12 @@ const Admin = () => {
                       </Tooltip>
                       <Tooltip title="Reject">
                         <IconButton
-                          onClick={() => type === 'place'
-                            ? handleUpdatePlaceStatus(item.id, 'rejected')
-                            : handleUpdateProductStatus(item.id, 'rejected')}
+                          onClick={(e) => {
+                            e.stopPropagation(); // Prevent card click when clicking buttons
+                            type === 'place'
+                              ? handleUpdatePlaceStatus(item.id, 'rejected')
+                              : handleUpdateProductStatus(item.id, 'rejected');
+                          }}
                           color="error"
                           size="small"
                         >
@@ -507,79 +526,103 @@ const Admin = () => {
     </Grid>
   );
 
+  const handlePlaceClick = (placeId) => {
+    navigate(`/place/${placeId}`);
+  };
+
   const renderListItem = (item, type) => (
-    <motion.div
-      layout
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-      transition={{ duration: 0.2 }}
+    <ListItem
+      key={item.id}
+      sx={{
+        mb: 2,
+        bgcolor: 'background.paper',
+        borderRadius: 2,
+        boxShadow: 1,
+        '&:hover': {
+          bgcolor: 'action.hover',
+        },
+      }}
     >
-      <ListItem
-        sx={{
-          '&:hover': {
-            backgroundColor: 'rgba(0, 0, 0, 0.04)',
-            transition: 'background-color 0.2s'
-          },
-          py: 2
-        }}
-      >
+      {operationMode === 'cleanup' && (
         <Checkbox
           checked={selectedItems.includes(item.id)}
           onChange={() => handleToggleSelect(item.id)}
+          sx={{ mr: 2 }}
         />
-        <ListItemText
-          primary={
-            <div className="flex items-center space-x-2">
-              <Typography variant="subtitle1" component="span">
-                {item.name || item.title}
-              </Typography>
-              <Chip
-                size="small"
-                label={item.type || type}
-                sx={{ backgroundColor: 'rgba(0, 0, 0, 0.08)' }}
-              />
-            </div>
-          }
-          secondary={
-            item.address && (
-              <Typography 
-                component="span" 
-                variant="body2" 
-                color="textSecondary"
-                sx={{ 
-                  display: 'block',
-                  mt: 0.5,
-                  maxWidth: '90%',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap'
-                }}
-              >
-                {item.address}
-              </Typography>
-            )
-          }
-        />
+      )}
+      <ListItemText
+        onClick={() => type === 'places' ? handlePlaceClick(item.id) : null}
+        sx={{ 
+          cursor: type === 'places' ? 'pointer' : 'default',
+          '&:hover': type === 'places' ? { textDecoration: 'underline' } : {}
+        }}
+        primary={
+          <Typography variant="h6" component="div" sx={{ color: 'text.primary' }}>
+            {item.name}
+            <Chip
+              size="small"
+              label={item.type}
+              sx={{ ml: 1, bgcolor: 'primary.light', color: 'white' }}
+            />
+          </Typography>
+        }
+        secondary={
+          <Typography variant="body2" color="text.secondary">
+            {item.address || item.description || ''}
+          </Typography>
+        }
+      />
+      
+      {operationMode === 'approval' ? (
         <ListItemSecondaryAction>
-          <Chip
-            size="small"
-            label={item.status.charAt(0).toUpperCase() + item.status.slice(1)}
-            color={getStatusColor(item.status)}
-            sx={{ mr: 1 }}
-          />
-          <IconButton
-            edge="end"
-            aria-label="delete"
-            onClick={() => handleDelete(item.id, type)}
-            color="error"
-            size="small"
-          >
-            <DeleteIcon />
-          </IconButton>
+          <Tooltip title="Approve">
+            <IconButton
+              edge="end"
+              aria-label="approve"
+              onClick={() => type === 'places' ? handleUpdatePlaceStatus(item.id, 'approved') : handleUpdateProductStatus(item.id, 'approved')}
+              disabled={item.status === 'approved'}
+              sx={{ color: 'success.main' }}
+            >
+              <CheckCircleIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Reject">
+            <IconButton
+              edge="end"
+              aria-label="reject"
+              onClick={() => type === 'places' ? handleUpdatePlaceStatus(item.id, 'rejected') : handleUpdateProductStatus(item.id, 'rejected')}
+              disabled={item.status === 'rejected'}
+              sx={{ color: 'error.main', ml: 1 }}
+            >
+              <CancelIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="View Details">
+            <IconButton
+              edge="end"
+              aria-label="view"
+              onClick={() => type === 'places' ? handlePlaceClick(item.id) : null}
+              sx={{ color: 'info.main', ml: 1 }}
+            >
+              <VisibilityIcon />
+            </IconButton>
+          </Tooltip>
         </ListItemSecondaryAction>
-      </ListItem>
-    </motion.div>
+      ) : (
+        <ListItemSecondaryAction>
+          <Tooltip title="Delete">
+            <IconButton
+              edge="end"
+              aria-label="delete"
+              onClick={() => handleDelete(item.id, type)}
+              sx={{ color: 'error.main' }}
+            >
+              <DeleteIcon />
+            </IconButton>
+          </Tooltip>
+        </ListItemSecondaryAction>
+      )}
+    </ListItem>
   );
 
   const renderCleanupMode = (items, type) => (
