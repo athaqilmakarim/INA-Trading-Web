@@ -58,7 +58,7 @@ function AppContent() {
         <Route
           path="/add-place"
           element={
-            <ProtectedRoute allowedUserTypes={[UserType.B2C_BUSINESS_OWNER]}>
+            <ProtectedRoute allowedUserTypes={[UserType.B2C_BUSINESS_OWNER, UserType.ADMIN]}>
               <AddPlace />
             </ProtectedRoute>
           }
@@ -66,7 +66,7 @@ function AppContent() {
         <Route
           path="/edit-place/:placeId"
           element={
-            <ProtectedRoute allowedUserTypes={[UserType.B2C_BUSINESS_OWNER]}>
+            <ProtectedRoute allowedUserTypes={[UserType.B2C_BUSINESS_OWNER, UserType.ADMIN]}>
               <EditPlace />
             </ProtectedRoute>
           }
@@ -75,7 +75,7 @@ function AppContent() {
         <Route
           path="/add-export-product"
           element={
-            <ProtectedRoute allowedUserTypes={[UserType.B2B_SUPPLIER]}>
+            <ProtectedRoute allowedUserTypes={[UserType.B2B_SUPPLIER, UserType.ADMIN]}>
               <AddExportProduct />
             </ProtectedRoute>
           }
@@ -83,7 +83,7 @@ function AppContent() {
         <Route
           path="/edit-export-product/:id"
           element={
-            <ProtectedRoute allowedUserTypes={[UserType.B2B_SUPPLIER]}>
+            <ProtectedRoute allowedUserTypes={[UserType.B2B_SUPPLIER, UserType.ADMIN]}>
               <EditExportProduct />
             </ProtectedRoute>
           }

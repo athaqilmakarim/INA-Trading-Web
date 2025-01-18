@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { doc, getDoc } from 'firebase/firestore';
 import { firestore } from '../firebase';
 import { MapHelper } from '../utils/MapHelper';
@@ -8,9 +8,11 @@ import AddPromo from '../components/Promo/AddPromo';
 import PromoList from '../components/Promo/PromoList';
 import { promoService } from '../services/PromoService';
 import { motion, AnimatePresence } from 'framer-motion';
+import { toast } from 'react-hot-toast';
 
 const PlaceDetails = () => {
-  const { id } = useParams();
+  const { placeId } = useParams();
+  const navigate = useNavigate();
   const { currentUser } = useAuth();
   const [place, setPlace] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -25,38 +27,91 @@ const PlaceDetails = () => {
     const fetchPlace = async () => {
       try {
         setIsLoading(true);
-        const placeDoc = await getDoc(doc(firestore, 'places', id));
+        setError(null);
         
-        if (placeDoc.exists()) {
-          const data = placeDoc.data();
-          // Handle both imageURLs and legacy images field
-          const images = data.imageURLs || data.images || [];
-          setPlace({
-            id: placeDoc.id,
-            ...data,
-            imageURLs: images
-          });
-        } else {
-          setError('Place not found');
+        if (!placeId) {
+          console.error('No place ID provided');
+          setError('Invalid place ID');
+          return;
         }
+
+        // Clean the ID - remove any whitespace and special characters
+        const cleanPlaceId = placeId.trim().replace(/[^\w-]/g, '');
+        console.log('Fetching place with cleaned ID:', cleanPlaceId);
+        
+        if (cleanPlaceId !== placeId) {
+          console.warn('Place ID needed cleaning:', { original: placeId, cleaned: cleanPlaceId });
+        }
+        
+        const placeRef = doc(firestore, 'places', cleanPlaceId);
+        console.log('Attempting to fetch document:', placeRef.path);
+        
+        const placeDoc = await getDoc(placeRef);
+        
+        if (!placeDoc.exists()) {
+          console.error('Place document not found for ID:', cleanPlaceId);
+          setError('Place not found');
+          return;
+        }
+
+        const data = placeDoc.data();
+        console.log('Place data fetched:', { id: cleanPlaceId, ...data });
+        
+        if (!data) {
+          console.error('Place data is empty');
+          setError('Invalid place data');
+          return;
+        }
+
+        // Ensure all required fields are present
+        if (!data.name || !data.type) {
+          console.error('Missing required fields in place data:', { 
+            hasName: !!data.name, 
+            hasType: !!data.type 
+          });
+          setError('Invalid place data structure');
+          return;
+        }
+
+        // Handle both imageURLs and legacy images field
+        const images = data.imageURLs || data.images || [];
+        
+        const placeData = {
+          id: placeDoc.id,
+          ...data,
+          imageURLs: images,
+          // Ensure these fields exist with defaults if needed
+          address: data.address || '',
+          contact: data.contact || '',
+          description: data.description || '',
+          menu: data.menu || [],
+          status: data.status || 'pending'
+        };
+
+        console.log('Processed place data:', placeData);
+        setPlace(placeData);
+        
+        // Remove success toast
+        // toast.success('Place details loaded successfully');
       } catch (err) {
         console.error('Error fetching place:', err);
-        setError('Error loading place details');
+        setError(err.message || 'Error loading place details');
+        toast.error('Failed to load place details');
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchPlace();
-  }, [id]);
+  }, [placeId]);
 
   useEffect(() => {
     const fetchPromos = async () => {
-      if (!id) return;
+      if (!placeId) return;
       
       try {
         setIsLoadingPromos(true);
-        const promosList = await promoService.getPlacePromos(id);
+        const promosList = await promoService.getPlacePromos(placeId);
         setPromos(promosList);
       } catch (err) {
         console.error('Error fetching promos:', err);
@@ -66,7 +121,7 @@ const PlaceDetails = () => {
     };
 
     fetchPromos();
-  }, [id]);
+  }, [placeId]);
 
   const handleViewOnMap = () => {
     if (place?.address) {
@@ -85,7 +140,7 @@ const PlaceDetails = () => {
   const handleAddPromoSuccess = async () => {
     setShowAddPromo(false);
     // Refresh promos list
-    const updatedPromos = await promoService.getPlacePromos(id);
+    const updatedPromos = await promoService.getPlacePromos(placeId);
     setPromos(updatedPromos);
   };
 
@@ -93,7 +148,7 @@ const PlaceDetails = () => {
     try {
       await promoService.deletePromo(promoId);
       // Refresh promos list
-      const updatedPromos = await promoService.getPlacePromos(id);
+      const updatedPromos = await promoService.getPlacePromos(placeId);
       setPromos(updatedPromos);
     } catch (err) {
       console.error('Error deleting promo:', err);
@@ -381,7 +436,7 @@ const PlaceDetails = () => {
                       exit={{ opacity: 0, scale: 0.95 }}
                     >
                       <AddPromo
-                        placeId={id}
+                        placeId={placeId}
                         onSuccess={handleAddPromoSuccess}
                         onCancel={() => setShowAddPromo(false)}
                       />
