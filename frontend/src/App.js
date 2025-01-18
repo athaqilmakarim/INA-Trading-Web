@@ -20,6 +20,8 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Auth from './pages/Auth';
 import VerifyEmailRequired from './pages/VerifyEmailRequired';
+import NewsList from './pages/NewsList';
+import NewsDetail from './pages/NewsDetail';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import { UserType } from './services/UserService';
@@ -40,6 +42,8 @@ function AppContent() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/explore" element={<Explore />} />
         <Route path="/export-products" element={<ExportProducts />} />
+        <Route path="/news" element={<NewsList />} />
+        <Route path="/news/:id" element={<NewsDetail />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/auth/verify-email" element={<Auth />} />
