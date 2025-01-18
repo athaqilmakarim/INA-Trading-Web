@@ -1,9 +1,12 @@
 export const PlaceType = {
   RESTAURANT: "Restaurant",
+  CAFE: "Cafe",
+  HOTEL: "Hotel",
   SHOP: "Shop",
   CULTURAL: "Cultural",
   BUSINESS: "Business",
-  WORSHIP: "Worship"
+  WORSHIP: "Worship",
+  OTHER: "Other"
 };
 
 export const MenuItem = {
