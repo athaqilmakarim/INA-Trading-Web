@@ -20,6 +20,7 @@ const AddPlace = () => {
   // Form states
   const [name, setName] = useState('');
   const [type, setType] = useState(PlaceType.RESTAURANT);
+  const [customType, setCustomType] = useState('');
   const [address, setAddress] = useState('');
   const [contact, setContact] = useState('');
   const [description, setDescription] = useState('');
@@ -117,7 +118,7 @@ const AddPlace = () => {
       // Create place in Firestore with imageURLs and coordinates
       await placeService.createPlace({
         name,
-        type,
+        type: type === PlaceType.OTHER ? customType : type,
         address,
         contact,
         description,
@@ -173,7 +174,12 @@ const AddPlace = () => {
           <label className="block text-sm font-medium mb-1">Type</label>
           <select
             value={type}
-            onChange={(e) => setType(e.target.value)}
+            onChange={(e) => {
+              setType(e.target.value);
+              if (e.target.value !== PlaceType.OTHER) {
+                setCustomType('');
+              }
+            }}
             className="w-full p-2 border rounded focus:ring-2 focus:ring-red-500 focus:border-transparent"
           >
             {Object.entries(PlaceType).map(([key, val]) => (
@@ -182,6 +188,26 @@ const AddPlace = () => {
               </option>
             ))}
           </select>
+          
+          {type === PlaceType.OTHER && (
+            <div className="mt-2">
+              <input
+                type="text"
+                value={customType}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (value === '') {
+                    setCustomType('');
+                  } else {
+                    setCustomType(value.charAt(0).toUpperCase() + value.slice(1));
+                  }
+                }}
+                placeholder="Enter custom type"
+                className="w-full p-2 border rounded focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                required
+              />
+            </div>
+          )}
         </div>
 
         {/* Address with Autocomplete */}

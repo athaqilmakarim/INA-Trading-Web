@@ -1,107 +1,43 @@
-import { firestore, storage, auth } from '../firebase';
-import { collection, addDoc, getDocs, doc, deleteDoc, updateDoc, getDoc } from 'firebase/firestore';
+import { firestore, storage } from '../firebase';
+import { collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, query, orderBy } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 
-const NEWS_COLLECTION = 'news';
-const USERS_COLLECTION = 'users';
-
 class NewsService {
-  async checkIsAdmin(userId) {
-    const userDoc = await getDoc(doc(firestore, USERS_COLLECTION, userId));
-    return userDoc.exists() && userDoc.data().userType === 'Admin';
+  constructor() {
+    this.collection = collection(firestore, 'news');
   }
 
+  // Upload image for news
   async uploadImage(imageFile) {
     try {
-      console.log('Starting news image upload...', imageFile.name);
-      
-      const metadata = {
-        contentType: imageFile.type,
-        customMetadata: {
-          'Access-Control-Allow-Origin': 'https://admin.inatrading.co.id'
-        }
-      };
-      
       const storageRef = ref(storage, `news/${Date.now()}-${imageFile.name}`);
-      const uploadResult = await uploadBytes(storageRef, imageFile, metadata);
-      console.log('Image uploaded successfully', uploadResult);
-      
-      const imageUrl = await getDownloadURL(uploadResult.ref);
-      console.log('Image URL obtained:', imageUrl);
-      
-      return imageUrl;
+      const uploadResult = await uploadBytes(storageRef, imageFile);
+      return await getDownloadURL(uploadResult.ref);
     } catch (error) {
       console.error('Error uploading image:', error);
-      throw new Error(`Failed to upload image: ${error.message}`);
+      throw new Error('Failed to upload image');
     }
   }
 
-  async createNews(newsData, images) {
-    try {
-      // Check if user is authenticated
-      const user = auth.currentUser;
-      if (!user) {
-        throw new Error('You must be logged in to create news');
-      }
-
-      // Check if user is admin
-      const isAdmin = await this.checkIsAdmin(user.uid);
-      if (!isAdmin) {
-        throw new Error('Only admins can create news');
-      }
-
-      let imageUrls = [];
-      
-      // Upload images if provided
-      if (images && images.length > 0) {
-        for (const image of images) {
-          const imageUrl = await this.uploadImage(image);
-          imageUrls.push(imageUrl);
-        }
-      }
-
-      // Create the news document
-      const newsRef = await addDoc(collection(firestore, NEWS_COLLECTION), {
-        ...newsData,
-        images: imageUrls,
-        createdBy: user.uid,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      });
-
-      return newsRef.id;
-    } catch (error) {
-      console.error('Error creating news:', error);
-      throw error;
-    }
-  }
-
+  // Get all news articles, ordered by creation date
   async getAllNews() {
     try {
-      const newsRef = collection(firestore, NEWS_COLLECTION);
-      const snapshot = await getDocs(newsRef);
-      
-      const allNews = snapshot.docs.map(doc => {
-        const data = doc.data();
-        return {
-          id: doc.id,
-          ...data,
-          createdAt: data.createdAt ? new Date(data.createdAt) : new Date(),
-          updatedAt: data.updatedAt ? new Date(data.updatedAt) : new Date()
-        };
-      });
-
-      // Sort by newest first
-      return allNews.sort((a, b) => b.createdAt - a.createdAt);
+      const q = query(this.collection, orderBy('createdAt', 'desc'));
+      const querySnapshot = await getDocs(q);
+      return querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
     } catch (error) {
-      console.error('Error fetching all news:', error);
+      console.error('Error getting news:', error);
       throw new Error('Failed to fetch news articles');
     }
   }
 
+  // Get a single news article by ID
   async getNewsById(id) {
     try {
-      const docRef = doc(firestore, NEWS_COLLECTION, id);
+      const docRef = doc(this.collection, id);
       const docSnap = await getDoc(docRef);
       
       if (docSnap.exists()) {
@@ -109,44 +45,61 @@ class NewsService {
           id: docSnap.id,
           ...docSnap.data()
         };
+      } else {
+        throw new Error('News article not found');
       }
-      return null;
     } catch (error) {
-      console.error('Error getting news by id:', error);
+      console.error('Error getting news article:', error);
       throw error;
     }
   }
 
+  // Create a new news article
+  async createNews(newsData, images = []) {
+    try {
+      const imageUrls = [];
+      
+      // Upload all images
+      for (const image of images) {
+        const imageUrl = await this.uploadImage(image);
+        imageUrls.push(imageUrl);
+      }
+
+      const docRef = await addDoc(this.collection, {
+        title: newsData.title,
+        subtitle: newsData.subtitle,
+        summary: newsData.summary,
+        images: imageUrls,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        createdBy: newsData.createdBy
+      });
+      return docRef.id;
+    } catch (error) {
+      console.error('Error creating news:', error);
+      throw new Error('Failed to create news article');
+    }
+  }
+
+  // Update a news article
   async updateNews(id, newsData, newImages = [], imagesToDelete = []) {
     try {
-      // Check if user is authenticated
-      const user = auth.currentUser;
-      if (!user) {
-        throw new Error('You must be logged in to update news');
-      }
-
-      // Check if user is admin
-      const isAdmin = await this.checkIsAdmin(user.uid);
-      if (!isAdmin) {
-        throw new Error('Only admins can update news');
-      }
-
-      const docRef = doc(firestore, NEWS_COLLECTION, id);
-      const currentNews = await getDoc(docRef);
+      const docRef = doc(this.collection, id);
+      const currentDoc = await getDoc(docRef);
       
-      if (!currentNews.exists()) {
-        throw new Error('News not found');
+      if (!currentDoc.exists()) {
+        throw new Error('News article not found');
       }
 
-      const currentData = currentNews.data();
-      let updatedImageUrls = [...(currentData.images || [])];
+      const currentData = currentDoc.data();
+      let updatedImages = [...(currentData.images || [])];
 
-      // Delete specified images
+      // Delete old images if specified
       for (const imageUrl of imagesToDelete) {
         const imageRef = ref(storage, imageUrl);
         try {
           await deleteObject(imageRef);
-          updatedImageUrls = updatedImageUrls.filter(url => url !== imageUrl);
+          updatedImages = updatedImages.filter(url => url !== imageUrl);
         } catch (error) {
           console.error('Error deleting image:', error);
         }
@@ -155,42 +108,28 @@ class NewsService {
       // Upload new images
       for (const image of newImages) {
         const imageUrl = await this.uploadImage(image);
-        updatedImageUrls.push(imageUrl);
+        updatedImages.push(imageUrl);
       }
 
       await updateDoc(docRef, {
         ...newsData,
-        images: updatedImageUrls,
-        updatedBy: user.uid,
+        images: updatedImages,
         updatedAt: new Date().toISOString()
       });
-
-      return id;
     } catch (error) {
       console.error('Error updating news:', error);
-      throw error;
+      throw new Error('Failed to update news article');
     }
   }
 
+  // Delete a news article
   async deleteNews(id) {
     try {
-      // Check if user is authenticated
-      const user = auth.currentUser;
-      if (!user) {
-        throw new Error('You must be logged in to delete news');
-      }
-
-      // Check if user is admin
-      const isAdmin = await this.checkIsAdmin(user.uid);
-      if (!isAdmin) {
-        throw new Error('Only admins can delete news');
-      }
-
-      const docRef = doc(firestore, NEWS_COLLECTION, id);
+      const docRef = doc(this.collection, id);
       const newsDoc = await getDoc(docRef);
       
       if (newsDoc.exists()) {
-        // Delete all associated images
+        // Delete associated images first
         const images = newsDoc.data().images || [];
         for (const imageUrl of images) {
           const imageRef = ref(storage, imageUrl);
@@ -201,13 +140,14 @@ class NewsService {
           }
         }
       }
-
+      
       await deleteDoc(docRef);
     } catch (error) {
       console.error('Error deleting news:', error);
-      throw error;
+      throw new Error('Failed to delete news article');
     }
   }
 }
 
-export default new NewsService(); 
+const newsService = new NewsService();
+export default newsService; 
