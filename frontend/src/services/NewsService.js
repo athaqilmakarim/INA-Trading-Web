@@ -82,7 +82,7 @@ class NewsService {
   }
 
   // Update a news article
-  async updateNews(id, newsData, newImages = [], imagesToDelete = []) {
+  async updateNews(id, newsData) {
     try {
       const docRef = doc(this.collection, id);
       const currentDoc = await getDoc(docRef);
@@ -91,29 +91,8 @@ class NewsService {
         throw new Error('News article not found');
       }
 
-      const currentData = currentDoc.data();
-      let updatedImages = [...(currentData.images || [])];
-
-      // Delete old images if specified
-      for (const imageUrl of imagesToDelete) {
-        const imageRef = ref(storage, imageUrl);
-        try {
-          await deleteObject(imageRef);
-          updatedImages = updatedImages.filter(url => url !== imageUrl);
-        } catch (error) {
-          console.error('Error deleting image:', error);
-        }
-      }
-
-      // Upload new images
-      for (const image of newImages) {
-        const imageUrl = await this.uploadImage(image);
-        updatedImages.push(imageUrl);
-      }
-
       await updateDoc(docRef, {
         ...newsData,
-        images: updatedImages,
         updatedAt: new Date().toISOString()
       });
     } catch (error) {
