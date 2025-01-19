@@ -90,6 +90,7 @@ const Admin = () => {
   const [undoSnackbarOpen, setUndoSnackbarOpen] = useState(false);
   const [lastDeletedItem, setLastDeletedItem] = useState(null);
   const [deleteTimeout, setDeleteTimeout] = useState(null);
+  const [showAddNewsForm, setShowAddNewsForm] = useState(false);
 
   useEffect(() => {
     fetchAllData();
@@ -751,15 +752,100 @@ const Admin = () => {
               {activeTab === 'products' && renderApprovalMode(products, 'product')}
               {activeTab === 'news' && (
                 <Box>
-                  <Card elevation={3} sx={{ mb: 3 }}>
-                    <CardContent>
-                      <Typography variant="h6" gutterBottom>
-                        Add New Article
-                      </Typography>
-                      <AddNews onNewsAdded={fetchAllData} />
-                    </CardContent>
-                  </Card>
-                  {renderCleanupMode(news, 'news')}
+                  {/* News List */}
+                  <div className="mb-8">
+                    <div className="bg-white rounded-lg shadow-lg p-4">
+                      <List>
+                        {news.map((article) => (
+                          <ListItem
+                            key={article.id}
+                            sx={{
+                              borderBottom: '1px solid #eee',
+                              '&:last-child': { borderBottom: 'none' },
+                              py: 2,
+                              pr: 12 // Add right padding to prevent text overlap with buttons
+                            }}
+                          >
+                            <ListItemText
+                              primary={
+                                <Typography
+                                  sx={{
+                                    display: '-webkit-box',
+                                    WebkitLineClamp: 2,
+                                    WebkitBoxOrient: 'vertical',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                    fontSize: '1rem',
+                                    lineHeight: 1.2,
+                                    maxWidth: '90%'
+                                  }}
+                                >
+                                  {article.title}
+                                </Typography>
+                              }
+                              secondary={
+                                <Typography 
+                                  variant="body2" 
+                                  color="text.secondary"
+                                  sx={{ 
+                                    mt: 0.5,
+                                    fontSize: '0.875rem'
+                                  }}
+                                >
+                                  {new Date(article.createdAt).toLocaleDateString()}
+                                </Typography>
+                              }
+                              sx={{
+                                margin: 0,
+                                '& .MuiListItemText-primary': {
+                                  width: '100%'
+                                }
+                              }}
+                            />
+                            <ListItemSecondaryAction>
+                              <Tooltip title="Edit">
+                                <IconButton
+                                  edge="end"
+                                  onClick={() => navigate(`/news/edit/${article.id}`)}
+                                  sx={{ color: 'primary.main', mr: 1 }}
+                                >
+                                  <EditIcon />
+                                </IconButton>
+                              </Tooltip>
+                              <Tooltip title="Delete">
+                                <IconButton
+                                  edge="end"
+                                  onClick={() => handleDelete(article.id, 'news')}
+                                  sx={{ color: 'error.main' }}
+                                >
+                                  <DeleteIcon />
+                                </IconButton>
+                              </Tooltip>
+                            </ListItemSecondaryAction>
+                          </ListItem>
+                        ))}
+                      </List>
+                    </div>
+                  </div>
+
+                  {/* Create Button and Form */}
+                  <div className="mb-8">
+                    <div className="flex items-center mb-4">
+                      <button
+                        onClick={() => setShowAddNewsForm(!showAddNewsForm)}
+                        className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors duration-200"
+                      >
+                        {showAddNewsForm ? '− Close Form' : '+ Add New Article'}
+                      </button>
+                    </div>
+                    
+                    {/* Dropdown Form */}
+                    <div className={`transition-all duration-300 ease-in-out overflow-hidden ${showAddNewsForm ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'}`}>
+                      <div className="bg-white rounded-lg shadow-lg p-6">
+                        <AddNews onNewsAdded={fetchAllData} />
+                      </div>
+                    </div>
+                  </div>
                 </Box>
               )}
               {activeTab === 'promos' && renderApprovalMode(promos, 'promo')}

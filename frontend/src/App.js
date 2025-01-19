@@ -22,6 +22,7 @@ import Auth from './pages/Auth';
 import VerifyEmailRequired from './pages/VerifyEmailRequired';
 import NewsList from './pages/NewsList';
 import NewsDetail from './pages/NewsDetail';
+import EditNews from './pages/EditNews';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import { UserType } from './services/UserService';
@@ -93,6 +94,14 @@ function AppContent() {
           }
         />
         <Route path="/export-product/:id" element={<ExportProductDetail />} />
+        <Route
+          path="/news/edit/:id"
+          element={
+            <ProtectedRoute allowedUserTypes={[UserType.ADMIN]}>
+              <EditNews />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/admin"
           element={
