@@ -7,6 +7,7 @@ const AddressAutocomplete = ({ onAddressSelect, placeholder = "Enter address..."
   const [selectedFromDropdown, setSelectedFromDropdown] = useState(true);
   const [value, setValue] = useState(initialValue);
 
+  // Update value when initialValue changes
   useEffect(() => {
     setValue(initialValue);
     setSelectedFromDropdown(!!initialValue);
@@ -30,8 +31,8 @@ const AddressAutocomplete = ({ onAddressSelect, placeholder = "Enter address..."
 
       try {
         const autocomplete = new window.google.maps.places.Autocomplete(inputRef.current, {
-          fields: ['formatted_address'],
-          types: ['address'],
+          fields: ['formatted_address', 'geometry'],
+          types: ['address']
         });
 
         // Remove the old pac-container if it exists
@@ -42,10 +43,10 @@ const AddressAutocomplete = ({ onAddressSelect, placeholder = "Enter address..."
 
         autocomplete.addListener('place_changed', () => {
           const place = autocomplete.getPlace();
-          console.log('Selected place:', place);
-
+          
           if (place.formatted_address) {
             setSelectedFromDropdown(true);
+            setValue(place.formatted_address);
             onAddressSelect(place.formatted_address);
           } else {
             setSelectedFromDropdown(false);
@@ -53,7 +54,7 @@ const AddressAutocomplete = ({ onAddressSelect, placeholder = "Enter address..."
           }
         });
 
-        // Ensure the dropdown appears above everything
+        // Style the dropdown
         const observer = new MutationObserver((mutations) => {
           const pacContainer = document.querySelector('.pac-container');
           if (pacContainer) {
@@ -63,6 +64,12 @@ const AddressAutocomplete = ({ onAddressSelect, placeholder = "Enter address..."
             pacContainer.style.border = '1px solid #e5e7eb';
             pacContainer.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1)';
             pacContainer.style.backgroundColor = 'white';
+            // Make dropdown items more visible on dark background
+            const items = pacContainer.querySelectorAll('.pac-item');
+            items.forEach(item => {
+              item.style.color = '#1f2937';
+              item.style.padding = '8px 12px';
+            });
           }
         });
 
@@ -78,29 +85,22 @@ const AddressAutocomplete = ({ onAddressSelect, placeholder = "Enter address..."
       }
     };
 
-    // Add global error handler for Google Maps
-    window.gm_authFailure = () => {
-      setError('Google Maps authentication failed. Please check API key configuration.');
-    };
-
     checkGoogleMapsLoaded();
 
     return () => {
-      // Cleanup
       const pacContainer = document.querySelector('.pac-container');
       if (pacContainer) {
         pacContainer.remove();
       }
-      // Remove global error handler
-      delete window.gm_authFailure;
     };
   }, [onAddressSelect]);
 
   const handleInputChange = (e) => {
-    setValue(e.target.value);
-    if (e.target.value === '') {
-      setSelectedFromDropdown(false);
-      onAddressSelect(''); // Clear the address when input is cleared
+    const newValue = e.target.value;
+    setValue(newValue);
+    setSelectedFromDropdown(false);
+    if (newValue === '') {
+      onAddressSelect('');
     }
     setError(null);
   };
@@ -111,11 +111,11 @@ const AddressAutocomplete = ({ onAddressSelect, placeholder = "Enter address..."
         ref={inputRef}
         type="text"
         value={value}
+        onChange={handleInputChange}
         placeholder={isLoaded ? placeholder : "Loading address autocomplete..."}
-        className={`w-full p-2 border rounded focus:ring-2 focus:ring-red-500 focus:border-transparent ${error ? 'border-red-500' : ''}`}
+        className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 ${error ? 'border-red-500' : ''}`}
         autoComplete="off"
         disabled={!isLoaded}
-        onChange={handleInputChange}
       />
       {!isLoaded && !error && (
         <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
@@ -128,7 +128,7 @@ const AddressAutocomplete = ({ onAddressSelect, placeholder = "Enter address..."
       {error && (
         <div className="text-red-500 text-sm mt-1">{error}</div>
       )}
-      {!selectedFromDropdown && inputRef.current?.value && !error && (
+      {!selectedFromDropdown && value && !error && (
         <div className="text-blue-500 text-sm mt-1">Please select an address from the dropdown suggestions</div>
       )}
     </div>
