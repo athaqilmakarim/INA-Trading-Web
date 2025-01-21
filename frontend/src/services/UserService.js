@@ -209,6 +209,24 @@ class UserService {
       throw error;
     }
   }
+
+  async updateUserProfile(userId, profileData) {
+    try {
+      const userRef = doc(firestore, 'users', userId);
+      await updateDoc(userRef, {
+        ...profileData,
+        lastUpdated: serverTimestamp()
+      });
+
+      return {
+        success: true,
+        message: 'Profile updated successfully'
+      };
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      throw error;
+    }
+  }
 }
 
 export default new UserService(); 
