@@ -403,6 +403,9 @@ const Profile = () => {
                       <div className="flex justify-between items-start">
                         <div>
                           <h3 className="font-semibold text-gray-900">{product.name}</h3>
+                          {userData?.companyName && (
+                            <p className="text-sm text-gray-600 mt-0.5">by {userData.companyName}</p>
+                          )}
                           <p className="text-gray-600 mt-1">{product.category}</p>
                           <p className="text-sm text-gray-500 mt-2">
                             Price: {typeof product.price === 'object' ? 

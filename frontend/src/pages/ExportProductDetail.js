@@ -7,18 +7,34 @@ import { motion } from 'framer-motion';
 const ExportProductDetail = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
+  const [userData, setUserData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedImage, setSelectedImage] = useState(0);
 
   useEffect(() => {
-    const fetchProduct = async () => {
+    const fetchProductAndUser = async () => {
       try {
         const docRef = doc(firestore, 'export_products', id);
         const docSnap = await getDoc(docRef);
         
         if (docSnap.exists()) {
-          setProduct({ id: docSnap.id, ...docSnap.data() });
+          const productData = { id: docSnap.id, ...docSnap.data() };
+          setProduct(productData);
+          
+          // Fetch user data
+          if (productData.sellerId) {
+            try {
+              const userRef = doc(firestore, 'users', productData.sellerId);
+              const userSnap = await getDoc(userRef);
+              if (userSnap.exists()) {
+                setUserData(userSnap.data());
+              }
+            } catch (userError) {
+              console.error('Error fetching user data:', userError);
+              // Don't set error state here, just continue without user data
+            }
+          }
         } else {
           setError('Product not found');
         }
@@ -29,7 +45,7 @@ const ExportProductDetail = () => {
       }
     };
 
-    fetchProduct();
+    fetchProductAndUser();
   }, [id]);
 
   if (isLoading) {
@@ -119,12 +135,17 @@ const ExportProductDetail = () => {
             <div className="space-y-6">
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <h1 className="text-3xl font-bold text-gray-900">{product.name}</h1>
+                  <div>
+                    <h1 className="text-3xl font-bold text-gray-900">{product.name}</h1>
+                    {userData?.companyName && userData.companyName.trim() !== '' && (
+                      <p className="text-gray-600 text-sm mt-1">by {userData.companyName}</p>
+                    )}
+                  </div>
                   <span className="px-3 py-1 bg-red-50 text-red-600 rounded-full text-sm font-medium">
                     {product.category}
                   </span>
                 </div>
-                <p className="text-gray-600">{product.description}</p>
+                <p className="text-gray-600 mt-4">{product.description}</p>
               </div>
 
               <div className="border-t border-gray-100 pt-6">
