@@ -112,7 +112,7 @@ const AddressAutocomplete = ({ onAddressSelect, placeholder = "Enter address..."
         type="text"
         value={value}
         placeholder={isLoaded ? placeholder : "Loading address autocomplete..."}
-        className={`w-full p-2 border rounded focus:ring-2 focus:ring-red-500 focus:border-transparent ${error ? 'border-red-500' : ''}`}
+        className={`w-full px-4 py-2 bg-white bg-opacity-20 border border-gray-300 border-opacity-20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200 ${error ? 'border-red-500' : ''}`}
         autoComplete="off"
         disabled={!isLoaded}
         onChange={handleInputChange}

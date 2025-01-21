@@ -111,42 +111,63 @@ const Profile = () => {
         {/* Profile Header */}
         <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
           <div className="flex items-start justify-between">
-            <div className="flex items-center space-x-6">
-              {/* Profile Picture */}
-              <div className="relative">
-                {userData?.profilePicture ? (
-                  <img
-                    src={userData.profilePicture}
-                    alt="Profile"
-                    className="w-24 h-24 rounded-full object-cover"
-                  />
-                ) : (
-                  <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center">
-                    <span className="text-gray-500">No Image</span>
-                  </div>
-                )}
-              </div>
-              
+            <div className="flex-1 space-y-6">
               {/* User Info */}
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">
-                  {userData?.displayName || currentUser.email.split('@')[0]}
-                </h1>
-                <p className="text-gray-600 mt-1">{currentUser.email}</p>
-                {userData?.phoneNumber && (
-                  <p className="text-gray-600 mt-1">{userData.phoneNumber}</p>
-                )}
-                {userData?.bio && (
-                  <p className="text-gray-600 mt-2 max-w-xl">{userData.bio}</p>
-                )}
-                <p className="text-sm text-gray-500 mt-2">
-                  Account Type: {userType}
-                </p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <h1 className="text-2xl font-bold text-gray-900 mb-4">
+                    {userData?.firstName} {userData?.lastName}
+                  </h1>
+                  
+                  <div className="space-y-3">
+                    <div>
+                      <label className="text-sm text-gray-500">Email</label>
+                      <p className="text-gray-900">{currentUser.email}</p>
+                    </div>
+
+                    <div>
+                      <label className="text-sm text-gray-500">Phone Number</label>
+                      <p className="text-gray-900">{userData?.phoneNumber || 'Not provided'}</p>
+                    </div>
+
+                    <div>
+                      <label className="text-sm text-gray-500">Address</label>
+                      <p className="text-gray-900">{userData?.address || 'Not provided'}</p>
+                    </div>
+
+                    <div>
+                      <label className="text-sm text-gray-500">Account Type</label>
+                      <p className="text-gray-900">{userType}</p>
+                    </div>
+
+                    {userType === UserType.B2B_SUPPLIER && userData?.companyName && (
+                      <div>
+                        <label className="text-sm text-gray-500">Company Name</label>
+                        <p className="text-gray-900">{userData.companyName}</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Profile Picture Section */}
+                <div className="flex justify-center md:justify-end">
+                  {userData?.profilePicture ? (
+                    <img
+                      src={userData.profilePicture}
+                      alt="Profile"
+                      className="w-32 h-32 rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-32 h-32 rounded-full bg-gray-200 flex items-center justify-center">
+                      <span className="text-gray-500">No Image</span>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 
             {/* Actions */}
-            <div className="flex items-center space-x-4">
+            <div className="ml-6">
               <button
                 onClick={signOut}
                 className="px-4 py-2 text-red-600 hover:text-red-700 font-medium"

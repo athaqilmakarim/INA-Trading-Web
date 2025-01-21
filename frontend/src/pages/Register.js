@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import userService, { UserType } from '../services/UserService';
+import AddressAutocomplete from '../components/AddressAutocomplete';
 
 export default function Register() {
   const navigate = useNavigate();
@@ -9,7 +10,12 @@ export default function Register() {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
-    userType: UserType.B2C_CONSUMER
+    firstName: '',
+    lastName: '',
+    address: '',
+    phoneNumber: '',
+    userType: UserType.B2C_CONSUMER,
+    companyName: ''
   });
 
   const handleSubmit = async (e) => {
@@ -20,7 +26,14 @@ export default function Register() {
       const result = await userService.register(
         formData.email,
         formData.password,
-        formData.userType
+        formData.userType,
+        {
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          address: formData.address,
+          phoneNumber: formData.phoneNumber,
+          companyName: formData.companyName
+        }
       );
       
       toast.success(result.message);
@@ -51,6 +64,41 @@ export default function Register() {
 
         <form className="space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label htmlFor="firstName" className="block text-sm font-medium text-gray-200 mb-1">
+                  First Name
+                </label>
+                <input
+                  id="firstName"
+                  name="firstName"
+                  type="text"
+                  required
+                  className="w-full px-4 py-2 bg-white bg-opacity-20 border border-gray-300 border-opacity-20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200"
+                  placeholder="First name"
+                  value={formData.firstName}
+                  onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
+                  disabled={loading}
+                />
+              </div>
+              <div>
+                <label htmlFor="lastName" className="block text-sm font-medium text-gray-200 mb-1">
+                  Last Name
+                </label>
+                <input
+                  id="lastName"
+                  name="lastName"
+                  type="text"
+                  required
+                  className="w-full px-4 py-2 bg-white bg-opacity-20 border border-gray-300 border-opacity-20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200"
+                  placeholder="Last name"
+                  value={formData.lastName}
+                  onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+                  disabled={loading}
+                />
+              </div>
+            </div>
+
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-200 mb-1">
                 Email address
@@ -88,6 +136,34 @@ export default function Register() {
             </div>
 
             <div>
+              <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-200 mb-1">
+                Phone Number
+              </label>
+              <input
+                id="phoneNumber"
+                name="phoneNumber"
+                type="tel"
+                required
+                className="w-full px-4 py-2 bg-white bg-opacity-20 border border-gray-300 border-opacity-20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200"
+                placeholder="Enter your phone number"
+                value={formData.phoneNumber}
+                onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
+                disabled={loading}
+              />
+            </div>
+
+            <div>
+              <label htmlFor="address" className="block text-sm font-medium text-gray-200 mb-1">
+                Address
+              </label>
+              <AddressAutocomplete
+                onAddressSelect={(address) => setFormData({ ...formData, address })}
+                placeholder="Enter your address"
+                initialValue={formData.address}
+              />
+            </div>
+
+            <div>
               <label htmlFor="userType" className="block text-sm font-medium text-gray-200 mb-1">
                 Account Type
               </label>
@@ -105,6 +181,25 @@ export default function Register() {
                 <option value={UserType.B2B_SUPPLIER} className="text-gray-900">B2B Supplier/Exporter</option>
               </select>
             </div>
+
+            {formData.userType === UserType.B2B_SUPPLIER && (
+              <div>
+                <label htmlFor="companyName" className="block text-sm font-medium text-gray-200 mb-1">
+                  Company Name
+                </label>
+                <input
+                  id="companyName"
+                  name="companyName"
+                  type="text"
+                  required={formData.userType === UserType.B2B_SUPPLIER}
+                  className="w-full px-4 py-2 bg-white bg-opacity-20 border border-gray-300 border-opacity-20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200"
+                  placeholder="Enter your company name"
+                  value={formData.companyName}
+                  onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
+                  disabled={loading}
+                />
+              </div>
+            )}
           </div>
 
           <button

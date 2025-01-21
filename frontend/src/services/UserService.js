@@ -18,7 +18,7 @@ export const UserType = {
 };
 
 class UserService {
-  async register(email, password, userType) {
+  async register(email, password, userType, profileData) {
     try {
       // Store credentials temporarily for after verification
       localStorage.setItem('pendingEmail', email);
@@ -37,14 +37,25 @@ class UserService {
       await sendEmailVerification(user, actionCodeSettings);
 
       // Create user profile in Firestore
-      await setDoc(doc(firestore, 'users', user.uid), {
+      const userData = {
         email: user.email,
         id: user.uid,
         userType: userType,
+        firstName: profileData.firstName,
+        lastName: profileData.lastName,
+        address: profileData.address,
+        phoneNumber: profileData.phoneNumber,
         createdAt: serverTimestamp(),
         lastUpdated: serverTimestamp(),
         emailVerified: false
-      });
+      };
+
+      // Add company name if user is B2B Supplier
+      if (userType === UserType.B2B_SUPPLIER && profileData.companyName) {
+        userData.companyName = profileData.companyName;
+      }
+
+      await setDoc(doc(firestore, 'users', user.uid), userData);
 
       // Sign out the user until they verify their email
       await signOut(auth);
