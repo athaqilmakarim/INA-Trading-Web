@@ -42,9 +42,10 @@ const Navbar = () => {
           <div className="flex items-center space-x-8">
             <Link to="/" className="flex-shrink-0 flex items-center">
               <img 
-                src="/logo.png"
+                src="/Logo INA TRADING KOTAK 2.png"
                 alt="INA Trading Logo" 
-                className="h-12 w-auto"
+                className="h-8 w-auto"
+                style={{ minWidth: '120px', objectFit: 'contain' }}
               />
             </Link>
 
