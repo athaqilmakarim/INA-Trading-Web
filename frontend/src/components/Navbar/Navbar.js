@@ -1,35 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import userService, { UserType } from '../../services/UserService';
+import { UserType } from '../../services/UserService';
 
 const Navbar = () => {
-  const { currentUser } = useAuth();
-  const [userType, setUserType] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const { currentUser, userType } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
-
-  useEffect(() => {
-    const fetchUserType = async () => {
-      if (currentUser) {
-        try {
-          setIsLoading(true);
-          const type = await userService.checkUserType(currentUser.uid);
-          setUserType(type);
-        } catch (error) {
-          console.error('Error fetching user type:', error);
-        } finally {
-          setIsLoading(false);
-        }
-      } else {
-        setUserType(null);
-        setIsLoading(false);
-      }
-    };
-    
-    fetchUserType();
-  }, [currentUser]);
 
   const isActive = (path) => {
     return location.pathname === path;
@@ -65,9 +42,10 @@ const Navbar = () => {
           <div className="flex items-center space-x-8">
             <Link to="/" className="flex-shrink-0 flex items-center">
               <img 
-                src="/logo.png"
+                src="/Logo INA TRADING KOTAK 2.png"
                 alt="INA Trading Logo" 
-                className="h-12 w-auto"
+                className="h-8 w-auto"
+                style={{ minWidth: '120px', objectFit: 'contain' }}
               />
             </Link>
 
@@ -82,9 +60,9 @@ const Navbar = () => {
 
           {/* Right side - Auth and actions */}
           <div className="hidden sm:flex sm:items-center sm:space-x-4">
-            {!isLoading && currentUser && (
+            {currentUser && (
               <>
-                {(userType === UserType.B2B_SUPPLIER && userType === "B2B Supplier/Exporter" || userType === UserType.ADMIN && userType === "Admin") && (
+                {(userType === UserType.B2B_SUPPLIER || userType === "B2B Supplier/Exporter" || userType === UserType.ADMIN || userType === "Admin") && (
                   <ActionButton to="/add-export-product">
                     Add Product
                   </ActionButton>
@@ -94,7 +72,7 @@ const Navbar = () => {
                     Add Place
                   </ActionButton>
                 )}
-                {(userType === UserType.ADMIN && userType === "Admin") && (
+                {(userType === UserType.ADMIN || userType === "Admin") && (
                   <Link
                     to="/admin"
                     className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-full hover:bg-red-700 transition-colors duration-200 flex items-center space-x-2"
@@ -150,15 +128,15 @@ const Navbar = () => {
         
         {/* Mobile menu auth section */}
         <div className="pt-4 pb-3 border-t border-gray-200">
-          {!isLoading && currentUser && (
+          {currentUser && (
             <div className="space-y-1">
-              {(userType === UserType.B2B_SUPPLIER && userType === "B2B Supplier/Exporter") && (
+              {(userType === UserType.B2B_SUPPLIER || userType === "B2B Supplier/Exporter" || userType === UserType.ADMIN || userType === "Admin") && (
                 <MobileNavLink to="/add-export-product">Add Product</MobileNavLink>
               )}
-              {(userType === UserType.B2C_BUSINESS_OWNER && userType === "B2C Business Owner") && (
+              {(userType === UserType.B2C_BUSINESS_OWNER || userType === "B2C Business Owner" || userType === UserType.ADMIN || userType === "Admin") && (
                 <MobileNavLink to="/add-place">Add Place</MobileNavLink>
               )}
-              {(userType === UserType.ADMIN && userType === "Admin") && (
+              {(userType === UserType.ADMIN || userType === "Admin") && (
                 <MobileNavLink to="/admin">Admin Panel</MobileNavLink>
               )}
               <MobileNavLink to="/profile">Profile</MobileNavLink>

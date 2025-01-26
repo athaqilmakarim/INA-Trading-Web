@@ -4,7 +4,9 @@ import { useAuth } from '../context/AuthContext';
 import { placeService } from '../services/PlaceService';
 import userService, { UserType } from '../services/UserService';
 import { exportProductService } from '../services/ExportProductService';
-import { FaEdit, FaTrash } from 'react-icons/fa';
+import { FaEdit, FaTrash, FaSave, FaTimes } from 'react-icons/fa';
+import { toast } from 'react-hot-toast';
+import AddressAutocomplete from '../components/AddressAutocomplete';
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -13,6 +15,26 @@ const Profile = () => {
   const [exportProducts, setExportProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [userData, setUserData] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editForm, setEditForm] = useState({
+    firstName: '',
+    lastName: '',
+    phoneNumber: '',
+    address: '',
+    companyName: ''
+  });
+
+  useEffect(() => {
+    if (userData) {
+      setEditForm({
+        firstName: userData.firstName || '',
+        lastName: userData.lastName || '',
+        phoneNumber: userData.phoneNumber || '',
+        address: userData.address || '',
+        companyName: userData.companyName || ''
+      });
+    }
+  }, [userData]);
 
   // Sort places alphabetically by name
   const sortedPlaces = [...places].sort((a, b) => a.name.localeCompare(b.name));
@@ -84,6 +106,37 @@ const Profile = () => {
     }
   };
 
+  const handleEditClick = () => {
+    setIsEditing(true);
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+    // Reset form to current user data
+    setEditForm({
+      firstName: userData.firstName || '',
+      lastName: userData.lastName || '',
+      phoneNumber: userData.phoneNumber || '',
+      address: userData.address || '',
+      companyName: userData.companyName || ''
+    });
+  };
+
+  const handleSaveProfile = async () => {
+    try {
+      setIsLoading(true);
+      const result = await userService.updateUserProfile(currentUser.uid, editForm);
+      setUserData({ ...userData, ...editForm });
+      setIsEditing(false);
+      toast.success('Profile updated successfully');
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      toast.error(error.message || 'Failed to update profile');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   if (!currentUser) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -105,54 +158,152 @@ const Profile = () => {
     );
   }
 
+  const renderProfileField = (label, value, fieldName) => {
+    if (isEditing) {
+      if (fieldName === 'address') {
+        return (
+          <div>
+            <label className="text-sm text-gray-500">{label}</label>
+            <div className="mt-1">
+              <AddressAutocomplete
+                onAddressSelect={(address) => setEditForm({ ...editForm, address })}
+                placeholder="Enter your address"
+                initialValue={editForm.address || userData?.address || ''}
+              />
+            </div>
+          </div>
+        );
+      }
+      
+      return (
+        <div>
+          <label className="text-sm text-gray-500">{label}</label>
+          <input
+            type={fieldName === 'phoneNumber' ? 'tel' : 'text'}
+            value={editForm[fieldName]}
+            onChange={(e) => setEditForm({ ...editForm, [fieldName]: e.target.value })}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+            placeholder={`Enter your ${label.toLowerCase()}`}
+          />
+        </div>
+      );
+    }
+
+    return (
+      <div>
+        <label className="text-sm text-gray-500">{label}</label>
+        <p className="text-gray-900">{value || 'Not provided'}</p>
+      </div>
+    );
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="container mx-auto px-4">
         {/* Profile Header */}
         <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
           <div className="flex items-start justify-between">
-            <div className="flex items-center space-x-6">
-              {/* Profile Picture */}
-              <div className="relative">
-                {userData?.profilePicture ? (
-                  <img
-                    src={userData.profilePicture}
-                    alt="Profile"
-                    className="w-24 h-24 rounded-full object-cover"
-                  />
-                ) : (
-                  <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center">
-                    <span className="text-gray-500">No Image</span>
-                  </div>
-                )}
-              </div>
-              
+            <div className="flex-1 space-y-6">
               {/* User Info */}
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">
-                  {userData?.displayName || currentUser.email.split('@')[0]}
-                </h1>
-                <p className="text-gray-600 mt-1">{currentUser.email}</p>
-                {userData?.phoneNumber && (
-                  <p className="text-gray-600 mt-1">{userData.phoneNumber}</p>
-                )}
-                {userData?.bio && (
-                  <p className="text-gray-600 mt-2 max-w-xl">{userData.bio}</p>
-                )}
-                <p className="text-sm text-gray-500 mt-2">
-                  Account Type: {userType}
-                </p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  {isEditing ? (
+                    <div className="space-y-3 mb-4">
+                      <div>
+                        <label className="text-sm text-gray-500">First Name</label>
+                        <input
+                          type="text"
+                          value={editForm.firstName}
+                          onChange={(e) => setEditForm({ ...editForm, firstName: e.target.value })}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+                          placeholder="Enter your first name"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-sm text-gray-500">Last Name</label>
+                        <input
+                          type="text"
+                          value={editForm.lastName}
+                          onChange={(e) => setEditForm({ ...editForm, lastName: e.target.value })}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+                          placeholder="Enter your last name"
+                        />
+                      </div>
+                    </div>
+                  ) : (
+                    <h1 className="text-2xl font-bold text-gray-900 mb-4">
+                      {`${userData?.firstName} ${userData?.lastName}`}
+                    </h1>
+                  )}
+                  
+                  <div className="space-y-3">
+                    <div>
+                      <label className="text-sm text-gray-500">Email</label>
+                      <p className="text-gray-900">{currentUser.email}</p>
+                    </div>
+
+                    {renderProfileField('Phone Number', userData?.phoneNumber, 'phoneNumber')}
+                    {renderProfileField('Address', userData?.address, 'address')}
+
+                    <div>
+                      <label className="text-sm text-gray-500">Account Type</label>
+                      <p className="text-gray-900">{userType}</p>
+                    </div>
+
+                    {userType === UserType.B2B_SUPPLIER && (
+                      renderProfileField('Company Name', userData?.companyName, 'companyName')
+                    )}
+                  </div>
+                </div>
+
+                {/* Profile Picture Section */}
+                <div className="flex justify-center md:justify-end">
+                  {userData?.profilePicture ? (
+                    <img
+                      src={userData.profilePicture}
+                      alt="Profile"
+                      className="w-32 h-32 rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-32 h-32 rounded-full bg-gray-200 flex items-center justify-center">
+                      <span className="text-gray-500">No Image</span>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 
             {/* Actions */}
-            <div className="flex items-center space-x-4">
+            <div className="ml-6 space-y-2">
               <button
                 onClick={signOut}
-                className="px-4 py-2 text-red-600 hover:text-red-700 font-medium"
+                className="w-full px-4 py-2 text-red-600 hover:text-red-700 font-medium"
               >
                 Sign Out
               </button>
+              {!isEditing ? (
+                <button
+                  onClick={handleEditClick}
+                  className="w-full px-4 py-2 text-blue-600 hover:text-blue-700 font-medium flex items-center justify-center"
+                >
+                  <FaEdit className="mr-1" /> Edit
+                </button>
+              ) : (
+                <div className="space-y-2">
+                  <button
+                    onClick={handleSaveProfile}
+                    className="w-full px-4 py-2 text-green-600 hover:text-green-700 font-medium flex items-center justify-center"
+                  >
+                    <FaSave className="mr-1" /> Save
+                  </button>
+                  <button
+                    onClick={handleCancelEdit}
+                    className="w-full px-4 py-2 text-gray-600 hover:text-gray-700 font-medium flex items-center justify-center"
+                  >
+                    <FaTimes className="mr-1" /> Cancel
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -252,6 +403,9 @@ const Profile = () => {
                       <div className="flex justify-between items-start">
                         <div>
                           <h3 className="font-semibold text-gray-900">{product.name}</h3>
+                          {userData?.companyName && (
+                            <p className="text-sm text-gray-600 mt-0.5">by {userData.companyName}</p>
+                          )}
                           <p className="text-gray-600 mt-1">{product.category}</p>
                           <p className="text-sm text-gray-500 mt-2">
                             Price: {typeof product.price === 'object' ? 

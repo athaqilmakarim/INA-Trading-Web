@@ -167,136 +167,159 @@ const EditPlace = () => {
   }
 
   return (
-    <div className="max-w-2xl mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-6 animate-fadeIn">Edit Place</h1>
-
-      <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Name */}
-        <div>
-          <label className="block text-sm font-medium mb-1">Place Name</label>
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="w-full p-2 border rounded focus:ring-2 focus:ring-red-500 focus:border-transparent"
-            required
-          />
-        </div>
-
-        {/* Type */}
-        <div>
-          <label className="block text-sm font-medium mb-1">Type</label>
-          <select
-            value={type}
-            onChange={(e) => setType(e.target.value)}
-            className="w-full p-2 border rounded focus:ring-2 focus:ring-red-500 focus:border-transparent"
-          >
-            {Object.entries(PlaceType).map(([key, val]) => (
-              <option key={key} value={val}>
-                {val}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Address with Autocomplete */}
-        <div>
-          <label className="block text-sm font-medium mb-1">Address</label>
-          <AddressAutocomplete
-            onAddressSelect={handleAddressSelect}
-            placeholder="Start typing the address..."
-            initialValue={address}
-          />
-        </div>
-
-        {/* Contact */}
-        <div>
-          <label className="block text-sm font-medium mb-1">Contact</label>
-          <input
-            type="text"
-            value={contact}
-            onChange={(e) => setContact(e.target.value)}
-            className="w-full p-2 border rounded focus:ring-2 focus:ring-red-500 focus:border-transparent"
-            required
-          />
-        </div>
-
-        {/* Description */}
-        <div>
-          <label className="block text-sm font-medium mb-1">Description</label>
-          <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            className="w-full p-2 border rounded h-24 focus:ring-2 focus:ring-red-500 focus:border-transparent"
-            required
-          />
-        </div>
-
-        {/* Existing Images */}
-        {existingImages.length > 0 && (
-          <div className="space-y-4">
-            <label className="block text-sm font-medium mb-1">Current Images</label>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              {existingImages.map((url, index) => (
-                <ImagePreview
-                  key={index}
-                  url={url}
-                  index={index}
-                  onRemove={() => removeExistingImage(url)}
-                />
-              ))}
-            </div>
+    <div className="container mx-auto px-4 py-8">
+      <div className="max-w-3xl mx-auto">
+        <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+          <div className="bg-red-600 px-6 py-4">
+            <h1 className="text-2xl font-bold text-white">Edit Place</h1>
           </div>
-        )}
 
-        {/* New Images Upload Section */}
-        <div className="space-y-4 animate-fadeIn">
-          <label className="block text-sm font-medium mb-1">Add New Images</label>
-          <ImageUploadZone
-            onDrop={handleDrop}
-            onDragOver={handleDragOver}
-            onChange={handleImageChange}
-          />
+          <form onSubmit={handleSubmit} className="p-6 space-y-8">
+            {/* Basic Information Section */}
+            <div className="space-y-6">
+              <h2 className="text-xl font-semibold text-gray-800 pb-2 border-b">Basic Information</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Name */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Place Name</label>
+                  <input
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+                    required
+                  />
+                </div>
 
-          {/* New Image Previews */}
-          {newImagePreviews.length > 0 && (
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
-              {newImagePreviews.map((url, index) => (
-                <ImagePreview
-                  key={index}
-                  url={url}
-                  index={index}
-                  onRemove={() => removeNewImage(index)}
-                />
-              ))}
+                {/* Type */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Type</label>
+                  <select
+                    value={type}
+                    onChange={(e) => setType(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+                  >
+                    {Object.entries(PlaceType).map(([key, val]) => (
+                      <option key={key} value={val}>
+                        {val}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
             </div>
-          )}
 
-          {/* Upload Progress */}
-          {uploadProgress > 0 && uploadProgress < 100 && (
-            <UploadProgress progress={uploadProgress} />
-          )}
-        </div>
+            {/* Contact Information Section */}
+            <div className="space-y-6">
+              <h2 className="text-xl font-semibold text-gray-800 pb-2 border-b">Contact Information</h2>
+              <div className="grid grid-cols-1 gap-6">
+                {/* Address with Autocomplete */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Address</label>
+                  <AddressAutocomplete
+                    onAddressSelect={handleAddressSelect}
+                    placeholder="Start typing the address..."
+                    initialValue={address}
+                  />
+                </div>
 
-        {/* Submit Buttons */}
-        <div className="flex justify-end space-x-4">
-          <button
-            type="button"
-            onClick={() => navigate('/profile')}
-            className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md"
-            disabled={isLoading}
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            disabled={isLoading || !name || !address}
-            className="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-md disabled:opacity-50"
-          >
-            {isLoading ? 'Saving...' : 'Save Changes'}
-          </button>
+                {/* Contact */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Contact</label>
+                  <input
+                    type="text"
+                    value={contact}
+                    onChange={(e) => setContact(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Description Section */}
+            <div className="space-y-4">
+              <h2 className="text-xl font-semibold text-gray-800 pb-2 border-b">Description</h2>
+              <textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+                rows={4}
+                placeholder="Describe your place..."
+                required
+              />
+            </div>
+
+            {/* Image Section */}
+            <div className="space-y-6">
+              <h2 className="text-xl font-semibold text-gray-800 pb-2 border-b">Images</h2>
+              
+              {/* Existing Images */}
+              {existingImages.length > 0 && (
+                <div className="space-y-4">
+                  <h3 className="text-sm font-medium text-gray-700">Current Images</h3>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                    {existingImages.map((url, index) => (
+                      <ImagePreview
+                        key={index}
+                        url={url}
+                        onRemove={() => removeExistingImage(url)}
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* New Images */}
+              <div className="space-y-4">
+                <h3 className="text-sm font-medium text-gray-700">Add New Images</h3>
+                <ImageUploadZone
+                  onDrop={handleDrop}
+                  onDragOver={handleDragOver}
+                  onChange={handleImageChange}
+                />
+
+                {newImagePreviews.length > 0 && (
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mt-4">
+                    {newImagePreviews.map((url, index) => (
+                      <ImagePreview
+                        key={index}
+                        url={url}
+                        onRemove={() => removeNewImage(index)}
+                      />
+                    ))}
+                  </div>
+                )}
+
+                {/* Upload Progress */}
+                {uploadProgress > 0 && uploadProgress < 100 && (
+                  <UploadProgress progress={uploadProgress} />
+                )}
+              </div>
+            </div>
+
+            {/* Submit Button */}
+            <div className="pt-6">
+              <button
+                type="submit"
+                disabled={isLoading}
+                className={`w-full bg-red-600 text-white py-3 px-8 rounded-lg hover:bg-red-700 transition-colors flex items-center justify-center ${
+                  isLoading ? 'opacity-50 cursor-not-allowed' : ''
+                }`}
+              >
+                {isLoading ? (
+                  <>
+                    <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white mr-3"></div>
+                    Updating Place...
+                  </>
+                ) : (
+                  'Update Place'
+                )}
+              </button>
+            </div>
+          </form>
         </div>
-      </form>
+      </div>
     </div>
   );
 };

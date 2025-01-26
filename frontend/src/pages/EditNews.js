@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   Box,
@@ -31,118 +31,91 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import NewsService from '../services/NewsService';
 import { toast } from 'react-toastify';
+import {
+  handleImageSelection,
+  uploadImages,
+  ImagePreview,
+  UploadProgress,
+  ImageUploadZone
+} from '../utils/imageUtils';
 
 const EditNews = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [news, setNews] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [uploadProgress, setUploadProgress] = useState(0);
+
+  // Form states
   const [title, setTitle] = useState('');
   const [subtitle, setSubtitle] = useState('');
   const [content, setContent] = useState('');
   const [category, setCategory] = useState('general');
-  const [currentImages, setCurrentImages] = useState([]);
-  const [newImages, setNewImages] = useState([]);
-  const [imagesToDelete, setImagesToDelete] = useState([]);
+  const [images, setImages] = useState([]);
   const [previewUrls, setPreviewUrls] = useState([]);
-  const [customCategory, setCustomCategory] = useState('');
-  const [showCustomCategory, setShowCustomCategory] = useState(false);
-
-  // Predefined categories
-  const categories = [
-    'general',
-    'business',
-    'technology',
-    'export',
-    'industry',
-    'custom'
-  ];
+  const [existingImages, setExistingImages] = useState([]);
 
   useEffect(() => {
+    const fetchNews = async () => {
+      try {
+        const newsData = await NewsService.getNewsById(id);
+        if (newsData) {
+          setTitle(newsData.title);
+          setSubtitle(newsData.subtitle || '');
+          setContent(newsData.content);
+          setCategory(newsData.category);
+          setExistingImages(newsData.images || []);
+          setPreviewUrls(newsData.images || []);
+          setImages([]); // Reset new images array
+        }
+      } catch (err) {
+        setError(err.message);
+        toast.error('Error fetching news: ' + err.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
     fetchNews();
   }, [id]);
 
-  const fetchNews = async () => {
-    try {
-      const newsData = await NewsService.getNewsById(id);
-      setNews(newsData);
-      setTitle(newsData.title);
-      setSubtitle(newsData.subtitle || '');
-      setContent(newsData.content || '');
-      
-      // Handle custom category
-      const newsCategory = newsData.category || 'general';
-      if (categories.includes(newsCategory)) {
-        setCategory(newsCategory);
-        setShowCustomCategory(false);
-      } else {
-        setCategory(newsCategory);
-        setCustomCategory(newsCategory);
-        setShowCustomCategory(true);
-      }
-      
-      setCurrentImages(newsData.images || []);
-      setPreviewUrls(newsData.images || []);
-    } catch (error) {
-      toast.error('Failed to fetch news article');
-      navigate('/admin');
-    } finally {
-      setLoading(false);
-    }
-  };
+  const handleImageChange = useCallback((e) => {
+    const files = Array.from(e.target.files);
+    setImages(prev => [...prev, ...files]);
+    
+    // Create preview URLs for new files
+    const newPreviewUrls = files.map(file => URL.createObjectURL(file));
+    setPreviewUrls([...existingImages, ...newPreviewUrls]);
+  }, [existingImages]);
 
-  const handleImageChange = (event) => {
-    const files = Array.from(event.target.files);
-    const validFiles = files.filter(file => {
-      if (file.size > 5 * 1024 * 1024) {
-        toast.error(`${file.name} is too large (max 5MB)`);
-        return false;
-      }
-      if (!file.type.startsWith('image/')) {
-        toast.error(`${file.name} is not an image`);
-        return false;
-      }
-      return true;
-    });
+  const handleDrop = useCallback((e) => {
+    e.preventDefault();
+    const files = Array.from(e.dataTransfer.files);
+    setImages(prev => [...prev, ...files]);
+    
+    // Create preview URLs for new files
+    const newPreviewUrls = files.map(file => URL.createObjectURL(file));
+    setPreviewUrls([...existingImages, ...newPreviewUrls]);
+  }, [existingImages]);
 
-    setNewImages(prev => [...prev, ...validFiles]);
-
-    validFiles.forEach(file => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreviewUrls(prev => [...prev, reader.result]);
-      };
-      reader.readAsDataURL(file);
-    });
+  const handleDragOver = (e) => {
+    e.preventDefault();
   };
 
   const removeImage = (index) => {
-    if (index < currentImages.length) {
-      setImagesToDelete(prev => [...prev, currentImages[index]]);
-      setCurrentImages(prev => prev.filter((_, i) => i !== index));
+    if (index < existingImages.length) {
+      // Removing an existing image
+      const newExistingImages = existingImages.filter((_, i) => i !== index);
+      setExistingImages(newExistingImages);
+      setPreviewUrls([...newExistingImages, ...images.map(file => URL.createObjectURL(file))]);
     } else {
-      const newIndex = index - currentImages.length;
-      setNewImages(prev => prev.filter((_, i) => i !== newIndex));
+      // Removing a new image
+      const newImageIndex = index - existingImages.length;
+      const newImages = images.filter((_, i) => i !== newImageIndex);
+      setImages(newImages);
+      setPreviewUrls([...existingImages, ...newImages.map(file => URL.createObjectURL(file))]);
     }
-    setPreviewUrls(prev => prev.filter((_, i) => i !== index));
-  };
-
-  const handleCategoryChange = (event) => {
-    const value = event.target.value;
-    if (value === 'custom') {
-      setShowCustomCategory(true);
-      setCustomCategory('');
-    } else {
-      setShowCustomCategory(false);
-      setCategory(value);
-    }
-  };
-
-  const handleCustomCategoryChange = (event) => {
-    const value = event.target.value;
-    setCustomCategory(value);
-    setCategory(value);
+    toast.success('Image removed');
   };
 
   const handleSubmit = async (e) => {
@@ -152,223 +125,150 @@ const EditNews = () => {
       return;
     }
 
-    if (showCustomCategory && !customCategory.trim()) {
-      toast.error('Please enter a category name');
-      return;
-    }
-
-    setSaving(true);
+    setIsLoading(true);
     try {
+      let finalImageUrls = [...existingImages];
+      
+      // Upload new images if any
+      if (images.length > 0) {
+        const uploadToast = toast.loading('Uploading new images...', {
+          position: "bottom-right"
+        });
+        const newImageUrls = await uploadImages(images, 'news', setUploadProgress);
+        finalImageUrls = [...finalImageUrls, ...newImageUrls];
+        toast.dismiss(uploadToast);
+      }
+
       const newsData = {
         title: title.trim(),
         subtitle: subtitle.trim(),
         content: content.trim(),
-        category: showCustomCategory ? customCategory.trim() : category,
+        category,
+        images: finalImageUrls,
         summary: content.slice(0, 200) + (content.length > 200 ? '...' : ''),
       };
 
-      await NewsService.updateNews(id, newsData, newImages, imagesToDelete);
+      await NewsService.updateNews(id, newsData);
       toast.success('News article updated successfully!');
       navigate('/admin');
     } catch (error) {
-      toast.error('Failed to update news article');
+      console.error('Error updating news:', error);
+      toast.error(error.message || 'Failed to update news. Please try again.');
     } finally {
-      setSaving(false);
+      setIsLoading(false);
     }
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight="60vh">
-        <CircularProgress />
-      </Box>
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-600"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="text-red-600">Error: {error}</div>
+      </div>
     );
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-    >
-      <Paper elevation={3} sx={{ p: 4, maxWidth: 800, mx: 'auto', my: 4 }}>
-        <Box display="flex" alignItems="center" mb={3}>
-          <IconButton onClick={() => navigate('/admin')} sx={{ mr: 2 }}>
-            <ArrowBackIcon />
-          </IconButton>
-          <Typography variant="h5" component="h2">
-            Edit News Article
-          </Typography>
-        </Box>
+    <div className="max-w-4xl mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-6">Edit News Article</h1>
 
-        <form onSubmit={handleSubmit}>
-          <Stack spacing={3}>
-            <TextField
-              fullWidth
-              label="Title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              required
-              variant="outlined"
-              disabled={saving}
-            />
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div>
+          <label className="block text-sm font-medium mb-1">Title</label>
+          <input
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            className="w-full p-2 border rounded focus:ring-2 focus:ring-red-500 focus:border-transparent"
+            required
+          />
+        </div>
 
-            <TextField
-              fullWidth
-              label="Subtitle"
-              value={subtitle}
-              onChange={(e) => setSubtitle(e.target.value)}
-              variant="outlined"
-              disabled={saving}
-            />
+        <div>
+          <label className="block text-sm font-medium mb-1">Subtitle</label>
+          <input
+            type="text"
+            value={subtitle}
+            onChange={(e) => setSubtitle(e.target.value)}
+            className="w-full p-2 border rounded focus:ring-2 focus:ring-red-500 focus:border-transparent"
+          />
+        </div>
 
-            <Box>
-              <FormControl fullWidth>
-                <InputLabel>Category</InputLabel>
-                <Select
-                  value={showCustomCategory ? 'custom' : category}
-                  label="Category"
-                  onChange={handleCategoryChange}
-                  disabled={saving}
-                >
-                  {categories.map((cat) => (
-                    <MenuItem key={cat} value={cat}>
-                      {cat === 'custom' ? (
-                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                          <AddIcon sx={{ mr: 1 }} />
-                          Create New Category
-                        </Box>
-                      ) : (
-                        cat.charAt(0).toUpperCase() + cat.slice(1)
-                      )}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+        <div>
+          <label className="block text-sm font-medium mb-1">Category</label>
+          <select
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            className="w-full p-2 border rounded focus:ring-2 focus:ring-red-500 focus:border-transparent"
+          >
+            <option value="general">General</option>
+            <option value="business">Business</option>
+            <option value="technology">Technology</option>
+            <option value="trade">Trade</option>
+          </select>
+        </div>
 
-              <Zoom in={showCustomCategory}>
-                <TextField
-                  fullWidth
-                  label="New Category Name"
-                  value={customCategory}
-                  onChange={handleCustomCategoryChange}
-                  disabled={saving}
-                  sx={{ mt: 2, display: showCustomCategory ? 'block' : 'none' }}
-                  placeholder="Enter a new category name"
-                  helperText="Create a unique category name"
+        <div>
+          <label className="block text-sm font-medium mb-1">Content</label>
+          <textarea
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            className="w-full p-2 border rounded h-48 focus:ring-2 focus:ring-red-500 focus:border-transparent"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-1">Images</label>
+          <ImageUploadZone
+            onDrop={handleDrop}
+            onDragOver={handleDragOver}
+            onChange={handleImageChange}
+          />
+
+          {previewUrls.length > 0 && (
+            <div className="mt-4 grid grid-cols-2 md:grid-cols-3 gap-4">
+              {previewUrls.map((url, index) => (
+                <ImagePreview
+                  key={index}
+                  url={url}
+                  index={index}
+                  onRemove={() => removeImage(index)}
                 />
-              </Zoom>
-            </Box>
+              ))}
+            </div>
+          )}
 
-            <Box>
-              <input
-                accept="image/*"
-                style={{ display: 'none' }}
-                id="image-upload"
-                type="file"
-                multiple
-                onChange={handleImageChange}
-                disabled={saving}
-              />
-              <label htmlFor="image-upload">
-                <Button
-                  variant="outlined"
-                  component="span"
-                  fullWidth
-                  startIcon={<AddPhotoIcon />}
-                  disabled={saving}
-                  sx={{ height: '100px' }}
-                >
-                  Add Images
-                </Button>
-              </label>
+          {uploadProgress > 0 && uploadProgress < 100 && (
+            <UploadProgress progress={uploadProgress} />
+          )}
+        </div>
 
-              <AnimatePresence>
-                {previewUrls.length > 0 && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    exit={{ opacity: 0, height: 0 }}
-                  >
-                    <ImageList cols={3} gap={8} sx={{ mt: 2 }}>
-                      {previewUrls.map((url, index) => (
-                        <ImageListItem key={index}>
-                          <motion.div
-                            initial={{ opacity: 0, scale: 0.8 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.8 }}
-                          >
-                            <Box sx={{ position: 'relative' }}>
-                              <img
-                                src={url}
-                                alt={`Preview ${index + 1}`}
-                                style={{
-                                  width: '100%',
-                                  height: '150px',
-                                  objectFit: 'cover',
-                                  borderRadius: '4px'
-                                }}
-                              />
-                              <IconButton
-                                size="small"
-                                onClick={() => removeImage(index)}
-                                sx={{
-                                  position: 'absolute',
-                                  top: 4,
-                                  right: 4,
-                                  bgcolor: 'background.paper',
-                                  '&:hover': { bgcolor: 'error.light', color: 'white' }
-                                }}
-                              >
-                                <DeleteIcon />
-                              </IconButton>
-                            </Box>
-                          </motion.div>
-                        </ImageListItem>
-                      ))}
-                    </ImageList>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </Box>
-
-            <TextField
-              fullWidth
-              label="Content"
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              required
-              multiline
-              rows={12}
-              variant="outlined"
-              disabled={saving}
-            />
-
-            <Divider />
-
-            <Box display="flex" justifyContent="flex-end" gap={2}>
-              <Button
-                variant="outlined"
-                onClick={() => navigate('/admin')}
-                disabled={saving}
-                startIcon={<ArrowBackIcon />}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                disabled={saving}
-                startIcon={saving ? <CircularProgress size={20} /> : <SaveIcon />}
-              >
-                {saving ? 'Saving...' : 'Save Changes'}
-              </Button>
-            </Box>
-          </Stack>
-        </form>
-      </Paper>
-    </motion.div>
+        <div className="flex justify-end space-x-4">
+          <button
+            type="button"
+            onClick={() => navigate('/admin')}
+            className="px-4 py-2 text-gray-600 hover:text-gray-800"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 disabled:opacity-50"
+          >
+            {isLoading ? 'Updating...' : 'Update Article'}
+          </button>
+        </div>
+      </form>
+    </div>
   );
 };
 

@@ -3,22 +3,40 @@ import { useParams, Link } from 'react-router-dom';
 import { doc, getDoc } from 'firebase/firestore';
 import { firestore } from '../firebase';
 import { motion } from 'framer-motion';
+import { FaTimes, FaEnvelope, FaPhone, FaMapMarkerAlt, FaBuilding, FaUser } from 'react-icons/fa';
 
 const ExportProductDetail = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
+  const [userData, setUserData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedImage, setSelectedImage] = useState(0);
+  const [showContactModal, setShowContactModal] = useState(false);
 
   useEffect(() => {
-    const fetchProduct = async () => {
+    const fetchProductAndUser = async () => {
       try {
         const docRef = doc(firestore, 'export_products', id);
         const docSnap = await getDoc(docRef);
         
         if (docSnap.exists()) {
-          setProduct({ id: docSnap.id, ...docSnap.data() });
+          const productData = { id: docSnap.id, ...docSnap.data() };
+          setProduct(productData);
+          
+          // Fetch user data
+          if (productData.sellerId) {
+            try {
+              const userRef = doc(firestore, 'users', productData.sellerId);
+              const userSnap = await getDoc(userRef);
+              if (userSnap.exists()) {
+                setUserData(userSnap.data());
+              }
+            } catch (userError) {
+              console.error('Error fetching user data:', userError);
+              // Don't set error state here, just continue without user data
+            }
+          }
         } else {
           setError('Product not found');
         }
@@ -29,7 +47,7 @@ const ExportProductDetail = () => {
       }
     };
 
-    fetchProduct();
+    fetchProductAndUser();
   }, [id]);
 
   if (isLoading) {
@@ -119,12 +137,17 @@ const ExportProductDetail = () => {
             <div className="space-y-6">
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <h1 className="text-3xl font-bold text-gray-900">{product.name}</h1>
+                  <div>
+                    <h1 className="text-3xl font-bold text-gray-900">{product.name}</h1>
+                    {userData?.companyName && userData.companyName.trim() !== '' && (
+                      <p className="text-gray-600 text-sm mt-1">by {userData.companyName}</p>
+                    )}
+                  </div>
                   <span className="px-3 py-1 bg-red-50 text-red-600 rounded-full text-sm font-medium">
                     {product.category}
                   </span>
                 </div>
-                <p className="text-gray-600">{product.description}</p>
+                <p className="text-gray-600 mt-4">{product.description}</p>
               </div>
 
               <div className="border-t border-gray-100 pt-6">
@@ -215,11 +238,9 @@ const ExportProductDetail = () => {
                 </div>
                 <button
                   className="w-full bg-red-600 text-white py-3 px-8 rounded-lg hover:bg-red-700 transition-colors flex items-center justify-center space-x-2"
-                  onClick={() => window.location.href = `mailto:?subject=Inquiry about ${product.name}&body=I am interested in your product: ${product.name}%0D%0A%0D%0AProduct Details:%0D%0A- Category: ${product.category}%0D%0A- Price Range: ${product.price.min.toLocaleString()} - ${product.price.max.toLocaleString()} ${product.price.currency}%0D%0A- Minimum Order: ${product.minOrder.quantity.toLocaleString()} ${product.minOrder.unit}%0D%0A%0D%0APlease provide more information about this product.`}
+                  onClick={() => setShowContactModal(true)}
                 >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                  </svg>
+                  <FaEnvelope className="w-5 h-5" />
                   <span>Contact Supplier</span>
                 </button>
               </div>
@@ -227,6 +248,89 @@ const ExportProductDetail = () => {
           </div>
         </div>
       </div>
+
+      {/* Contact Modal */}
+      {showContactModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-xl shadow-xl max-w-md w-full p-6 relative"
+          >
+            <button
+              onClick={() => setShowContactModal(false)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+            >
+              <FaTimes className="w-5 h-5" />
+            </button>
+
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Supplier Details</h2>
+
+            <div className="space-y-4">
+              {/* Name */}
+              <div className="flex items-start space-x-3">
+                <FaUser className="w-5 h-5 text-gray-400 mt-1" />
+                <div>
+                  <p className="text-sm text-gray-500">Name</p>
+                  <p className="text-gray-900">{userData?.firstName} {userData?.lastName}</p>
+                </div>
+              </div>
+
+              {/* Company */}
+              {userData?.companyName && userData.companyName.trim() !== '' && (
+                <div className="flex items-start space-x-3">
+                  <FaBuilding className="w-5 h-5 text-gray-400 mt-1" />
+                  <div>
+                    <p className="text-sm text-gray-500">Company</p>
+                    <p className="text-gray-900">{userData.companyName}</p>
+                  </div>
+                </div>
+              )}
+
+              {/* Email */}
+              <div className="flex items-start space-x-3">
+                <FaEnvelope className="w-5 h-5 text-gray-400 mt-1" />
+                <div>
+                  <p className="text-sm text-gray-500">Email</p>
+                  <p className="text-gray-900">{userData?.email}</p>
+                </div>
+              </div>
+
+              {/* Phone */}
+              {userData?.phoneNumber && (
+                <div className="flex items-start space-x-3">
+                  <FaPhone className="w-5 h-5 text-gray-400 mt-1" />
+                  <div>
+                    <p className="text-sm text-gray-500">Phone</p>
+                    <p className="text-gray-900">{userData.phoneNumber}</p>
+                  </div>
+                </div>
+              )}
+
+              {/* Address */}
+              {userData?.address && (
+                <div className="flex items-start space-x-3">
+                  <FaMapMarkerAlt className="w-5 h-5 text-gray-400 mt-1" />
+                  <div>
+                    <p className="text-sm text-gray-500">Address</p>
+                    <p className="text-gray-900">{userData.address}</p>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="mt-8">
+              <button
+                onClick={() => window.location.href = `mailto:${userData?.email}?subject=Inquiry about ${product.name}&body=I am interested in your product: ${product.name}%0D%0A%0D%0AProduct Details:%0D%0A- Category: ${product.category}%0D%0A- Price Range: ${product.price.min.toLocaleString()} - ${product.price.max.toLocaleString()} ${product.price.currency}%0D%0A- Minimum Order: ${product.minOrder.quantity.toLocaleString()} ${product.minOrder.unit}%0D%0A%0D%0APlease provide more information about this product.`}
+                className="w-full bg-red-600 text-white py-3 px-8 rounded-lg hover:bg-red-700 transition-colors flex items-center justify-center space-x-2"
+              >
+                <FaEnvelope className="w-5 h-5" />
+                <span>Send Email</span>
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
     </motion.div>
   );
 };

@@ -91,6 +91,7 @@ const Admin = () => {
   const [undoSnackbarOpen, setUndoSnackbarOpen] = useState(false);
   const [lastDeletedItem, setLastDeletedItem] = useState(null);
   const [deleteTimeout, setDeleteTimeout] = useState(null);
+  const [showAddNewsForm, setShowAddNewsForm] = useState(false);
 
   useEffect(() => {
     fetchAllData();
@@ -752,169 +753,100 @@ const Admin = () => {
               {activeTab === 'products' && renderApprovalMode(products, 'product')}
               {activeTab === 'news' && (
                 <Box>
-                  <Card elevation={3} sx={{ mb: 3 }}>
-                    <CardContent>
-                      <Typography variant="h6" gutterBottom>
-                        Add New Article
-                      </Typography>
-                      <AddNews onNewsAdded={fetchAllData} />
-                    </CardContent>
-                  </Card>
-
-                  <Grid container spacing={3}>
-                    {news.map((item) => (
-                      <Grid item xs={12} sm={6} md={4} key={item.id}>
-                        <Card 
-                          elevation={2}
-                          sx={{
-                            height: '100%',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            transition: 'transform 0.2s, box-shadow 0.2s',
-                            '&:hover': {
-                              transform: 'translateY(-4px)',
-                              boxShadow: 6,
-                            },
-                          }}
-                        >
-                          <CardContent sx={{ flexGrow: 1, p: 0 }}>
-                            <Box sx={{ position: 'relative', paddingTop: '56.25%' }}>
-                              {item.images && item.images.length > 0 ? (
-                                <img
-                                  src={item.images[0]}
-                                  alt={item.title}
-                                  style={{
-                                    position: 'absolute',
-                                    top: 0,
-                                    left: 0,
-                                    width: '100%',
-                                    height: '100%',
-                                    objectFit: 'cover',
-                                  }}
-                                  onError={(e) => {
-                                    e.target.src = '/placeholder-news.jpg';
-                                  }}
-                                />
-                              ) : (
-                                <Box
+                  {/* News List */}
+                  <div className="mb-8">
+                    <div className="bg-white rounded-lg shadow-lg p-4">
+                      <List>
+                        {news.map((article) => (
+                          <ListItem
+                            key={article.id}
+                            sx={{
+                              borderBottom: '1px solid #eee',
+                              '&:last-child': { borderBottom: 'none' },
+                              py: 2,
+                              pr: 12 // Add right padding to prevent text overlap with buttons
+                            }}
+                          >
+                            <ListItemText
+                              primary={
+                                <Typography
                                   sx={{
-                                    position: 'absolute',
-                                    top: 0,
-                                    left: 0,
-                                    width: '100%',
-                                    height: '100%',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    bgcolor: 'grey.100',
+                                    display: '-webkit-box',
+                                    WebkitLineClamp: 2,
+                                    WebkitBoxOrient: 'vertical',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                    fontSize: '1rem',
+                                    lineHeight: 1.2,
+                                    maxWidth: '90%'
                                   }}
                                 >
-                                  <Typography color="textSecondary">No image</Typography>
-                                </Box>
-                              )}
-                              <Box
-                                sx={{
-                                  position: 'absolute',
-                                  top: 0,
-                                  left: 0,
-                                  right: 0,
-                                  p: 1,
-                                  background: 'linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%)',
-                                }}
-                              >
-                                <Chip
-                                  label={item.category || 'General'}
-                                  size="small"
-                                  sx={{
-                                    color: 'white',
-                                    bgcolor: 'primary.main',
-                                    '& .MuiChip-label': { px: 1 },
+                                  {article.title}
+                                </Typography>
+                              }
+                              secondary={
+                                <Typography 
+                                  variant="body2" 
+                                  color="text.secondary"
+                                  sx={{ 
+                                    mt: 0.5,
+                                    fontSize: '0.875rem'
                                   }}
-                                />
-                              </Box>
-                            </Box>
-                            <Box sx={{ p: 2 }}>
-                              <Typography variant="h6" gutterBottom component="div" sx={{ 
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis',
-                                display: '-webkit-box',
-                                WebkitLineClamp: 2,
-                                WebkitBoxOrient: 'vertical',
-                                lineHeight: 1.2,
-                                minHeight: '2.4em'
-                              }}>
-                                {item.title}
-                              </Typography>
-                              <Typography color="textSecondary" variant="body2" sx={{ mb: 2 }}>
-                                {item.createdAt ? (
-                                  typeof item.createdAt === 'object' && item.createdAt.toDate ? 
-                                    new Date(item.createdAt.toDate()).toLocaleDateString() :
-                                    new Date(item.createdAt).toLocaleDateString()
-                                ) : 'Date not available'}
-                              </Typography>
-                              <Typography color="textSecondary" variant="body2" sx={{
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis',
-                                display: '-webkit-box',
-                                WebkitLineClamp: 3,
-                                WebkitBoxOrient: 'vertical',
-                                minHeight: '4.5em'
-                              }}>
-                                {item.summary || item.content}
-                              </Typography>
-                            </Box>
-                          </CardContent>
-                          <Divider />
-                          <Box sx={{ p: 1.5, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <Box>
-                              <Tooltip title="View News">
-                                <IconButton
-                                  size="small"
-                                  onClick={() => navigate(`/news/${item.id}`)}
-                                  sx={{ mr: 1 }}
                                 >
-                                  <VisibilityIcon />
-                                </IconButton>
-                              </Tooltip>
-                              <Tooltip title="Edit News">
+                                  {new Date(article.createdAt).toLocaleDateString()}
+                                </Typography>
+                              }
+                              sx={{
+                                margin: 0,
+                                '& .MuiListItemText-primary': {
+                                  width: '100%'
+                                }
+                              }}
+                            />
+                            <ListItemSecondaryAction>
+                              <Tooltip title="Edit">
                                 <IconButton
-                                  size="small"
-                                  onClick={() => navigate(`/admin/news/edit/${item.id}`)}
-                                  sx={{ mr: 1 }}
+                                  edge="end"
+                                  onClick={() => navigate(`/news/edit/${article.id}`)}
+                                  sx={{ color: 'primary.main', mr: 1 }}
                                 >
                                   <EditIcon />
                                 </IconButton>
                               </Tooltip>
-                            </Box>
-                            <Tooltip title="Delete News">
-                              <IconButton
-                                size="small"
-                                color="error"
-                                onClick={() => handleDelete(item.id, 'news')}
-                              >
-                                <DeleteIcon />
-                              </IconButton>
-                            </Tooltip>
-                          </Box>
-                        </Card>
-                      </Grid>
-                    ))}
-                  </Grid>
+                              <Tooltip title="Delete">
+                                <IconButton
+                                  edge="end"
+                                  onClick={() => handleDelete(article.id, 'news')}
+                                  sx={{ color: 'error.main' }}
+                                >
+                                  <DeleteIcon />
+                                </IconButton>
+                              </Tooltip>
+                            </ListItemSecondaryAction>
+                          </ListItem>
+                        ))}
+                      </List>
+                    </div>
+                  </div>
 
-                  {news.length === 0 && (
-                    <Paper sx={{ p: 3, textAlign: 'center', bgcolor: 'grey.50' }}>
-                      <Typography color="textSecondary" sx={{ mb: 1 }}>
-                        No news articles available
-                      </Typography>
-                      <Button
-                        variant="contained"
-                        startIcon={<AddIcon />}
-                        onClick={() => navigate('/admin/news/add')}
+                  {/* Create Button and Form */}
+                  <div className="mb-8">
+                    <div className="flex items-center mb-4">
+                      <button
+                        onClick={() => setShowAddNewsForm(!showAddNewsForm)}
+                        className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors duration-200"
                       >
-                        Add News Article
-                      </Button>
-                    </Paper>
-                  )}
+                        {showAddNewsForm ? '− Close Form' : '+ Add New Article'}
+                      </button>
+                    </div>
+                    
+                    {/* Dropdown Form */}
+                    <div className={`transition-all duration-300 ease-in-out overflow-hidden ${showAddNewsForm ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'}`}>
+                      <div className="bg-white rounded-lg shadow-lg p-6">
+                        <AddNews onNewsAdded={fetchAllData} />
+                      </div>
+                    </div>
+                  </div>
                 </Box>
               )}
               {activeTab === 'promos' && renderApprovalMode(promos, 'promo')}

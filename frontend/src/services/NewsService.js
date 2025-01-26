@@ -85,7 +85,7 @@ class NewsService {
   }
 
   // Update a news article
-  async updateNews(id, newsData, newImages = [], imagesToDelete = []) {
+  async updateNews(id, newsData) {
     try {
       const docRef = doc(this.collection, id);
       const currentDoc = await getDoc(docRef);
