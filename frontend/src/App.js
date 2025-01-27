@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import Navbar from './components/Navbar/Navbar';
+import Footer from './components/Footer/Footer';
 import Home from './pages/Home';
 import About from './pages/About';
 import Contact from './pages/Contact';
@@ -27,7 +28,6 @@ import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import { UserType } from './services/UserService';
 import ForgotPassword from './pages/ForgotPassword';
-import EditNews from './pages/EditNews';
 
 // Wrapper component to handle navbar visibility
 function AppContent() {
@@ -36,98 +36,101 @@ function AppContent() {
   const showNavbar = !hideNavbarPaths.includes(location.pathname);
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen flex flex-col">
       {showNavbar && <Navbar />}
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/explore" element={<Explore />} />
-        <Route path="/export-products" element={<ExportProducts />} />
-        <Route path="/news" element={<NewsList />} />
-        <Route path="/news/:id" element={<NewsDetail />} />
-        <Route
-          path="/admin/news/edit/:id"
-          element={
-            <ProtectedRoute allowedUserTypes={[UserType.ADMIN]}>
-              <EditNews />
-            </ProtectedRoute>
-          }
-        />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/auth/verify-email" element={<Auth />} />
-        <Route path="/verify-email-required" element={<VerifyEmailRequired />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        
-        {/* Protected Routes */}
-        <Route
-          path="/profile"
-          element={
-            <ProtectedRoute>
-              <Profile />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/add-place"
-          element={
-            <ProtectedRoute allowedUserTypes={[UserType.B2C_BUSINESS_OWNER, UserType.ADMIN]}>
-              <AddPlace />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/edit-place/:placeId"
-          element={
-            <ProtectedRoute allowedUserTypes={[UserType.B2C_BUSINESS_OWNER, UserType.ADMIN]}>
-              <EditPlace />
-            </ProtectedRoute>
-          }
-        />
-        <Route path="/place/:placeId" element={<PlaceDetails />} />
-        <Route
-          path="/add-export-product"
-          element={
-            <ProtectedRoute allowedUserTypes={[UserType.B2B_SUPPLIER, UserType.ADMIN]}>
-              <AddExportProduct />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/edit-export-product/:id"
-          element={
-            <ProtectedRoute allowedUserTypes={[UserType.B2B_SUPPLIER, UserType.ADMIN]}>
-              <EditExportProduct />
-            </ProtectedRoute>
-          }
-        />
-        <Route path="/export-product/:id" element={<ExportProductDetail />} />
-        <Route
-          path="/news/edit/:id"
-          element={
-            <ProtectedRoute allowedUserTypes={[UserType.ADMIN]}>
-              <EditNews />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin"
-          element={
-            <ProtectedRoute allowedUserTypes={[UserType.ADMIN]}>
-              <Admin />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin-setup"
-          element={
-            <ProtectedRoute allowedUserTypes={[UserType.ADMIN]}>
-              <AdminSetup />
-            </ProtectedRoute>
-          }
-        />
-      </Routes>
+      <div className="flex-grow">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/explore" element={<Explore />} />
+          <Route path="/export-products" element={<ExportProducts />} />
+          <Route path="/news" element={<NewsList />} />
+          <Route path="/news/:id" element={<NewsDetail />} />
+          <Route
+            path="/admin/news/edit/:id"
+            element={
+              <ProtectedRoute allowedUserTypes={[UserType.ADMIN]}>
+                <EditNews />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/auth/verify-email" element={<Auth />} />
+          <Route path="/verify-email-required" element={<VerifyEmailRequired />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          
+          {/* Protected Routes */}
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/add-place"
+            element={
+              <ProtectedRoute allowedUserTypes={[UserType.B2C_BUSINESS_OWNER, UserType.ADMIN]}>
+                <AddPlace />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/edit-place/:placeId"
+            element={
+              <ProtectedRoute allowedUserTypes={[UserType.B2C_BUSINESS_OWNER, UserType.ADMIN]}>
+                <EditPlace />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/place/:placeId" element={<PlaceDetails />} />
+          <Route
+            path="/add-export-product"
+            element={
+              <ProtectedRoute allowedUserTypes={[UserType.B2B_SUPPLIER, UserType.ADMIN]}>
+                <AddExportProduct />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/edit-export-product/:id"
+            element={
+              <ProtectedRoute allowedUserTypes={[UserType.B2B_SUPPLIER, UserType.ADMIN]}>
+                <EditExportProduct />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/export-product/:id" element={<ExportProductDetail />} />
+          <Route
+            path="/news/edit/:id"
+            element={
+              <ProtectedRoute allowedUserTypes={[UserType.ADMIN]}>
+                <EditNews />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute allowedUserTypes={[UserType.ADMIN]}>
+                <Admin />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin-setup"
+            element={
+              <ProtectedRoute allowedUserTypes={[UserType.ADMIN]}>
+                <AdminSetup />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </div>
+      {showNavbar && <Footer />}
       <Toaster 
         position="bottom-right"
         toastOptions={{
