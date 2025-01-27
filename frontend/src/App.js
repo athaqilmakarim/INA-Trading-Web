@@ -1,8 +1,11 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
+import { AnimatePresence } from 'framer-motion';
 import Navbar from './components/Navbar/Navbar';
 import Footer from './components/Footer/Footer';
+import PageTransition from './components/PageTransition/PageTransition';
+import ScrollToTop from './components/ScrollToTop/ScrollToTop';
 import Home from './pages/Home';
 import About from './pages/About';
 import Contact from './pages/Contact';
@@ -37,98 +40,101 @@ function AppContent() {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <ScrollToTop />
       {showNavbar && <Navbar />}
       <div className="flex-grow">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/explore" element={<Explore />} />
-          <Route path="/export-products" element={<ExportProducts />} />
-          <Route path="/news" element={<NewsList />} />
-          <Route path="/news/:id" element={<NewsDetail />} />
-          <Route
-            path="/admin/news/edit/:id"
-            element={
-              <ProtectedRoute allowedUserTypes={[UserType.ADMIN]}>
-                <EditNews />
-              </ProtectedRoute>
-            }
-          />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/auth/verify-email" element={<Auth />} />
-          <Route path="/verify-email-required" element={<VerifyEmailRequired />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          
-          {/* Protected Routes */}
-          <Route
-            path="/profile"
-            element={
-              <ProtectedRoute>
-                <Profile />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/add-place"
-            element={
-              <ProtectedRoute allowedUserTypes={[UserType.B2C_BUSINESS_OWNER, UserType.ADMIN]}>
-                <AddPlace />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/edit-place/:placeId"
-            element={
-              <ProtectedRoute allowedUserTypes={[UserType.B2C_BUSINESS_OWNER, UserType.ADMIN]}>
-                <EditPlace />
-              </ProtectedRoute>
-            }
-          />
-          <Route path="/place/:placeId" element={<PlaceDetails />} />
-          <Route
-            path="/add-export-product"
-            element={
-              <ProtectedRoute allowedUserTypes={[UserType.B2B_SUPPLIER, UserType.ADMIN]}>
-                <AddExportProduct />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/edit-export-product/:id"
-            element={
-              <ProtectedRoute allowedUserTypes={[UserType.B2B_SUPPLIER, UserType.ADMIN]}>
-                <EditExportProduct />
-              </ProtectedRoute>
-            }
-          />
-          <Route path="/export-product/:id" element={<ExportProductDetail />} />
-          <Route
-            path="/news/edit/:id"
-            element={
-              <ProtectedRoute allowedUserTypes={[UserType.ADMIN]}>
-                <EditNews />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin"
-            element={
-              <ProtectedRoute allowedUserTypes={[UserType.ADMIN]}>
-                <Admin />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin-setup"
-            element={
-              <ProtectedRoute allowedUserTypes={[UserType.ADMIN]}>
-                <AdminSetup />
-              </ProtectedRoute>
-            }
-          />
-        </Routes>
+        <AnimatePresence mode="wait">
+          <Routes location={location} key={location.pathname}>
+            <Route path="/" element={<PageTransition><Home /></PageTransition>} />
+            <Route path="/about" element={<PageTransition><About /></PageTransition>} />
+            <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
+            <Route path="/explore" element={<PageTransition><Explore /></PageTransition>} />
+            <Route path="/export-products" element={<PageTransition><ExportProducts /></PageTransition>} />
+            <Route path="/news" element={<PageTransition><NewsList /></PageTransition>} />
+            <Route path="/news/:id" element={<PageTransition><NewsDetail /></PageTransition>} />
+            <Route
+              path="/admin/news/edit/:id"
+              element={
+                <ProtectedRoute allowedUserTypes={[UserType.ADMIN]}>
+                  <PageTransition><EditNews /></PageTransition>
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/login" element={<PageTransition><Login /></PageTransition>} />
+            <Route path="/register" element={<PageTransition><Register /></PageTransition>} />
+            <Route path="/auth/verify-email" element={<PageTransition><Auth /></PageTransition>} />
+            <Route path="/verify-email-required" element={<PageTransition><VerifyEmailRequired /></PageTransition>} />
+            <Route path="/forgot-password" element={<PageTransition><ForgotPassword /></PageTransition>} />
+            
+            {/* Protected Routes */}
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <PageTransition><Profile /></PageTransition>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/add-place"
+              element={
+                <ProtectedRoute allowedUserTypes={[UserType.B2C_BUSINESS_OWNER, UserType.ADMIN]}>
+                  <PageTransition><AddPlace /></PageTransition>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/edit-place/:placeId"
+              element={
+                <ProtectedRoute allowedUserTypes={[UserType.B2C_BUSINESS_OWNER, UserType.ADMIN]}>
+                  <PageTransition><EditPlace /></PageTransition>
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/place/:placeId" element={<PageTransition><PlaceDetails /></PageTransition>} />
+            <Route
+              path="/add-export-product"
+              element={
+                <ProtectedRoute allowedUserTypes={[UserType.B2B_SUPPLIER, UserType.ADMIN]}>
+                  <PageTransition><AddExportProduct /></PageTransition>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/edit-export-product/:id"
+              element={
+                <ProtectedRoute allowedUserTypes={[UserType.B2B_SUPPLIER, UserType.ADMIN]}>
+                  <PageTransition><EditExportProduct /></PageTransition>
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/export-product/:id" element={<PageTransition><ExportProductDetail /></PageTransition>} />
+            <Route
+              path="/news/edit/:id"
+              element={
+                <ProtectedRoute allowedUserTypes={[UserType.ADMIN]}>
+                  <PageTransition><EditNews /></PageTransition>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin"
+              element={
+                <ProtectedRoute allowedUserTypes={[UserType.ADMIN]}>
+                  <PageTransition><Admin /></PageTransition>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin-setup"
+              element={
+                <ProtectedRoute allowedUserTypes={[UserType.ADMIN]}>
+                  <PageTransition><AdminSetup /></PageTransition>
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
+        </AnimatePresence>
       </div>
       {showNavbar && <Footer />}
       <Toaster 
