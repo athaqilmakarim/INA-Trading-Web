@@ -521,6 +521,17 @@ const Admin = () => {
                       flexShrink: 0, // Prevent buttons from shrinking
                       alignSelf: 'flex-start'
                     }}>
+                      <Tooltip title="View Details">
+                        <IconButton
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handlePlaceClick(item.id);
+                          }}
+                          size="small"
+                        >
+                          <VisibilityIcon />
+                        </IconButton>
+                      </Tooltip>
                       <Tooltip title="Approve">
                         <IconButton
                           onClick={(e) => {
