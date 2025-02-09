@@ -1,6 +1,7 @@
 import { firestore, storage } from '../firebase';
 import { collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, query, orderBy, serverTimestamp } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
+import { getAuth } from 'firebase/auth';
 
 class NewsService {
   constructor() {
@@ -65,18 +66,28 @@ class NewsService {
         imageUrls.push(imageUrl);
       }
 
-      const docRef = await addDoc(this.collection, {
+      // Get current user ID
+      const auth = getAuth();
+      const currentUser = auth.currentUser;
+      if (!currentUser) {
+        throw new Error('User must be logged in to create news');
+      }
+
+      const now = new Date().toISOString();
+      const docData = {
         ...newsData,
         images: imageUrls,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-        status: 'published'
-      });
+        createdAt: now,
+        updatedAt: now,
+        createdBy: currentUser.uid,
+        summary: newsData.content.slice(0, 200) + (newsData.content.length > 200 ? '...' : '')
+      };
+
+      const docRef = await addDoc(this.collection, docData);
       
       return {
         id: docRef.id,
-        ...newsData,
-        images: imageUrls
+        ...docData
       };
     } catch (error) {
       console.error('Error creating news:', error);
@@ -117,18 +128,19 @@ class NewsService {
         updatedImages.push(imageUrl);
       }
 
+      const now = new Date().toISOString();
       const updatedData = {
         ...newsData,
         images: updatedImages,
-        updatedAt: serverTimestamp()
+        updatedAt: now,
+        summary: newsData.content.slice(0, 200) + (newsData.content.length > 200 ? '...' : '')
       };
 
       await updateDoc(docRef, updatedData);
 
       return {
         id,
-        ...updatedData,
-        images: updatedImages
+        ...updatedData
       };
     } catch (error) {
       console.error('Error updating news:', error);
