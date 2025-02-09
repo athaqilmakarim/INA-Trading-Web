@@ -44,8 +44,8 @@ const Navbar = () => {
               <img 
                 src="/Logo INA TRADING KOTAK 2.png"
                 alt="INA Trading Logo" 
-                className="h-8 w-auto"
-                style={{ minWidth: '120px', objectFit: 'contain' }}
+                className="h-11 w-auto"
+                style={{ minWidth: '140px', objectFit: 'contain' }}
               />
             </Link>
 

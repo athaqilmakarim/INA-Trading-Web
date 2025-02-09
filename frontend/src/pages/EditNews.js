@@ -1,5 +1,34 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import {
+  Box,
+  TextField,
+  Button,
+  Paper,
+  Typography,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  IconButton,
+  ImageList,
+  ImageListItem,
+  Tooltip,
+  CircularProgress,
+  Fade,
+  Zoom,
+  Stack,
+  Divider,
+} from '@mui/material';
+import {
+  AddPhotoAlternate as AddPhotoIcon,
+  Delete as DeleteIcon,
+  Save as SaveIcon,
+  ArrowBack as ArrowBackIcon,
+  Edit as EditIcon,
+  Add as AddIcon,
+} from '@mui/icons-material';
+import { motion, AnimatePresence } from 'framer-motion';
 import NewsService from '../services/NewsService';
 import { toast } from 'react-toastify';
 import {
@@ -25,6 +54,7 @@ const EditNews = () => {
   const [images, setImages] = useState([]);
   const [previewUrls, setPreviewUrls] = useState([]);
   const [existingImages, setExistingImages] = useState([]);
+  const [imagesToDelete, setImagesToDelete] = useState([]);
 
   useEffect(() => {
     const fetchNews = async () => {
@@ -76,6 +106,8 @@ const EditNews = () => {
   const removeImage = (index) => {
     if (index < existingImages.length) {
       // Removing an existing image
+      const imageToDelete = existingImages[index];
+      setImagesToDelete(prev => [...prev, imageToDelete]);
       const newExistingImages = existingImages.filter((_, i) => i !== index);
       setExistingImages(newExistingImages);
       setPreviewUrls([...newExistingImages, ...images.map(file => URL.createObjectURL(file))]);
@@ -98,28 +130,15 @@ const EditNews = () => {
 
     setIsLoading(true);
     try {
-      let finalImageUrls = [...existingImages];
-      
-      // Upload new images if any
-      if (images.length > 0) {
-        const uploadToast = toast.loading('Uploading new images...', {
-          position: "bottom-right"
-        });
-        const newImageUrls = await uploadImages(images, 'news', setUploadProgress);
-        finalImageUrls = [...finalImageUrls, ...newImageUrls];
-        toast.dismiss(uploadToast);
-      }
-
       const newsData = {
         title: title.trim(),
         subtitle: subtitle.trim(),
         content: content.trim(),
         category,
-        images: finalImageUrls,
         summary: content.slice(0, 200) + (content.length > 200 ? '...' : ''),
       };
 
-      await NewsService.updateNews(id, newsData);
+      await NewsService.updateNews(id, newsData, imagesToDelete, images);
       toast.success('News article updated successfully!');
       navigate('/admin');
     } catch (error) {
