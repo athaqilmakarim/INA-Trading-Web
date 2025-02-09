@@ -64,6 +64,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
 import WarningIcon from '@mui/icons-material/Warning';
 import BarChartIcon from '@mui/icons-material/BarChart';
+import AddIcon from '@mui/icons-material/Add';
 import { toast } from 'react-toastify';
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
