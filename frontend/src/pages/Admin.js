@@ -454,17 +454,40 @@ const Admin = () => {
                 } : {}
               }}
             >
-              <CardContent>
-                <Box className="flex justify-between items-start">
-                  <Box sx={{ flex: 1 }}>
+              <CardContent sx={{ 
+                '&:last-child': { 
+                  paddingBottom: 2 
+                }
+              }}>
+                <Box sx={{ 
+                  display: 'flex', 
+                  justifyContent: 'space-between',
+                  alignItems: 'flex-start',
+                  gap: 2,
+                  minHeight: '100px'
+                }}>
+                  <Box sx={{ 
+                    flex: '1 1 auto',
+                    minWidth: 0, // Enable text wrapping
+                    overflow: 'hidden'
+                  }}>
                     <Box display="flex" alignItems="center" gap={1} mb={1}>
-                      <Typography variant="h6" component="h3" sx={{ fontSize: '1.1rem' }}>
+                      <Typography 
+                        variant="h6" 
+                        component="h3" 
+                        sx={{ 
+                          fontSize: '1.1rem',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap'
+                        }}
+                      >
                         {item.name || item.title}
                       </Typography>
                       <Chip 
                         size="small" 
                         label={item.type || type}
-                        sx={{ backgroundColor: 'rgba(0, 0, 0, 0.08)' }}
+                        sx={{ backgroundColor: 'rgba(0, 0, 0, 0.08)', flexShrink: 0 }}
                       />
                     </Box>
                     {item.address && (
@@ -474,8 +497,10 @@ const Admin = () => {
                         sx={{
                           mb: 1,
                           overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                          whiteSpace: 'nowrap'
+                          display: '-webkit-box',
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: 'vertical',
+                          wordBreak: 'break-word'
                         }}
                       >
                         {item.address}
@@ -486,14 +511,20 @@ const Admin = () => {
                       label={item.status.charAt(0).toUpperCase() + item.status.slice(1)}
                       color={getStatusColor(item.status)}
                       icon={getStatusIcon(item.status)}
+                      sx={{ flexShrink: 0 }}
                     />
                   </Box>
                   {statusFilter === 'pending' && (
-                    <Box sx={{ ml: 2, display: 'flex', gap: 1 }}>
+                    <Box sx={{ 
+                      display: 'flex', 
+                      gap: 1,
+                      flexShrink: 0, // Prevent buttons from shrinking
+                      alignSelf: 'flex-start'
+                    }}>
                       <Tooltip title="Approve">
                         <IconButton
                           onClick={(e) => {
-                            e.stopPropagation(); // Prevent card click when clicking buttons
+                            e.stopPropagation();
                             type === 'place' 
                               ? handleUpdatePlaceStatus(item.id, 'approved')
                               : handleUpdateProductStatus(item.id, 'approved');
@@ -507,7 +538,7 @@ const Admin = () => {
                       <Tooltip title="Reject">
                         <IconButton
                           onClick={(e) => {
-                            e.stopPropagation(); // Prevent card click when clicking buttons
+                            e.stopPropagation();
                             type === 'place'
                               ? handleUpdatePlaceStatus(item.id, 'rejected')
                               : handleUpdateProductStatus(item.id, 'rejected');
@@ -536,79 +567,95 @@ const Admin = () => {
     <ListItem
       key={item.id}
       sx={{
-        mb: 2,
+        mb: 1,
         bgcolor: 'background.paper',
-        borderRadius: 2,
-        boxShadow: 1,
-        '&:hover': {
-          bgcolor: 'action.hover',
+        borderRadius: 1,
+        '& .MuiListItemText-root': {
+          flex: '1 1 auto',
+          minWidth: 0,
         },
+        '& .MuiListItemSecondaryAction-root': {
+          position: 'relative',
+          transform: 'none',
+          right: 0,
+          paddingLeft: 2,
+          display: 'flex',
+          alignItems: 'center',
+          flex: '0 0 auto',
+        }
       }}
     >
       {operationMode === 'cleanup' && (
         <Checkbox
           checked={selectedItems.includes(item.id)}
           onChange={() => handleToggleSelect(item.id)}
-          sx={{ mr: 2 }}
+          sx={{ mr: 1 }}
         />
       )}
       <ListItemText
-        onClick={() => type === 'places' ? handlePlaceClick(item.id) : null}
-        sx={{ 
-          cursor: type === 'places' ? 'pointer' : 'default',
-          '&:hover': type === 'places' ? { textDecoration: 'underline' } : {}
-        }}
         primary={
-          <Typography variant="h6" component="div" sx={{ color: 'text.primary' }}>
-            {item.name}
-            <Chip
-              size="small"
-              label={item.type}
-              sx={{ ml: 1, bgcolor: 'primary.light', color: 'white' }}
-            />
+          <Typography
+            variant="subtitle1"
+            sx={{
+              fontWeight: 'medium',
+              mb: 0.5,
+              wordBreak: 'break-word'
+            }}
+          >
+            {item.name || item.title}
           </Typography>
         }
         secondary={
-          <Typography variant="body2" color="text.secondary">
-            {item.address || item.description || ''}
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{
+              wordBreak: 'break-word'
+            }}
+          >
+            {type === 'places' ? item.address : item.description}
           </Typography>
         }
       />
-      
       {operationMode === 'approval' ? (
         <ListItemSecondaryAction>
-          <Tooltip title="Approve">
-            <IconButton
-              edge="end"
-              aria-label="approve"
-              onClick={() => type === 'places' ? handleUpdatePlaceStatus(item.id, 'approved') : handleUpdateProductStatus(item.id, 'approved')}
-              disabled={item.status === 'approved'}
-              sx={{ color: 'success.main' }}
-            >
-              <CheckCircleIcon />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Reject">
-            <IconButton
-              edge="end"
-              aria-label="reject"
-              onClick={() => type === 'places' ? handleUpdatePlaceStatus(item.id, 'rejected') : handleUpdateProductStatus(item.id, 'rejected')}
-              disabled={item.status === 'rejected'}
-              sx={{ color: 'error.main', ml: 1 }}
-            >
-              <CancelIcon />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="View Details">
-            <IconButton
-              edge="end"
-              aria-label="view"
-              onClick={() => type === 'places' ? handlePlaceClick(item.id) : null}
-              sx={{ color: 'info.main', ml: 1 }}
-            >
-              <VisibilityIcon />
-            </IconButton>
-          </Tooltip>
+          <Box sx={{ display: 'flex', gap: 1 }}>
+            {type === 'places' && (
+              <Tooltip title="View Details">
+                <IconButton
+                  edge="end"
+                  onClick={() => handlePlaceClick(item.id)}
+                  size="small"
+                >
+                  <VisibilityIcon />
+                </IconButton>
+              </Tooltip>
+            )}
+            <Tooltip title="Approve">
+              <IconButton
+                edge="end"
+                onClick={() => type === 'places' 
+                  ? handleUpdatePlaceStatus(item.id, 'approved')
+                  : handleUpdateProductStatus(item.id, 'approved')}
+                color="success"
+                size="small"
+              >
+                <CheckCircleIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Reject">
+              <IconButton
+                edge="end"
+                onClick={() => type === 'places'
+                  ? handleUpdatePlaceStatus(item.id, 'rejected')
+                  : handleUpdateProductStatus(item.id, 'rejected')}
+                color="error"
+                size="small"
+              >
+                <CancelIcon />
+              </IconButton>
+            </Tooltip>
+          </Box>
         </ListItemSecondaryAction>
       ) : (
         <ListItemSecondaryAction>

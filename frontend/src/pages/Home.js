@@ -185,101 +185,109 @@ const Home = () => {
       </div>
 
       {/* How It Works Section */}
-      <section className="py-20 bg-white">
-        <div className="container mx-auto px-4">
+      <section className="py-24 bg-gradient-to-b from-white to-gray-50">
+        <div className="container mx-auto px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
+            className="text-center mb-20"
           >
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">How INA TRADING Works</h2>
-            <div className="max-w-3xl mx-auto space-y-8">
-              <p className="text-gray-600 text-lg leading-relaxed">
-                INA Trading is a Domestic & International Trade Ecosystem to help MSMEs, COOPERATIVES & INDUSTRIES conduct Export, Logistics, Fulfillment, Promotion, Marketing & Sales Abroad.
-              </p>
-              <p className="text-gray-600 leading-relaxed">
-                A facility for MSMEs, COOPERATIVES & INDUSTRIES to support the Micro, Small, and Medium Enterprises Innovation Ready, Export Adaptation Ready (MSME CAN Export) Program from the MINISTRY OF TRADE to help Aggregators find Buyers abroad.
-              </p>
-              <p className="text-gray-600 leading-relaxed">
-              MSMEs, Cooperatives, Industries, Importers & Aggregators can conduct direct transactions with Importers, Distributors, Shops, Boutiques, Cafes, Restaurants, and Aggregators located in various countries.
-              </p>
-              
-              <div className="mt-8">
-                <button 
-                  onClick={() => setIsExamplesVisible(!isExamplesVisible)}
-                  className="flex items-center justify-between w-full px-4 py-2 bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-300"
-                >
-                  <span className="text-lg font-semibold text-gray-900">For example:</span>
-                  <svg
-                    className={`w-5 h-5 text-gray-500 transform transition-transform duration-300 ${isExamplesVisible ? 'rotate-180' : ''}`}
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </button>
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">How INA TRADING Works</h2>
+            <div className="w-24 h-1 bg-red-600 mx-auto mb-12"></div>
+            
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="max-w-5xl mx-auto"
+            >
+              <div className="bg-white rounded-2xl shadow-xl p-10 mb-16">
+                <p className="text-gray-700 text-xl leading-relaxed mb-12 max-w-3xl mx-auto">
+                  INA Trading is a <span className="text-red-600 font-semibold">Domestic & International Trade Ecosystem</span> to help MSMEs, COOPERATIVES & INDUSTRIES conduct Export, Logistics, Fulfillment, Promotion, Marketing & Sales Abroad.
+                </p>
                 
-                <motion.div
-                  initial={false}
-                  animate={{
-                    height: isExamplesVisible ? "auto" : 0,
-                    opacity: isExamplesVisible ? 1 : 0
-                  }}
-                  transition={{
-                    height: { duration: 0.3, ease: "easeOut" },
-                    opacity: { duration: 0.2, ease: "easeInOut" }
-                  }}
-                  className="overflow-hidden"
-                >
+                <div className="grid md:grid-cols-2 gap-10">
                   <motion.div 
-                    className="mt-4 space-y-4 bg-white p-6 rounded-lg shadow-sm"
-                    animate={{
-                      y: isExamplesVisible ? 0 : -10
-                    }}
-                    transition={{
-                      duration: 0.2,
-                      ease: "easeOut"
-                    }}
+                    whileHover={{ scale: 1.02 }}
+                    className="bg-gray-50 p-8 rounded-xl shadow-sm hover:shadow-md transition-all duration-300"
                   >
-                    <p className="text-gray-600">
-                      A lives in Milan, Italy, and wants to eat at a Restaurant that serves Soto Ayam (Indonesian Chicken Soup) and Teh Botol (Indonesian Bottled Tea). A can simply use the Search feature to find Restaurants in Milan, Italy that sell Soto Ayam and Teh Botol.
-                    </p>
-                    <p className="text-gray-600">
-                      B has a cassava chips product in Boyolali, while C lives in Tokyo, Japan. C can order the cassava chips directly from Boyolali to Tokyo.
-                    </p>
-                    <p className="text-gray-600">
-                      D owns a Shop in Madrid, Spain selling ABC Soy Sauce, and E who lives in Barcelona can order directly from D.
-                    </p>
+                    <div className="flex items-start space-x-6">
+                      <div className="bg-red-100 p-4 rounded-xl">
+                        <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                        </svg>
+                      </div>
+                      <p className="text-gray-600 text-lg leading-relaxed">
+                        A facility for MSMEs, COOPERATIVES & INDUSTRIES to support the Micro, Small, and Medium Enterprises Innovation Ready, Export Adaptation Ready (MSME CAN Export) Program from the MINISTRY OF TRADE.
+                      </p>
+                    </div>
                   </motion.div>
-                </motion.div>
+                  
+                  <motion.div 
+                    whileHover={{ scale: 1.02 }}
+                    className="bg-gray-50 p-8 rounded-xl shadow-sm hover:shadow-md transition-all duration-300"
+                  >
+                    <div className="flex items-start space-x-6">
+                      <div className="bg-red-100 p-4 rounded-xl">
+                        <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+                        </svg>
+                      </div>
+                      <p className="text-gray-600 text-lg leading-relaxed">
+                        Direct transactions between MSMEs, Cooperatives, Industries, Importers & Aggregators with international partners across various countries.
+                      </p>
+                    </div>
+                  </motion.div>
+                </div>
               </div>
-            </div>
-          </motion.div>
 
-          {/* Workflow Steps */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-            {workflowSteps.map((step, index) => (
               <motion.div
-                key={step.title}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: index * 0.2 }}
-                className="text-center"
+                transition={{ delay: 0.2 }}
+                className="bg-white rounded-2xl shadow-xl p-10"
               >
-                <div className="w-20 h-20 mx-auto mb-6 bg-red-100 rounded-full flex items-center justify-center">
-                  <svg className="w-10 h-10 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={step.icon} />
-                  </svg>
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">{step.title}</h3>
-              </motion.div>
-            ))}
-          </div>
+                <h3 className="text-2xl font-semibold text-gray-900 mb-8 text-center">Real World Examples</h3>
+                <div className="grid md:grid-cols-2 gap-10">
+                  <motion.div 
+                    whileHover={{ scale: 1.02 }}
+                    className="bg-gray-50 p-8 rounded-xl shadow-sm hover:shadow-md transition-all duration-300"
+                  >
+                    <div className="flex items-center space-x-5 mb-6">
+                      <div className="bg-red-100 p-4 rounded-xl">
+                        <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 15.546c-.523 0-1.046.151-1.5.454a2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.701 2.701 0 00-1.5-.454M9 6v2m3-2v2m3-2v2M9 3h.01M12 3h.01M15 3h.01M21 21v-7a2 2 0 00-2-2H5a2 2 0 00-2 2v7h18zm-3-9v-2a2 2 0 00-2-2H8a2 2 0 00-2 2v2h12z" />
+                        </svg>
+                      </div>
+                      <h4 className="text-xl font-semibold text-gray-900">Restaurant Discovery</h4>
+                    </div>
+                    <p className="text-gray-600 text-lg leading-relaxed">
+                      A customer in Milan, Italy can easily find restaurants serving authentic Indonesian dishes like Soto Ayam and Teh Botol using our search feature.
+                    </p>
+                  </motion.div>
 
-  
+                  <motion.div 
+                    whileHover={{ scale: 1.02 }}
+                    className="bg-gray-50 p-8 rounded-xl shadow-sm hover:shadow-md transition-all duration-300"
+                  >
+                    <div className="flex items-center space-x-5 mb-6">
+                      <div className="bg-red-100 p-4 rounded-xl">
+                        <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                        </svg>
+                      </div>
+                      <h4 className="text-xl font-semibold text-gray-900">Direct International Trade</h4>
+                    </div>
+                    <p className="text-gray-600 text-lg leading-relaxed">
+                      A producer in Boyolali can sell their cassava chips directly to a customer in Tokyo, Japan through our platform.
+                    </p>
+                  </motion.div>
+                </div>
+              </motion.div>
+            </motion.div>
+          </motion.div>
         </div>
       </section>
 
