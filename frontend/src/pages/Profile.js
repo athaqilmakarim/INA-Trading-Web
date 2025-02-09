@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { placeService } from '../services/PlaceService';
 import userService, { UserType } from '../services/UserService';
 import { exportProductService } from '../services/ExportProductService';
-import { FaEdit, FaTrash, FaSave, FaTimes } from 'react-icons/fa';
+import { FaEdit, FaTrash, FaSave, FaTimes, FaCamera } from 'react-icons/fa';
 import { toast } from 'react-hot-toast';
 import AddressAutocomplete from '../components/AddressAutocomplete';
+import { storage } from '../firebase';
+import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -16,12 +18,15 @@ const Profile = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [userData, setUserData] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const fileInputRef = useRef(null);
   const [editForm, setEditForm] = useState({
     firstName: '',
     lastName: '',
     phoneNumber: '',
     address: '',
-    companyName: ''
+    companyName: '',
+    profileImage: ''
   });
 
   useEffect(() => {
@@ -31,7 +36,8 @@ const Profile = () => {
         lastName: userData.lastName || '',
         phoneNumber: userData.phoneNumber || '',
         address: userData.address || '',
-        companyName: userData.companyName || ''
+        companyName: userData.companyName || '',
+        profileImage: userData.profileImage || ''
       });
     }
   }, [userData]);
@@ -118,7 +124,8 @@ const Profile = () => {
       lastName: userData.lastName || '',
       phoneNumber: userData.phoneNumber || '',
       address: userData.address || '',
-      companyName: userData.companyName || ''
+      companyName: userData.companyName || '',
+      profileImage: userData.profileImage || ''
     });
   };
 
@@ -134,6 +141,84 @@ const Profile = () => {
       toast.error(error.message || 'Failed to update profile');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const validImageTypes = ['image/jpeg', 'image/png', 'image/gif'];
+    if (!validImageTypes.includes(file.type)) {
+      toast.error('Please upload a valid image file (JPEG, PNG, or GIF)');
+      return;
+    }
+
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    if (file.size > maxSize) {
+      toast.error('Image size should be less than 5MB');
+      return;
+    }
+
+    try {
+      setUploadingImage(true);
+      
+      // Delete old image if exists
+      if (userData.profileImage) {
+        const oldImageRef = ref(storage, `profile_images/${currentUser.uid}`);
+        try {
+          await deleteObject(oldImageRef);
+        } catch (error) {
+          console.log('No old image to delete or error deleting:', error);
+        }
+      }
+
+      // Upload new image
+      const storageRef = ref(storage, `profile_images/${currentUser.uid}`);
+      await uploadBytes(storageRef, file);
+      const downloadURL = await getDownloadURL(storageRef);
+
+      // Update user profile with new image URL
+      await userService.updateUserProfile(currentUser.uid, {
+        ...userData,
+        profileImage: downloadURL
+      });
+
+      setUserData(prev => ({ ...prev, profileImage: downloadURL }));
+      setEditForm(prev => ({ ...prev, profileImage: downloadURL }));
+      toast.success('Profile image updated successfully');
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      toast.error('Failed to upload image');
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
+  const handleDeleteImage = async () => {
+    if (!userData.profileImage) return;
+
+    if (window.confirm('Are you sure you want to delete your profile image?')) {
+      try {
+        setUploadingImage(true);
+        const imageRef = ref(storage, `profile_images/${currentUser.uid}`);
+        await deleteObject(imageRef);
+
+        // Update user profile to remove image URL
+        await userService.updateUserProfile(currentUser.uid, {
+          ...userData,
+          profileImage: ''
+        });
+
+        setUserData(prev => ({ ...prev, profileImage: '' }));
+        setEditForm(prev => ({ ...prev, profileImage: '' }));
+        toast.success('Profile image deleted successfully');
+      } catch (error) {
+        console.error('Error deleting image:', error);
+        toast.error('Failed to delete image');
+      } finally {
+        setUploadingImage(false);
+      }
     }
   };
 
@@ -258,17 +343,66 @@ const Profile = () => {
 
                 {/* Profile Picture Section */}
                 <div className="flex justify-center md:justify-end">
-                  {userData?.profilePicture ? (
-                    <img
-                      src={userData.profilePicture}
-                      alt="Profile"
-                      className="w-32 h-32 rounded-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-32 h-32 rounded-full bg-gray-200 flex items-center justify-center">
-                      <span className="text-gray-500">No Image</span>
+                  <div className="relative group">
+                    <div className="w-40 h-40 rounded-full overflow-hidden bg-gray-200 border-4 border-white shadow-lg transition-transform duration-300 group-hover:scale-105">
+                      {userData?.profileImage ? (
+                        <img
+                          src={userData.profileImage}
+                          alt="Profile"
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex flex-col items-center justify-center text-gray-400 bg-gray-100">
+                          <FaCamera size={32} />
+                          <span className="text-sm mt-2">Add Photo</span>
+                        </div>
+                      )}
                     </div>
-                  )}
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      className="hidden"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                    />
+                    
+                    {/* Overlay with buttons */}
+                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <div className="absolute inset-0 bg-black bg-opacity-40 rounded-full"></div>
+                      <div className="relative flex space-x-3">
+                        <button
+                          onClick={() => fileInputRef.current.click()}
+                          className="bg-white text-gray-700 p-3 rounded-full hover:bg-gray-100 transform hover:scale-110 transition-all duration-300 shadow-lg flex items-center space-x-2"
+                          disabled={uploadingImage}
+                          title="Upload new photo"
+                        >
+                          <FaCamera size={16} />
+                        </button>
+                        {userData?.profileImage && (
+                          <button
+                            onClick={handleDeleteImage}
+                            className="bg-white text-red-600 p-3 rounded-full hover:bg-red-50 transform hover:scale-110 transition-all duration-300 shadow-lg flex items-center space-x-2"
+                            disabled={uploadingImage}
+                            title="Delete photo"
+                          >
+                            <FaTrash size={16} />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                    
+                    {/* Loading Overlay */}
+                    {uploadingImage && (
+                      <div className="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center">
+                        <div className="relative">
+                          <div className="animate-spin rounded-full h-10 w-10 border-4 border-white border-t-transparent"></div>
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <div className="h-6 w-6 bg-white rounded-full"></div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
