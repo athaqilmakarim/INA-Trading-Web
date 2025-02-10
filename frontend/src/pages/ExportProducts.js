@@ -221,6 +221,13 @@ const ExportProducts = () => {
                       </div>
                     </div>
                   )}
+                  {product.onlineStore && (
+                    <div className="mb-2">
+                      <a href={product.onlineStore} target="_blank" rel="noopener noreferrer" className="text-red-600 hover:underline text-sm">
+                        Online Store
+                      </a>
+                    </div>
+                  )}
                   <Link 
                     to={`/export-product/${product.id}`}
                     className="block w-full text-center bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors"
