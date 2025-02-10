@@ -91,7 +91,7 @@ const NewsDetail = () => {
 
       {/* Title Section */}
       <div className="mb-8">
-        <h1 className="text-4xl font-bold text-gray-900 mb-4">{news.title}</h1>
+        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">{news.title}</h1>
         <h2 className="text-xl text-gray-600 mb-4">{news.subtitle}</h2>
         <p className="text-gray-500">
           {formatDate(news.createdAt)}
@@ -154,8 +154,8 @@ const NewsDetail = () => {
 
       {/* Content */}
       <div className="prose max-w-none">
-        <p className="text-gray-700 text-lg leading-relaxed whitespace-pre-wrap">
-          {news.summary}
+        <p className="text-gray-700 text-base md:text-lg leading-relaxed whitespace-pre-wrap">
+          {news.content}
         </p>
       </div>
     </div>
