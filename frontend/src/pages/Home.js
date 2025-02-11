@@ -72,6 +72,7 @@ const Home = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isMottoVisible, setIsMottoVisible] = useState(true);
   const [isExamplesVisible, setIsExamplesVisible] = useState(false);
+  const { currentUser } = useAuth();
 
   const slides = [
     {
@@ -161,10 +162,10 @@ const Home = () => {
               transition={{ delay: 0.6 }}
             >
               <Link
-                to="/about"
+                to={currentUser ? "/about" : "/login"}
                 className="inline-block bg-red-600 text-white px-8 py-3 rounded-full text-lg font-medium hover:bg-red-700 transition-colors duration-300"
               >
-                About
+                {currentUser ? "About" : "Login"}
               </Link>
             </motion.div>
           </div>

@@ -62,12 +62,12 @@ const Navbar = () => {
           <div className="hidden sm:flex sm:items-center sm:space-x-4">
             {currentUser && (
               <>
-                {(userType === UserType.B2B_SUPPLIER || userType === "B2B Supplier/Exporter" || userType === UserType.ADMIN || userType === "Admin") && (
+                {(userType === UserType.B2B_SUPPLIER || userType === "B2B Supplier/Exporter" || userType === UserType.B2B_IMPORTER || userType === "B2B Importer" || userType === UserType.ADMIN || userType === "Admin") && (
                   <ActionButton to="/add-export-product">
                     Add Product
                   </ActionButton>
                 )}
-                {(userType === UserType.B2C_BUSINESS_OWNER || userType === "B2C Business Owner" || userType === UserType.ADMIN || userType === "Admin") && (
+                {(userType === UserType.B2C_BUSINESS_OWNER || userType === "B2C Business Owner" || userType === UserType.ADMIN || userType === "Admin" || userType === UserType.B2B_SUPPLIER || userType === "B2B Supplier/Exporter" || userType === UserType.B2B_IMPORTER || userType === "B2B Importer") && (
                   <ActionButton to="/add-place">
                     Add Place
                   </ActionButton>
