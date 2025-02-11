@@ -30,6 +30,7 @@ const AddExportProduct = () => {
   const [images, setImages] = useState([]);
   const [previewUrls, setPreviewUrls] = useState([]);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [onlineStore, setOnlineStore] = useState('');
 
   const handleImageChange = useCallback((e) => {
     handleImageSelection(e.target.files, setImages, setPreviewUrls);
@@ -109,7 +110,8 @@ const AddExportProduct = () => {
           quantity: Number(minOrderQuantity),
           unit: minOrderUnit
         },
-        images: imageUrls
+        images: imageUrls,
+        onlineStore: onlineStore
       });
 
       toast.success('Export product added successfully!', {
@@ -133,6 +135,7 @@ const AddExportProduct = () => {
       setImages([]);
       setPreviewUrls([]);
       setUploadProgress(0);
+      setOnlineStore('');
     } catch (err) {
       toast.error(err.message || 'An error occurred', {
         className: "animate-slideDown"
@@ -195,6 +198,16 @@ const AddExportProduct = () => {
                       />
                     </div>
                   )}
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Online Store URL</label>
+                  <input
+                    type="url"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+                    value={onlineStore}
+                    onChange={(e) => setOnlineStore(e.target.value)}
+                    placeholder="Enter your online store URL (optional)"
+                  />
                 </div>
               </div>
             </div>

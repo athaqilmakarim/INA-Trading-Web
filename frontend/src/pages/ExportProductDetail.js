@@ -200,6 +200,16 @@ const ExportProductDetail = () => {
                         product.monthlyCapacity}
                     </div>
                   </div>
+                  {product.onlineStore && (
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <div className="text-sm text-gray-500">Online Store</div>
+                      <div className="text-lg font-medium text-gray-900">
+                        <a href={product.onlineStore} target="_blank" rel="noopener noreferrer" className="text-red-600 hover:underline">
+                          {product.onlineStore}
+                        </a>
+                      </div>
+                    </div>
+                  )}
 
                   {/* Additional Specifications */}
                   {product.specifications && Object.entries(product.specifications).map(([key, value]) => (
