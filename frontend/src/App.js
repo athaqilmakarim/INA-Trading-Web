@@ -31,11 +31,12 @@ import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import { UserType } from './services/UserService';
 import ForgotPassword from './pages/ForgotPassword';
+import INAPASCallback from './pages/INAPASCallback';
 
 // Wrapper component to handle navbar visibility
 function AppContent() {
   const location = useLocation();
-  const hideNavbarPaths = ['/auth/verify-email', '/verify-email-required'];
+  const hideNavbarPaths = ['/auth/verify-email', '/verify-email-required', '/inapas/callback'];
   const showNavbar = !hideNavbarPaths.includes(location.pathname);
 
   return (
@@ -65,6 +66,7 @@ function AppContent() {
             <Route path="/auth/verify-email" element={<PageTransition><Auth /></PageTransition>} />
             <Route path="/verify-email-required" element={<PageTransition><VerifyEmailRequired /></PageTransition>} />
             <Route path="/forgot-password" element={<PageTransition><ForgotPassword /></PageTransition>} />
+            <Route path="/inapas/callback" element={<PageTransition><INAPASCallback /></PageTransition>} />
             
             {/* Protected Routes */}
             <Route
@@ -78,24 +80,31 @@ function AppContent() {
             <Route
               path="/add-place"
               element={
-                <ProtectedRoute allowedUserTypes={[UserType.B2C_BUSINESS_OWNER, UserType.ADMIN]}>
+                <ProtectedRoute>
                   <PageTransition><AddPlace /></PageTransition>
                 </ProtectedRoute>
               }
             />
             <Route
-              path="/edit-place/:placeId"
+              path="/edit-place/:id"
               element={
-                <ProtectedRoute allowedUserTypes={[UserType.B2C_BUSINESS_OWNER, UserType.ADMIN]}>
+                <ProtectedRoute>
                   <PageTransition><EditPlace /></PageTransition>
                 </ProtectedRoute>
               }
             />
-            <Route path="/place/:placeId" element={<PageTransition><PlaceDetails /></PageTransition>} />
+            <Route
+              path="/place/:id"
+              element={
+                <ProtectedRoute>
+                  <PageTransition><PlaceDetails /></PageTransition>
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="/add-export-product"
               element={
-                <ProtectedRoute allowedUserTypes={[UserType.B2B_SUPPLIER, UserType.ADMIN]}>
+                <ProtectedRoute>
                   <PageTransition><AddExportProduct /></PageTransition>
                 </ProtectedRoute>
               }
@@ -103,17 +112,16 @@ function AppContent() {
             <Route
               path="/edit-export-product/:id"
               element={
-                <ProtectedRoute allowedUserTypes={[UserType.B2B_SUPPLIER, UserType.ADMIN]}>
+                <ProtectedRoute>
                   <PageTransition><EditExportProduct /></PageTransition>
                 </ProtectedRoute>
               }
             />
-            <Route path="/export-product/:id" element={<PageTransition><ExportProductDetail /></PageTransition>} />
             <Route
-              path="/news/edit/:id"
+              path="/export-product/:id"
               element={
-                <ProtectedRoute allowedUserTypes={[UserType.ADMIN]}>
-                  <PageTransition><EditNews /></PageTransition>
+                <ProtectedRoute>
+                  <PageTransition><ExportProductDetail /></PageTransition>
                 </ProtectedRoute>
               }
             />
@@ -128,7 +136,7 @@ function AppContent() {
             <Route
               path="/admin-setup"
               element={
-                <ProtectedRoute allowedUserTypes={[UserType.ADMIN]}>
+                <ProtectedRoute>
                   <PageTransition><AdminSetup /></PageTransition>
                 </ProtectedRoute>
               }

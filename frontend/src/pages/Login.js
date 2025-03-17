@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
+import { inapasService } from '../services/INAPASService';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -29,6 +30,10 @@ export default function Login() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleINAPASLogin = () => {
+    window.location.href = inapasService.getAuthUrl();
   };
 
   return (
@@ -104,6 +109,23 @@ export default function Login() {
             ) : (
               'Sign in'
             )}
+          </button>
+
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-300"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-gradient-to-br from-blue-900 via-gray-900 to-red-900 text-gray-300">Or continue with</span>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={handleINAPASLogin}
+            className="w-full px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg hover:from-blue-500 hover:to-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900 transform hover:scale-[1.02] transition-all duration-200"
+          >
+            Sign in with INA PAS
           </button>
 
           <div className="text-center text-sm text-gray-300">
