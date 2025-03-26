@@ -9,6 +9,7 @@ class INAPASService {
     this.redirectUri = process.env.REACT_APP_INAPAS_REDIRECT_URI;
     this.tokenIssuerUrl = process.env.REACT_APP_INAPAS_TOKEN_ISSUER_URL;
     this.kid = process.env.REACT_APP_INAPAS_KID;
+    this.privateKey = process.env.REACT_APP_INAPAS_PRIVATE_KEY;
   }
 
   // Generate random state
@@ -46,7 +47,7 @@ class INAPASService {
       state: state,
       code_challenge_method: 'S256',
       code_challenge: codeChallenge,
-      scope: 'openid offline_access profile'
+      scope: 'openid offline_access profile nik'
     });
 
     return `${process.env.REACT_APP_INAPAS_AUTH_URL}/sso/oauth2/auth?${params.toString()}`;
@@ -82,7 +83,9 @@ class INAPASService {
   async exchangeCodeForTokens(code, codeVerifier) {
     // Create client assertion JWT
     const now = Math.floor(Date.now() / 1000);
-    const clientAssertion = await new jose.SignJWT({
+    const privateKey = await jose.importPKCS8(this.privateKey, 'RS256');
+    
+    const jwt = await new jose.SignJWT({
       iss: this.clientId,
       sub: this.clientId,
       aud: this.tokenIssuerUrl,
@@ -91,7 +94,7 @@ class INAPASService {
       jti: forge.util.bytesToHex(forge.random.getBytesSync(16))
     })
     .setProtectedHeader({ alg: 'RS256', kid: this.kid })
-    .sign(new TextEncoder().encode(process.env.REACT_APP_INAPAS_PRIVATE_KEY));
+    .sign(privateKey);
 
     const response = await fetch(`${process.env.REACT_APP_INAPAS_AUTH_URL}/sso/oauth2/token`, {
       method: 'POST',
@@ -104,9 +107,9 @@ class INAPASService {
         redirect_uri: this.redirectUri,
         client_id: this.clientId,
         code_verifier: codeVerifier,
-        scope: 'openid offline_access profile',
+        scope: 'openid offline_access profile nik',
         client_assertion_type: 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
-        client_assertion: clientAssertion
+        client_assertion: jwt
       })
     });
 

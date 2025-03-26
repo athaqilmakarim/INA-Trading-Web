@@ -1,11 +1,13 @@
 import React, { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { toast } from 'react-hot-toast';
+import { toast } from 'react-toastify';
 import { inapasService } from '../services/INAPASService';
+import { useAuth } from '../context/AuthContext';
 
-export default function INAPASCallback() {
-  const [searchParams] = useSearchParams();
+const INAPASCallback = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const { login } = useAuth();
 
   useEffect(() => {
     const handleCallback = async () => {
@@ -15,36 +17,48 @@ export default function INAPASCallback() {
         const error = searchParams.get('error');
 
         if (error) {
-          throw new Error(`Authentication failed: ${error}`);
+          throw new Error(error);
         }
 
         if (!code || !state) {
           throw new Error('Missing required parameters');
         }
 
-        await inapasService.handleCallback(code, state);
-        toast.success('Successfully logged in with INA PAS');
+        // Handle the callback
+        const user = await inapasService.handleCallback(code, state);
+
+        // Update auth context
+        await login(user);
+
+        toast.success('Successfully logged in with INA PAS!');
         navigate('/');
       } catch (error) {
-        console.error('INA PAS callback error:', error);
-        toast.error(error.message || 'Failed to authenticate with INA PAS');
+        console.error('Error handling INA PAS callback:', error);
+        toast.error(error.message || 'Failed to complete authentication');
         navigate('/login');
       }
     };
 
     handleCallback();
-  }, [searchParams, navigate]);
+  }, [searchParams, navigate, login]);
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-600 mx-auto"></div>
-            <p className="mt-4 text-gray-600">Completing INA PAS authentication...</p>
-          </div>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow-lg">
+        <div className="text-center">
+          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
+            Completing Authentication
+          </h2>
+          <p className="mt-2 text-sm text-gray-600">
+            Please wait while we complete your authentication...
+          </p>
+        </div>
+        <div className="mt-8 flex justify-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
         </div>
       </div>
     </div>
   );
-} 
+};
+
+export default INAPASCallback; 

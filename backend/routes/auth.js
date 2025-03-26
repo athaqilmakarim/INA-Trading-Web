@@ -9,8 +9,9 @@ router.post('/create-custom-token', async (req, res) => {
 
     // Create custom token
     const customToken = await admin.auth().createCustomToken(uid, {
-      email,
-      displayName
+      email: email,
+      displayName: displayName,
+      emailVerified: true
     });
 
     res.json({ customToken });
