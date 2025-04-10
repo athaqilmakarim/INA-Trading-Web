@@ -1,0 +1,22 @@
+{
+  "keys": [
+    {
+      "alg": "ECDH-ES+A256KW",
+      "crv": "P-521",
+      "kid": "96092B04BD81FDF0859CA534F385DB8CDF1D5125E046897575E593BC6F09BEFF",
+      "kty": "EC",
+      "use": "enc",
+      "x": "AY0TCHEGANqr-RmH146WkPIDM-ns0MKtvtFC4_GzWhx_iDs-iqwisxMr-bADLzvXTUW2Zp8jkHVF7Ccc91bIudOJ",
+      "y": "ALHVzb-omHUpWzoHX4RIbcpzClLqgH3DP-ftjqo5d75gbD69glMOpWXNI3Dswzx7IXxKqfnt2mgfHhJxMqa9paam"
+    },
+    {
+      "alg": "ES512",
+      "crv": "P-521",
+      "kid": "C60923260CE65F38E35CEA37F1ADE537935E076D0ECCB8E83434AD9B2783C0BC",
+      "kty": "EC",
+      "use": "sig",
+      "x": "AF8maTV5q-BHkrgYzD6HvUldzvhSX_z2D7w90OUT4yk9RuYwNoZCt7rYzTTgxt8HvEv73pC0McIL5QsAiIk0FzG4",
+      "y": "ARFPOZemSuBjzVzwpX45wtm0_t9TV2r6-U-GmfRD2AJhdY4O3VW1B0a7pPnICFo4LXdx4An-frvohDCeiRQeQDIy"
+    }
+  ]
+}
