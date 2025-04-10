@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
+import { inapasService } from '../services/INAPASService';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -28,6 +29,19 @@ export default function Login() {
       }
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleINAPASLogin = () => {
+    try {
+      // Save the current URL as the intended destination after login
+      sessionStorage.setItem('redirect_after_login', window.location.pathname !== '/login' ? window.location.pathname : '/');
+      
+      // Get the INApas auth URL and redirect
+      window.location.href = inapasService.getAuthUrl();
+    } catch (error) {
+      console.error('Error initiating INApas login:', error);
+      toast.error('Failed to initiate login with INApas. Please try again.');
     }
   };
 
@@ -104,6 +118,26 @@ export default function Login() {
             ) : (
               'Sign in'
             )}
+          </button>
+
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-300"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-gradient-to-br from-blue-900 via-gray-900 to-red-900 text-gray-300">Or continue with</span>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={handleINAPASLogin}
+            className="w-full px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg hover:from-blue-500 hover:to-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900 transform hover:scale-[1.02] transition-all duration-200 flex items-center justify-center gap-2"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            </svg>
+            Sign in with INA PAS
           </button>
 
           <div className="text-center text-sm text-gray-300">
