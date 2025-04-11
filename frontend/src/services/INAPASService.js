@@ -2,7 +2,6 @@ import { auth, firestore } from '../firebase';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import forge from 'node-forge';
 import * as jose from 'jose';
-import crypto from 'crypto';
 
 class INAPASService {
   constructor() {
@@ -93,7 +92,8 @@ class INAPASService {
   // Create client assertion JWT
   async createClientAssertionJWT() {
     const now = Math.floor(Date.now() / 1000);
-    const jti = crypto.randomUUID();
+    const randomBytes = forge.random.getBytesSync(16);
+    const jti = forge.util.bytesToHex(randomBytes);
 
     try {
       const privateKey = await jose.importPKCS8(this.signingPrivateKey, 'ES512');
