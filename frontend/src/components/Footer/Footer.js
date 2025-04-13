@@ -10,7 +10,7 @@ const Footer = () => {
           <div className="footer-section">
             <h3>About INA TRADING</h3>
             <p className="footer-description">
-              B2B & B2C Platform for Indonesian MSMEs, Cooperatives & Industries entering global markets
+              B2B & D2C Platform for Indonesian MSMEs, Cooperatives & Industries entering global markets
             </p>
           </div>
           

@@ -76,8 +76,8 @@ const Home = () => {
 
   const slides = [
     {
-      title: "PLATFORM B2B B2C - PERURI",
-      subtitle: "Platform Ekspor untuk UKM, Koperasi & Industri untuk B2B & B2C bagi Aggregator, Eksportir & Importir.",
+      title: "PLATFORM B2B D2C - PERURI",
+      subtitle: "Platform Ekspor untuk UKM, Koperasi & Industri untuk B2B & D2C bagi Aggregator, Eksportir & Importir.",
       image: "/images/hero-bg.jpg" // Make sure to add this image
     },
     {
