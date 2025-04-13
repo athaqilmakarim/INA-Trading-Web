@@ -41,8 +41,8 @@ const ProtectedRoute = ({ children, allowedUserTypes }) => {
   }
 
   if (!currentUser) {
-    console.log('No current user, redirecting to auth'); // Debug log
-    return <Navigate to="/auth" />;
+    console.log('No current user, redirecting to login'); // Updated log message
+    return <Navigate to="/login" />; // Changed redirect target to /login
   }
 
   if (allowedUserTypes && !allowedUserTypes.some(allowedType => 
