@@ -11,7 +11,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-hot-toast';
 
 const PlaceDetails = () => {
-  const { placeId } = useParams();
+  const { id } = useParams();
   const navigate = useNavigate();
   const { currentUser } = useAuth();
   const [place, setPlace] = useState(null);
@@ -29,18 +29,18 @@ const PlaceDetails = () => {
         setIsLoading(true);
         setError(null);
         
-        if (!placeId) {
+        if (!id) {
           console.error('No place ID provided');
           setError('Invalid place ID');
           return;
         }
 
         // Clean the ID - remove any whitespace and special characters
-        const cleanPlaceId = placeId.trim().replace(/[^\w-]/g, '');
+        const cleanPlaceId = id.trim().replace(/[^\w-]/g, '');
         console.log('Fetching place with cleaned ID:', cleanPlaceId);
         
-        if (cleanPlaceId !== placeId) {
-          console.warn('Place ID needed cleaning:', { original: placeId, cleaned: cleanPlaceId });
+        if (cleanPlaceId !== id) {
+          console.warn('Place ID needed cleaning:', { original: id, cleaned: cleanPlaceId });
         }
         
         const placeRef = doc(firestore, 'places', cleanPlaceId);
@@ -103,15 +103,15 @@ const PlaceDetails = () => {
     };
 
     fetchPlace();
-  }, [placeId]);
+  }, [id]);
 
   useEffect(() => {
     const fetchPromos = async () => {
-      if (!placeId) return;
+      if (!id) return;
       
       try {
         setIsLoadingPromos(true);
-        const promosList = await promoService.getPlacePromos(placeId);
+        const promosList = await promoService.getPlacePromos(id);
         setPromos(promosList);
       } catch (err) {
         console.error('Error fetching promos:', err);
@@ -121,7 +121,7 @@ const PlaceDetails = () => {
     };
 
     fetchPromos();
-  }, [placeId]);
+  }, [id]);
 
   const handleViewOnMap = () => {
     if (place?.address) {
@@ -140,7 +140,7 @@ const PlaceDetails = () => {
   const handleAddPromoSuccess = async () => {
     setShowAddPromo(false);
     // Refresh promos list
-    const updatedPromos = await promoService.getPlacePromos(placeId);
+    const updatedPromos = await promoService.getPlacePromos(id);
     setPromos(updatedPromos);
   };
 
@@ -148,7 +148,7 @@ const PlaceDetails = () => {
     try {
       await promoService.deletePromo(promoId);
       // Refresh promos list
-      const updatedPromos = await promoService.getPlacePromos(placeId);
+      const updatedPromos = await promoService.getPlacePromos(id);
       setPromos(updatedPromos);
     } catch (err) {
       console.error('Error deleting promo:', err);
@@ -436,7 +436,7 @@ const PlaceDetails = () => {
                       exit={{ opacity: 0, scale: 0.95 }}
                     >
                       <AddPromo
-                        placeId={placeId}
+                        placeId={id}
                         onSuccess={handleAddPromoSuccess}
                         onCancel={() => setShowAddPromo(false)}
                       />
