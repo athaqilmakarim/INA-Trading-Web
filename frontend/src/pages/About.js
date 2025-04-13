@@ -1,20 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 
 const features = [
   {
     title: "Global Reach",
-    description: "Access to international markets for Indonesian MSMEs, Cooperatives & Industries",
+    description: "Access to international markets for MSMEs, Cooperatives & Industries is made easier with UKM BOX Fulfillment Centers in Australia, Europe, and other countries. Distribution networks, retail stores, diaspora communities, and International Marketplaces across all countries enable end users to purchase Indonesian products from anywhere. Direct shipping from Indonesia to worldwide destinations is facilitated through UKM BOX Air Cargo services by Garuda Indonesia and POS Indonesia, ensuring that products purchased through INA TRADING can be delivered to any country.",
     icon: "M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
   },
   {
     title: "Digital Integration",
-    description: "Integrated platform for export, promotion, and sales",
+    description: "Seamless data integration with population databases, ministries, customs, and other relevant authorities across various countries for export/import processes. Leveraging social media, social commerce, artificial intelligence, and augmented reality for targeted promotions that drive transactions in all countries.",
     icon: "M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"
   },
   {
     title: "Secure Transactions",
-    description: "Secure transactions with blockchain technology and digital security",
+    description: "PERURI's comprehensive services for Digital Security, Banknote Printing, Security Printing & Government Technology through INA DIGITAL (www.inadigital.co.id) ensure the authenticity of Indonesian products through packaging, product content, digital seals, and QR codes. Secure financial transactions are facilitated through trusted Indonesian banking partners and financial institutions worldwide, ensuring smooth trade operations.",
     icon: "M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
   }
 ];
@@ -22,7 +22,24 @@ const features = [
 const sections = [
   {
     title: "What is INA TRADING",
-    content: "INA TRADING is a B2B & B2C Platform used by Indonesian MSMEs, COOPERATIVES & INDUSTRIES for Export, Promotion, Marketing & Sales in Foreign Countries and used by people worldwide such as Importers, Distributors, restaurant owners, cafes, shops and general buyers to obtain and purchase Indonesian products abroad or in their respective countries.",
+    content: "INA TRADING is a comprehensive B2B & D2C platform designed to empower Indonesian MSMEs, Cooperatives, and Industries in their global market expansion. It serves as a digital marketplace where international buyers, including importers, distributors, restaurant owners, cafes, retail stores, and general consumers, can discover and purchase authentic Indonesian products from anywhere in the world.",
+    features: [
+      {
+        title: "Global Reach",
+        description: "Access to international markets for MSMEs, Cooperatives & Industries is made easier with UKM BOX Fulfillment Centers in Australia, Europe, and other countries. Distribution networks, retail stores, diaspora communities, and International Marketplaces across all countries enable end users to purchase Indonesian products from anywhere. Direct shipping from Indonesia to worldwide destinations is facilitated through UKM BOX Air Cargo services by Garuda Indonesia and POS Indonesia, ensuring that products purchased through INA TRADING can be delivered to any country.",
+        icon: "M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+      },
+      {
+        title: "Digital Integration",
+        description: "Seamless data integration with population databases, ministries, customs, and other relevant authorities across various countries for export/import processes. Leveraging social media, social commerce, artificial intelligence, and augmented reality for targeted promotions that drive transactions in all countries.",
+        icon: "M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"
+      },
+      {
+        title: "Secure Transactions",
+        description: "PERURI's comprehensive services for Digital Security, Banknote Printing, Security Printing & Government Technology through INA DIGITAL (www.inadigital.co.id) ensure the authenticity of Indonesian products through packaging, product content, digital seals, and QR codes. Secure financial transactions are facilitated through trusted Indonesian banking partners and financial institutions worldwide, ensuring smooth trade operations.",
+        icon: "M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+      }
+    ],
     footer: "Managed by PERURI & Indonesia In Your Hand",
     icon: "M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
   },
@@ -79,6 +96,12 @@ const sections = [
 ];
 
 const About = () => {
+  const [expandedFeature, setExpandedFeature] = useState(null);
+
+  const toggleFeature = (index) => {
+    setExpandedFeature(expandedFeature === index ? null : index);
+  };
+
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
@@ -95,32 +118,9 @@ const About = () => {
               About INA TRADING
             </h1>
             <p className="text-xl text-white/80 max-w-3xl mx-auto">
-              B2B & B2C Platform for Indonesian MSMEs, Cooperatives & Industries entering global markets
+              B2B & D2C Platform for Indonesian MSMEs, Cooperatives & Industries entering global markets
             </p>
           </motion.div>
-        </div>
-      </div>
-
-      {/* Features Grid */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-16">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-          {features.map((feature, index) => (
-            <motion.div
-              key={feature.title}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.2 }}
-              className="bg-white rounded-xl shadow-xl p-6 hover:shadow-2xl transition-all duration-300"
-            >
-              <div className="w-14 h-14 bg-red-100 rounded-xl flex items-center justify-center mb-4">
-                <svg className="w-7 h-7 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={feature.icon} />
-                </svg>
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">{feature.title}</h3>
-              <p className="text-gray-600 leading-relaxed">{feature.description}</p>
-            </motion.div>
-          ))}
         </div>
       </div>
 
@@ -147,33 +147,80 @@ const About = () => {
                     {section.title}
                   </h2>
                 </div>
-                
-                {Array.isArray(section.content) ? (
-                  <ul className="space-y-6 mb-8">
-                    {section.content.map((item, idx) => (
-                      <li key={idx} className="flex items-start group">
-                        <div className="flex-shrink-0 w-10 h-10 bg-red-100 rounded-xl flex items-center justify-center mr-4 group-hover:bg-red-200 transition-colors duration-300">
-                          <svg className="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={item.icon} />
-                          </svg>
-                        </div>
-                        <span className="text-gray-600 flex-1 pt-2 leading-relaxed">{item.text}</span>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p className="text-gray-600 mb-8 leading-relaxed text-lg">
-                    {section.content}
-                  </p>
-                )}
 
-                <div className="mt-8 pt-6 border-t border-gray-100">
-                  <p className="text-sm text-gray-500 italic flex items-center">
-                    <svg className="w-4 h-4 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    {section.footer}
-                  </p>
+                <div>
+                  {Array.isArray(section.content) ? (
+                    <ul className="space-y-6 mb-8">
+                      {section.content.map((item, idx) => (
+                        <li key={idx} className="flex items-start group">
+                          <div className="flex-shrink-0 w-10 h-10 bg-red-100 rounded-xl flex items-center justify-center mr-4 group-hover:bg-red-200 transition-colors duration-300">
+                            <svg className="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={item.icon} />
+                            </svg>
+                          </div>
+                          <span className="text-gray-600 flex-1 pt-2 leading-relaxed text-justify">{item.text}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <>
+                      <p className="text-gray-600 mb-8 leading-relaxed text-lg text-justify">
+                        {section.content}
+                      </p>
+                      {section.features && (
+                        <div className="space-y-6 mt-8">
+                          {section.features.map((feature, idx) => (
+                            <div key={idx} className="bg-gray-50 rounded-xl p-6">
+                              <div 
+                                className="flex items-center justify-between cursor-pointer"
+                                onClick={() => toggleFeature(idx)}
+                              >
+                                <div className="flex items-center">
+                                  <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center mr-4">
+                                    <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={feature.icon} />
+                                    </svg>
+                                  </div>
+                                  <h3 className="text-lg font-bold text-gray-900">{feature.title}</h3>
+                                </div>
+                                <svg 
+                                  className={`w-5 h-5 text-gray-500 transform transition-transform duration-300 ${expandedFeature === idx ? 'rotate-180' : ''}`}
+                                  fill="none" 
+                                  stroke="currentColor" 
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                </svg>
+                              </div>
+
+                              <motion.div
+                                initial={{ height: 0, opacity: 0 }}
+                                animate={{ 
+                                  height: expandedFeature === idx ? 'auto' : 0,
+                                  opacity: expandedFeature === idx ? 1 : 0
+                                }}
+                                transition={{ duration: 0.3 }}
+                                className="overflow-hidden"
+                              >
+                                <p className="text-gray-600 leading-relaxed text-justify mt-4">
+                                  {feature.description}
+                                </p>
+                              </motion.div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </>
+                  )}
+
+                  <div className="mt-8 pt-6 border-t border-gray-100">
+                    <p className="text-sm text-gray-500 italic flex items-center">
+                      <svg className="w-4 h-4 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      {section.footer}
+                    </p>
+                  </div>
                 </div>
               </div>
             </motion.section>
