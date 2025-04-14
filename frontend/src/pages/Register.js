@@ -176,7 +176,12 @@ export default function Register() {
                 Address
               </label>
               <AddressAutocomplete
-                onAddressSelect={(address) => setFormData({ ...formData, address })}
+                onAddressSelect={(address) => {
+                  setFormData(currentFormData => ({
+                    ...currentFormData,
+                    address: address
+                  }));
+                }}
                 placeholder="Enter your address"
                 initialValue={formData.address}
               />
