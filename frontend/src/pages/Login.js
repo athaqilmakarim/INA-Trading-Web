@@ -24,6 +24,8 @@ export default function Login() {
       console.error('Login error:', error);
       if (error.message === 'Please verify your email before logging in.') {
         toast.error('Please verify your email before logging in. Check your inbox for the verification link.');
+      } else if (error.code === 'auth/invalid-credential') {
+        toast.error('Invalid email or password. Please try again.');
       } else {
         toast.error(error.message || 'Failed to sign in');
       }
