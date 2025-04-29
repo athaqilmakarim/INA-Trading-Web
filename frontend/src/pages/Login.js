@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
-import { inapasService } from '../services/INAPASService';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -35,16 +34,7 @@ export default function Login() {
   };
 
   const handleINAPASLogin = () => {
-    try {
-      // Save the current URL as the intended destination after login
-      sessionStorage.setItem('redirect_after_login', window.location.pathname !== '/login' ? window.location.pathname : '/');
-      
-      // Get the INApas auth URL and redirect
-      window.location.href = inapasService.getAuthUrl();
-    } catch (error) {
-      console.error('Error initiating INApas login:', error);
-      toast.error('Failed to initiate login with INApas. Please try again.');
-    }
+    navigate('/inapass/coming-soon');
   };
 
   return (
