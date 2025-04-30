@@ -32,11 +32,12 @@ import ProtectedRoute from './components/ProtectedRoute';
 import { UserType } from './services/UserService';
 import ForgotPassword from './pages/ForgotPassword';
 import INAPASCallback from './pages/INAPASCallback';
+import InapassComingSoon from './pages/InapassComingSoon';
 
 // Wrapper component to handle navbar visibility
 function AppContent() {
   const location = useLocation();
-  const hideNavbarPaths = ['/auth/verify-email', '/verify-email-required', '/inapas/callback'];
+  const hideNavbarPaths = ['/auth/verify-email', '/verify-email-required', '/inapas/callback', '/inapass/coming-soon'];
   const showNavbar = !hideNavbarPaths.includes(location.pathname);
 
   return (
@@ -67,6 +68,7 @@ function AppContent() {
             <Route path="/verify-email-required" element={<PageTransition><VerifyEmailRequired /></PageTransition>} />
             <Route path="/forgot-password" element={<PageTransition><ForgotPassword /></PageTransition>} />
             <Route path="/inapas/callback" element={<PageTransition><INAPASCallback /></PageTransition>} />
+            <Route path="/inapass/coming-soon" element={<PageTransition><InapassComingSoon /></PageTransition>} />
             
             {/* Protected Routes */}
             <Route
