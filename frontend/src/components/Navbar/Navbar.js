@@ -40,16 +40,17 @@ const Navbar = () => {
         <div className="flex justify-between h-16">
           {/* Left side - Logo and main navigation */}
           <div className="flex items-center space-x-8">
-            <Link to="/" className="flex-shrink-0 flex items-center">
+            <a href="https://inatrading.co.id" target="_blank" rel="noopener noreferrer" className="flex-shrink-0 flex items-center">
               <img 
                 src="/Logo INA TRADING KOTAK 2.png"
                 alt="INA Trading Logo" 
                 className="h-11 w-auto"
                 style={{ minWidth: '140px', objectFit: 'contain' }}
               />
-            </Link>
+            </a>
 
             <div className="hidden sm:flex sm:items-center sm:space-x-6">
+              <NavLink to="/">Home</NavLink>
               <NavLink to="/about">About</NavLink>
               <NavLink to="/news">News</NavLink>
               <NavLink to="/explore">Explore</NavLink>
@@ -119,6 +120,7 @@ const Navbar = () => {
       {/* Mobile menu */}
       <div className={`${isMobileMenuOpen ? 'block' : 'hidden'} sm:hidden`}>
         <div className="pt-2 pb-3 space-y-1">
+          <MobileNavLink to="/">Home</MobileNavLink>
           <MobileNavLink to="/about">About</MobileNavLink>
           <MobileNavLink to="/news">News</MobileNavLink>
           <MobileNavLink to="/explore">Explore</MobileNavLink>

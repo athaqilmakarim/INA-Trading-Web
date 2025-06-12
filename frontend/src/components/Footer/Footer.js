@@ -29,16 +29,12 @@ const Footer = () => {
             <h3>Contact</h3>
             <div className="footer-contact">
               <p>
-                <i className="fas fa-phone"></i>
-                Phone: +62 21 7395 000
-              </p>
-              <p>
                 <i className="fas fa-envelope"></i>
-                Email: info@inatrading.co.id
+                Email: admin@inatrading.co.id
               </p>
               <p>
                 <i className="fas fa-whatsapp"></i>
-                WhatsApp: +62 811 8119 0222
+                WhatsApp: +62 811 8119 044
               </p>
             </div>
           </div>
