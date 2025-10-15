@@ -20,3 +20,12 @@ yarn-error.log*
 .idea/
 .vscode/
 node_modules
+
+# secret artifacts
+backend/ina-trading-*.json
+frontend/src/*.pem
+frontend/src/*.p12
+frontend/src/kuncy
+frontend/src/kuncy.*
+frontend/src/jwks.json
+frontend/build

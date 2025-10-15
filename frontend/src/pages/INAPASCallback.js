@@ -2,12 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { inapasService } from '../services/INAPASService';
-import { useAuth } from '../context/AuthContext';
 
 const INAPASCallback = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { login } = useAuth();
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -30,11 +28,7 @@ const INAPASCallback = () => {
           throw new Error('Missing required parameters (code or state)');
         }
 
-        // Handle the callback using our service
-        const user = await inapasService.handleCallback(code, state);
-
-        // Update auth context with the user data
-        await login(user);
+        await inapasService.handleCallback(code, state);
 
         toast.success('Successfully logged in with INA PAS!');
         navigate('/');
@@ -53,7 +47,7 @@ const INAPASCallback = () => {
     };
 
     handleCallback();
-  }, [searchParams, navigate, login]);
+  }, [searchParams, navigate]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-900 via-gray-900 to-red-900">

@@ -1,4 +1,4 @@
-import { jose } from 'jose';
+import { decodeJwt } from 'jose';
 
 /**
  * Parse a JWT token without verification
@@ -7,7 +7,7 @@ import { jose } from 'jose';
  */
 export const parseJwt = (token) => {
   try {
-    return jose.decodeJwt(token);
+    return decodeJwt(token);
   } catch (error) {
     console.error('Error parsing JWT', error);
     return null;

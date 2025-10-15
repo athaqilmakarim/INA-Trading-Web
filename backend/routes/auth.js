@@ -1,24 +1,33 @@
 const express = require('express');
-const router = express.Router();
 const admin = require('firebase-admin');
+const { asyncHandler } = require('../utils/asyncHandler');
+const { validateRequest } = require('../middleware/validateRequest');
+const { createCustomTokenSchema } = require('../schemas/authSchema');
+const { logger } = require('../utils/logger');
 
-// Create custom token for INA PAS users
-router.post('/create-custom-token', async (req, res) => {
-  try {
+const router = express.Router();
+
+router.post(
+  '/create-custom-token',
+  validateRequest(createCustomTokenSchema),
+  asyncHandler(async (req, res) => {
     const { email, uid, displayName } = req.body;
 
-    // Create custom token
-    const customToken = await admin.auth().createCustomToken(uid, {
-      email: email,
-      displayName: displayName,
+    logger.info({ email, uid }, 'Creating Firebase custom token');
+
+    const additionalClaims = {
+      email,
       emailVerified: true
-    });
+    };
+
+    if (displayName) {
+      additionalClaims.displayName = displayName;
+    }
+
+    const customToken = await admin.auth().createCustomToken(uid, additionalClaims);
 
     res.json({ customToken });
-  } catch (error) {
-    console.error('Error creating custom token:', error);
-    res.status(500).json({ error: 'Failed to create custom token' });
-  }
-});
+  })
+);
 
-module.exports = router; 
+module.exports = router;

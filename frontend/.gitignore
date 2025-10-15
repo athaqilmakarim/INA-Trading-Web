@@ -10,6 +10,11 @@
 
 # production
 /build
+/src/*.pem
+/src/*.p12
+/src/kuncy
+/src/kuncy.*
+/src/jwks.json
 
 # misc
 .DS_Store

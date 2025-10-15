@@ -42,7 +42,7 @@ A modern web application for INA Trading, providing a platform for managing and 
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js (v14 or higher)
+- Node.js (v18 or higher)
 - npm or yarn
 - Firebase CLI
 
@@ -68,12 +68,12 @@ npm install
 3. Set up environment variables
 ```bash
 # Frontend
-cp .env.example .env.local
-# Add your Firebase configuration
+cp frontend/.env.example frontend/.env.local
+# Populate Firebase, Google Maps and INAPAS settings
 
 # Backend
-cp .env.example .env
-# Add your backend configuration
+cp backend/.env.example backend/.env
+# Provide Firebase service account credentials and CORS settings
 ```
 
 4. Start development servers
@@ -97,7 +97,8 @@ The project uses GitHub Actions for automated deployments:
 - Firebase Authentication for secure user management
 - Protected admin routes
 - CORS configuration for API security
-- Environment variables for sensitive data
+- Secrets are sourced from environment variables (never commit keys or service accounts)
+- Firebase Admin credentials loaded at runtime via JSON/base64 environment input
 
 ## 🤝 Contributing
 

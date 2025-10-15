@@ -1,3 +1,5 @@
+import { requireGoogleMapsApiKey } from '../config/appConfig';
+
 export const MapHelper = {
   openInMaps: (address) => {
     const encodedAddress = encodeURIComponent(address);
@@ -6,8 +8,7 @@ export const MapHelper = {
 
   getCoordinates: async (address) => {
     try {
-      // Using Google Maps Geocoding API
-      const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
+      const apiKey = requireGoogleMapsApiKey();
       const response = await fetch(
         `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${apiKey}`
       );

@@ -1,9 +1,10 @@
 import { Loader } from '@googlemaps/js-api-loader';
+import { requireGoogleMapsApiKey } from '../config/appConfig';
 
 export class LocationHelper {
   static async initGoogleMaps() {
     const loader = new Loader({
-      apiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
+      apiKey: requireGoogleMapsApiKey(),
       version: "weekly",
       libraries: ["places", "geocoding"]
     });
