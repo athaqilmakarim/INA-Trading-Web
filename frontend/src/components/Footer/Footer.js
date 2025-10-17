@@ -41,19 +41,10 @@ const Footer = () => {
         </div>
         
         <div className="footer-bottom">
-          <p className="copyright">INA TRADING © Copyright 2024 by Perum PERURI. All rights reserved.</p>
+          <p className="copyright">INA TRADING © Copyright 2024 by METASMESTA. All rights reserved.</p>
           <div className="footer-social">
-            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
-              <i className="fab fa-facebook"></i>
-            </a>
-            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
-              <i className="fab fa-twitter"></i>
-            </a>
-            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+            <a href="https://www.instagram.com/inatrading.co.id/?hl=en" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
               <i className="fab fa-instagram"></i>
-            </a>
-            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
-              <i className="fab fa-linkedin"></i>
             </a>
           </div>
         </div>
