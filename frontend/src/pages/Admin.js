@@ -865,7 +865,7 @@ const Admin = () => {
                               <Tooltip title="Edit">
                                 <IconButton
                                   edge="end"
-                                  onClick={() => navigate(`/news/edit/${article.id}`)}
+                                  onClick={() => navigate(`/admin/news/edit/${article.id}`)}
                                   sx={{ color: 'primary.main', mr: 1 }}
                                 >
                                   <EditIcon />
