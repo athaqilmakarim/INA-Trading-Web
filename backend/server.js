@@ -23,8 +23,11 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 
+const mockAuthRoutes = require('./routes/mockAuth');
+
 // Routes
 app.use('/api', authRoutes);
+app.use('/api', mockAuthRoutes);
 
 app.get('/', (req, res) => {
   res.send('Welcome to INA Trading Admin Panel');

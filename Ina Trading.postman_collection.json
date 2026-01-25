@@ -1,0 +1,4903 @@
+{
+	"info": {
+		"_postman_id": "cd5c3424-d0a3-41a2-b274-cdba545126fd",
+		"name": "Ina Trading",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "34613453"
+	},
+	"item": [
+		{
+			"name": "Seller",
+			"item": [
+				{
+					"name": "Register Seller",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Request-Time",
+								"value": "2023-07-08 10:00:00",
+								"type": "text"
+							},
+							{
+								"key": "Channel-Id",
+								"value": "{{channel-id}}",
+								"type": "text"
+							},
+							{
+								"key": "Reference-Number",
+								"value": "REF20230708100000001",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"rizki\",\n    \"email\": \"rizki@rizki.com\",\n    \"mobile\": \"0812345\",\n    \"password\": \"password\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostname}}/api/v1.0/seller/register",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"api",
+								"v1.0",
+								"seller",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Seller",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Request-Time",
+								"value": "2023-07-08 10:00:00",
+								"type": "text"
+							},
+							{
+								"key": "Channel-Id",
+								"value": "{{channel-id}}",
+								"type": "text"
+							},
+							{
+								"key": "Reference-Number",
+								"value": "REF20230708100000001",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Tenant-Id",
+								"value": "{{tenantId}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"PT Contoh Seller\",\n  \"address\": \"Jl. Merdeka No. 123\",\n  \"country\": \"Indonesia\",\n  \"province\": \"Jawa Barat\",\n  \"city\": \"Bandung\",\n  \"postalCode\": \"40123\",\n  \"mobile\": \"+6281234567890\",\n  \"bankName\": \"Bank BCA\",\n  \"bankAccountNumber\": \"1234567890\",\n  \"documents\": [\n    {\n      \"type\": \"NPWP\",\n      \"documentNumber\": \"09.123.456.7-890.000\",\n      \"publishedDate\": \"01/10/2024\",\n      \"validDate\": \"31/12/2026\",\n      \"fileId\": \"0b4e93ee-6c77-4999-876d-734dbfdad6f4.png\"\n    }\n  ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostname}}/api/v1.0/seller",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"api",
+								"v1.0",
+								"seller"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Buyer",
+			"item": [
+				{
+					"name": "Register Buyer",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Request-Time",
+								"value": "2023-07-08 10:00:00",
+								"type": "text"
+							},
+							{
+								"key": "Channel-Id",
+								"value": "{{channel-id}}",
+								"type": "text"
+							},
+							{
+								"key": "Reference-Number",
+								"value": "REF20230708100000001",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Tenant-Id",
+								"value": "{{tenantId}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"rizki\",\n    \"email\": \"rizki@admin.com\",\n    \"mobile\": \"0812346\",\n    \"password\": \"password\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostname}}/api/v1.0/buyer/register",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"api",
+								"v1.0",
+								"buyer",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Profile Buyer",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Request-Time",
+								"value": "2023-07-08 10:00:00",
+								"type": "text"
+							},
+							{
+								"key": "Channel-Id",
+								"value": "{{channel-id}}",
+								"type": "text"
+							},
+							{
+								"key": "Reference-Number",
+								"value": "REF20230708100000001",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Tenant-Id",
+								"value": "{{tenantId}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"rizki\",\n    \"profileDescription\": \"update profile\",\n    \"imageId\": \"0b4e93ee-6c77-4999-876d-734dbfdad6f4.png\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostname}}/api/v1.0/buyer/profile",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"api",
+								"v1.0",
+								"buyer",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "File",
+			"item": [
+				{
+					"name": "Upload File",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Request-Time",
+								"value": "2023-07-08 10:00:00",
+								"type": "text"
+							},
+							{
+								"key": "Channel-Id",
+								"value": "{{channel-id}}",
+								"type": "text"
+							},
+							{
+								"key": "Reference-Number",
+								"value": "REF20230708100000001",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Tenant-Id",
+								"value": "{{tenantId}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/TRIPMITRA/Downloads/shiping to europe.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{hostname}}/api/v1.0/file/upload",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"api",
+								"v1.0",
+								"file",
+								"upload"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Upload File",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Request-Time",
+										"value": "2023-07-08 10:00:00",
+										"type": "text"
+									},
+									{
+										"key": "Channel-Id",
+										"value": "{{channel-id}}",
+										"type": "text"
+									},
+									{
+										"key": "Reference-Number",
+										"value": "REF20230708100000001",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									},
+									{
+										"key": "Tenant-Id",
+										"value": "{{tenantId}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "file",
+											"type": "file",
+											"src": "/C:/Users/TRIPMITRA/Downloads/shiping to europe.jpg"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{hostname}}/api/v1.0/file/upload",
+									"host": [
+										"{{hostname}}"
+									],
+									"path": [
+										"api",
+										"v1.0",
+										"file",
+										"upload"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "vary",
+									"value": "Origin"
+								},
+								{
+									"key": "vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "x-content-type-options",
+									"value": "nosniff"
+								},
+								{
+									"key": "x-xss-protection",
+									"value": "0"
+								},
+								{
+									"key": "cache-control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "expires",
+									"value": "0"
+								},
+								{
+									"key": "x-frame-options",
+									"value": "DENY"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								},
+								{
+									"key": "transfer-encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "date",
+									"value": "Thu, 01 Jan 2026 23:32:51 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"responseCode\": \"0000\",\n    \"data\": {\n        \"fileId\": \"92050661-1317-4439-9de0-67794171f9e8.jpg\"\n    },\n    \"responseDesc\": \"Success\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Login Seller",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// GO TO THE END OF THE TEST SCRIPT.",
+									"var template = `",
+									"<style>",
+									"        .fill,",
+									"body,",
+									"html {",
+									"  height: 100%",
+									"}",
+									"",
+									"#json_vl,",
+									".td_head,",
+									".td_row_even,",
+									".td_row_odd {",
+									"  font-size: small",
+									"}",
+									"",
+									"#json_pnl,",
+									"#xxa,",
+									".navbar-header,",
+									".navbar-nav,",
+									".navbar-nav>li,",
+									".td_head {",
+									"  float: left",
+									"}",
+									"",
+									".fill {",
+									"  min-height: 100%",
+									"}",
+									"",
+									"#json_vl {",
+									"  font-family: Consolas, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace",
+									"}",
+									"",
+									"#widget {",
+									"  width: 100%",
+									"}",
+									"",
+									".top_size {",
+									"  height: 51px",
+									"}",
+									"",
+									"#all_panels {",
+									"  height: 100%;",
+									"  min-height: 100%",
+									"}",
+									"",
+									"#aboutLnk {",
+									"  position: fixed;",
+									"  right: 10px;",
+									"  top: 15px",
+									"}",
+									"",
+									"#inner_text {",
+									"  display: block;",
+									"  position: absolute;",
+									"  height: auto;",
+									"  bottom: 0;",
+									"  top: 0;",
+									"  left: 0;",
+									"  right: 0;",
+									"  margin-top: 51px;",
+									"  margin-bottom: 0",
+									"}",
+									"",
+									"#json_pnl {",
+									"  background-color: #ccc;",
+									"  width: 33.3%",
+									"}",
+									"",
+									"#xxa {",
+									"  background-color: #E8E8E8;",
+									"  width: 66.7%",
+									"}",
+									"",
+									"#table_pnl,",
+									"#tree_pnl {",
+									"  background-color: #E8E8E8;",
+									"  float: left;",
+									"  width: 50%",
+									"}",
+									"",
+									"#sharethis {",
+									"  position: fixed;",
+									"  right: 80px;",
+									"  top: 10px",
+									"}",
+									"",
+									"#inner_tbl {",
+									"  padding-left: 2px",
+									"}",
+									"",
+									".td_row_even {",
+									"  padding: 2px;",
+									"  background-color: #F6F4F0",
+									"}",
+									"",
+									".td_row_odd {",
+									"  padding: 2px;",
+									"  background-color: #FFF",
+									"}",
+									"",
+									".td_head {",
+									"  padding: 2px;",
+									"  font-weight: 700",
+									"}",
+									"",
+									"input,",
+									"p,",
+									"select,",
+									"td,",
+									"textarea,",
+									"th {",
+									"  font-size: 1em",
+									"}",
+									"",
+									"table,",
+									"td,",
+									"th {",
+									"  border: 1px solid gray",
+									"}",
+									"",
+									"textarea {",
+									"  -moz-box-sizing: border-box;",
+									"  -webkit-box-sizing: border-box;",
+									"  box-sizing: border-box;",
+									"  display: block;",
+									"  width: 100%;",
+									"  height: 100%;",
+									"  margin: 0;",
+									"  padding: 4px;",
+									"  border: 1px solid #333;",
+									"  overflow-y: auto;",
+									"  overflow-x: hidden",
+									"}",
+									"",
+									"*,",
+									"html {",
+									"  font-family: Verdana, Arial, Helvetica, sans-serif",
+									"}",
+									"",
+									"form,",
+									"h1,",
+									"h2,",
+									"h3,",
+									"h4,",
+									"h5,",
+									"li,",
+									"p,",
+									"ul {",
+									"  margin: 0;",
+									"  padding: 0",
+									"}",
+									"",
+									"img {",
+									"  border: none",
+									"}",
+									"",
+									"p {",
+									"  margin: 0 0 1em",
+									"}",
+									"",
+									"table {",
+									"  font-size: 100%;",
+									"  background-color: white;",
+									"}",
+									"",
+									"ol.tree {",
+									"  padding: 0 0 0 30px;",
+									"  width: 300px",
+									"}",
+									"",
+									"li {",
+									"  position: relative;",
+									"  margin-left: -15px;",
+									"  list-style: none",
+									"}",
+									"",
+									"li.file {",
+									"  margin-left: -1px !important",
+									"}",
+									"",
+									"li.file a {",
+									"  background: url(leaf.png)0 5px no-repeat;",
+									"  color: #000;",
+									"  padding-left: 12px;",
+									"  text-decoration: none;",
+									"  display: block;",
+									"  font-size: small",
+									"}",
+									"",
+									"li.file a[href$='.css'],",
+									"li.file a[href$='.js'],",
+									"li.file a[href*='.pdf'],",
+									"li.file a[href*='.html'] {",
+									"  background: url(http://www.thecssninja.com/demo/css_tree/document.png)no-repeat",
+									"}",
+									"",
+									"li input {",
+									"  position: absolute;",
+									"  left: 0;",
+									"  margin-left: 0;",
+									"  opacity: 0;",
+									"  z-index: 2;",
+									"  cursor: pointer;",
+									"  height: 1em;",
+									"  width: 1em;",
+									"  top: 0",
+									"}",
+									"",
+									"li input+ol {",
+									"  background: url(http://www.thecssninja.com/demo/css_tree/toggle-small-expand.png)40px -3px no-repeat;",
+									"  margin: -20px 0 0 -44px;",
+									"  height: 1em;",
+									"  padding: 1.563em 0 0 80px",
+									"}",
+									"",
+									"li label.lbl_array,",
+									"li label.lbl_obj {",
+									"  display: block;",
+									"  padding-left: 33px;",
+									"  margin-bottom: 2px",
+									"}",
+									"",
+									"li input+ol>li {",
+									"  display: none;",
+									"  margin-left: -14px !important;",
+									"  padding-left: 1px",
+									"}",
+									"",
+									"li label.lbl_obj {",
+									"  background: url(folder.png)15px 1px no-repeat;",
+									"  cursor: pointer",
+									"}",
+									"",
+									"li label.lbl_array {",
+									"  background: url(array.png)15px 1px no-repeat;",
+									"  cursor: pointer",
+									"}",
+									"",
+									"li input:checked+ol {",
+									"  background: url(http://www.thecssninja.com/demo/css_tree/toggle-small.png)40px -3px no-repeat;",
+									"  margin: -20px 0 0 -44px;",
+									"  padding: 1.563em 0 0 80px;",
+									"  height: auto",
+									"}",
+									"",
+									"li input:checked+ol>li {",
+									"  display: block;",
+									"  margin: 0 0 .125em",
+									"}",
+									"",
+									"li input:checked+ol>li:last-child {",
+									"  margin: 0 0 .063em",
+									"}",
+									"",
+									".container {",
+									"  width: 970px;",
+									"  max-width: none !important",
+									"}",
+									"",
+									".col-xs-4 {",
+									"  padding-top: 15px;",
+									"  padding-bottom: 15px;",
+									"  background-color: #eee;",
+									"  background-color: rgba(86, 61, 124, .15);",
+									"  border: 1px solid #ddd;",
+									"  border: 1px solid rgba(86, 61, 124, .2)",
+									"}",
+									"",
+									"    </style>",
+									"<div id=\"html\">",
+									"<input type=\"text\" id=\"json\">",
+									"<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js\"></script>",
+									"<!--<script src=\"json2table.js\"></script>-->",
+									"<script>",
+									"$(function() {",
+									"    pm.getData((err, data) => {",
+									"        $(\"#json\").val(JSON.stringify(data.json));",
+									"        json2table(\"#html\");",
+									"    });",
+									"});",
+									"",
+									"function call(a) {",
+									"    $(\"#json\").val(JSON.stringify(a, void 0, 2));",
+									"    json2table()",
+									"}",
+									"",
+									"function json2table(selector) {",
+									"    $(selector).html(buildTable(getJsonVar()));",
+									"}",
+									"",
+									"function getJsonVar() {",
+									"    try {",
+									"        var a = $.parseJSON($(\"#json\").val());",
+									"        $(\"#json\").val(JSON.stringify(a, void 0, 2));",
+									"        return a",
+									"    } catch (e) {",
+									"        //return $(\"#error_msg\").text(e.message), $(\"#errorModal\").modal(\"show\"), {}",
+									"        alert(e);",
+									"    }",
+									"}",
+									"",
+									"function buildTable(a) {",
+									"    var e = document.createElement(\"table\"),",
+									"        d, b;",
+									"    if (isArray(a)) return buildArray(a);",
+									"    for (var c in a) \"object\" != typeof a[c] || isArray(a[c]) ? \"object\" == typeof a[c] && isArray(a[c]) ? (d = e.insertRow(-1), b = d.insertCell(-1), b.colSpan = 2, b.innerHTML = '<div class=\"td_head\">' + encodeText(c) + '</div><table style=\"width:100%\">' + $(buildArray(a[c]), !1).html() + \"</table>\") : (d = e.insertRow(-1), b = d.insertCell(-1), b.innerHTML = \"<div class='td_head'>\" + encodeText(c) + \"</div>\", d = d.insertCell(-1), d.innerHTML = \"<div class='td_row_even'>\" +",
+									"        encodeText(a[c]) + \"</div>\") : (d = e.insertRow(-1), b = d.insertCell(-1), b.colSpan = 2, b.innerHTML = '<div class=\"td_head\">' + encodeText(c) + '</div><table style=\"width:100%\">' + $(buildTable(a[c]), !1).html() + \"</table>\");",
+									"    return e",
+									"}",
+									"",
+									"function buildArray(a) {",
+									"    var e = document.createElement(\"table\"),",
+									"        d, b, c = !1,",
+									"        p = !1,",
+									"        m = {},",
+									"        h = -1,",
+									"        n = 0,",
+									"        l;",
+									"    l = \"\";",
+									"    if (0 == a.length) return \"<div></div>\";",
+									"    d = e.insertRow(-1);",
+									"    for (var f = 0; f < a.length; f++)",
+									"        if (\"object\" != typeof a[f] || isArray(a[f])) \"object\" == typeof a[f] && isArray(a[f]) ? (b = d.insertCell(h), b.colSpan = 2, b.innerHTML = '<div class=\"td_head\"></div><table style=\"width:100%\">' + $(buildArray(a[f]), !1).html() + \"</table>\", c = !0) : p || (h += 1, p = !0, b = d.insertCell(h), m.empty = h, b.innerHTML = \"<div class='td_head'>&nbsp;</div>\");",
+									"        else",
+									"            for (var k in a[f]) l =",
+									"                \"-\" + k, l in m || (c = !0, h += 1, b = d.insertCell(h), m[l] = h, b.innerHTML = \"<div class='td_head'>\" + encodeText(k) + \"</div>\");",
+									"    c || e.deleteRow(0);",
+									"    n = h + 1;",
+									"    for (f = 0; f < a.length; f++)",
+									"        if (d = e.insertRow(-1), td_class = isEven(f) ? \"td_row_even\" : \"td_row_odd\", \"object\" != typeof a[f] || isArray(a[f]))",
+									"            if (\"object\" == typeof a[f] && isArray(a[f]))",
+									"                for (h = m.empty, c = 0; c < n; c++) b = d.insertCell(c), b.className = td_class, l = c == h ? '<table style=\"width:100%\">' + $(buildArray(a[f]), !1).html() + \"</table>\" : \" \", b.innerHTML = \"<div class='\" + td_class + \"'>\" + encodeText(l) +",
+									"                    \"</div>\";",
+									"            else",
+									"                for (h = m.empty, c = 0; c < n; c++) b = d.insertCell(c), l = c == h ? a[f] : \" \", b.className = td_class, b.innerHTML = \"<div class='\" + td_class + \"'>\" + encodeText(l) + \"</div>\";",
+									"    else {",
+									"        for (c = 0; c < n; c++) b = d.insertCell(c), b.className = td_class, b.innerHTML = \"<div class='\" + td_class + \"'>&nbsp;</div>\";",
+									"        for (k in a[f]) c = a[f], l = \"-\" + k, h = m[l], b = d.cells[h], b.className = td_class, \"object\" != typeof c[k] || isArray(c[k]) ? \"object\" == typeof c[k] && isArray(c[k]) ? b.innerHTML = '<table style=\"width:100%\">' + $(buildArray(c[k]), !1).html() + \"</table>\" : b.innerHTML =",
+									"            \"<div class='\" + td_class + \"'>\" + encodeText(c[k]) + \"</div>\" : b.innerHTML = '<table style=\"width:100%\">' + $(buildTable(c[k]), !1).html() + \"</table>\"",
+									"    }",
+									"    return e",
+									"}",
+									"",
+									"function encodeText(a) {",
+									"    return $(\"<div />\").text(a).html()",
+									"}",
+									"",
+									"function isArray(a) {",
+									"    return \"[object Array]\" === Object.prototype.toString.call(a)",
+									"}",
+									"",
+									"function isEven(a) {",
+									"    return 0 == a % 2",
+									"}",
+									"</script>`;",
+									"",
+									"",
+									"// In case you only want a specific property, change it here.",
+									"//",
+									"// Default: You can set the entire JSON response using pm.response.json()",
+									"let tableProps = {",
+									"    json: pm.response.json()",
+									"};",
+									"",
+									"pm.visualizer.set(template, tableProps);",
+									"",
+									"let response = pm.response.json();",
+									"pm.environment.set('token', \"Bearer \" + response.data.session);"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "{{username}}",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "{{password}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Request-Time",
+								"value": "2023-07-08 10:00:00",
+								"type": "text"
+							},
+							{
+								"key": "Channel-Id",
+								"value": "{{channel-id}}",
+								"type": "text"
+							},
+							{
+								"key": "Reference-Number",
+								"value": "REF20230708100000001",
+								"type": "text"
+							},
+							{
+								"key": "Origin",
+								"value": "local",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{hostname}}/api/v1.0/seller/login",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"api",
+								"v1.0",
+								"seller",
+								"login"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Login Seller",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Request-Time",
+										"value": "2023-07-08 10:00:00",
+										"type": "text"
+									},
+									{
+										"key": "Channel-Id",
+										"value": "{{channel-id}}",
+										"type": "text"
+									},
+									{
+										"key": "Reference-Number",
+										"value": "REF20230708100000001",
+										"type": "text"
+									},
+									{
+										"key": "Origin",
+										"value": "local",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{hostname}}/api/v1.0/seller/login",
+									"host": [
+										"{{hostname}}"
+									],
+									"path": [
+										"api",
+										"v1.0",
+										"seller",
+										"login"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "vary",
+									"value": "Origin"
+								},
+								{
+									"key": "vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "access-control-allow-origin",
+									"value": "local"
+								},
+								{
+									"key": "access-control-allow-credentials",
+									"value": "true"
+								},
+								{
+									"key": "x-content-type-options",
+									"value": "nosniff"
+								},
+								{
+									"key": "x-xss-protection",
+									"value": "0"
+								},
+								{
+									"key": "cache-control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "expires",
+									"value": "0"
+								},
+								{
+									"key": "x-frame-options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								},
+								{
+									"key": "transfer-encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "date",
+									"value": "Thu, 01 Jan 2026 23:32:03 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"responseCode\": \"0000\",\n    \"data\": {\n        \"id\": \"5fcef296-ec81-4e0c-98bb-40b1228c80af\",\n        \"isSellerActive\": false,\n        \"name\": \"\",\n        \"session\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlZ2FAYWRtaW4uY29tIiwiaXNzIjoiYXV0aDAiLCJleHAiOjE3NjczMTEzMjN9.Xa3oXhj8t9vvMyPlrp67F1rsO2RJ8gtCso-l0XejzAE\",\n        \"userType\": \"BUYER\"\n    },\n    \"responseDesc\": \"Success\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Login Buyer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let response = pm.response.json();",
+									"pm.environment.set('token', \"Bearer \" + response.data.session);"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "{{username}}",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "{{password}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Request-Time",
+								"value": "2023-07-08 10:00:00",
+								"type": "text"
+							},
+							{
+								"key": "Channel-Id",
+								"value": "{{channel-id}}",
+								"type": "text"
+							},
+							{
+								"key": "Reference-Number",
+								"value": "REF20230708100000001",
+								"type": "text"
+							},
+							{
+								"key": "Origin",
+								"value": "local",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{hostname}}/api/v1.0/buyer/login",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"api",
+								"v1.0",
+								"buyer",
+								"login"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Login Buyer",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Request-Time",
+										"value": "2023-07-08 10:00:00",
+										"type": "text"
+									},
+									{
+										"key": "Channel-Id",
+										"value": "{{channel-id}}",
+										"type": "text"
+									},
+									{
+										"key": "Reference-Number",
+										"value": "REF20230708100000001",
+										"type": "text"
+									},
+									{
+										"key": "Origin",
+										"value": "local",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{hostname}}/api/v1.0/buyer/login",
+									"host": [
+										"{{hostname}}"
+									],
+									"path": [
+										"api",
+										"v1.0",
+										"buyer",
+										"login"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "vary",
+									"value": "Origin"
+								},
+								{
+									"key": "vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "access-control-allow-origin",
+									"value": "local"
+								},
+								{
+									"key": "access-control-allow-credentials",
+									"value": "true"
+								},
+								{
+									"key": "x-content-type-options",
+									"value": "nosniff"
+								},
+								{
+									"key": "x-xss-protection",
+									"value": "0"
+								},
+								{
+									"key": "cache-control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "expires",
+									"value": "0"
+								},
+								{
+									"key": "x-frame-options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								},
+								{
+									"key": "transfer-encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "date",
+									"value": "Thu, 01 Jan 2026 23:32:09 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"responseCode\": \"0000\",\n    \"data\": {\n        \"id\": \"5fcef296-ec81-4e0c-98bb-40b1228c80af\",\n        \"isSellerActive\": null,\n        \"name\": \"ega\",\n        \"session\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlZ2FAYWRtaW4uY29tIiwiaXNzIjoiYXV0aDAiLCJleHAiOjE3NjczMTEzMjl9.zeHnqIA2Q9KQqjCoiOiRFB8ZJUUnmSqT2WgUC8wcA-Q\",\n        \"userType\": \"BUYER\"\n    },\n    \"responseDesc\": \"Success\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Product",
+			"item": [
+				{
+					"name": "Get Product",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Request-Time",
+								"value": "2023-07-08 10:00:00",
+								"type": "text"
+							},
+							{
+								"key": "Channel-Id",
+								"value": "{{channel-id}}",
+								"type": "text"
+							},
+							{
+								"key": "Reference-Number",
+								"value": "REF20230708100000001",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Tenant-Id",
+								"value": "{{tenantId}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{hostname}}/api/v1.0/product",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"api",
+								"v1.0",
+								"product"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get Product",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Request-Time",
+										"value": "2023-07-08 10:00:00",
+										"type": "text"
+									},
+									{
+										"key": "Channel-Id",
+										"value": "{{channel-id}}",
+										"type": "text"
+									},
+									{
+										"key": "Reference-Number",
+										"value": "REF20230708100000001",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									},
+									{
+										"key": "Tenant-Id",
+										"value": "{{tenantId}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{hostname}}/api/v1.0/product",
+									"host": [
+										"{{hostname}}"
+									],
+									"path": [
+										"api",
+										"v1.0",
+										"product"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "vary",
+									"value": "Origin"
+								},
+								{
+									"key": "vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "x-content-type-options",
+									"value": "nosniff"
+								},
+								{
+									"key": "x-xss-protection",
+									"value": "0"
+								},
+								{
+									"key": "cache-control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "expires",
+									"value": "0"
+								},
+								{
+									"key": "x-frame-options",
+									"value": "DENY"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								},
+								{
+									"key": "transfer-encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "date",
+									"value": "Thu, 01 Jan 2026 23:32:59 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"responseCode\": \"0000\",\n    \"responseDesc\": \"Success\",\n    \"rows\": [\n        {\n            \"id\": \"7cade601-0bed-42d6-a660-a21c142653c6\",\n            \"image\": null,\n            \"market\": \"Local Market\",\n            \"maxPrice\": 25000,\n            \"minPrice\": 25000,\n            \"name\": \"ASHTRAY KUKURUYUK KPB-4AT\",\n            \"totalStock\": 20\n        },\n        {\n            \"id\": \"5bd84f56-a755-4773-82f3-57be60482f41\",\n            \"image\": \"https://be.inatrading.co.id/api/v1.0/file/image/10291124_4.jpg\",\n            \"market\": \"Local Market\",\n            \"maxPrice\": 20000,\n            \"minPrice\": 20000,\n            \"name\": \"BOWL KUKURUYUK 4 INCH KPQ-4RB\",\n            \"totalStock\": 20\n        },\n        {\n            \"id\": \"2435f5d8-5444-4aba-b3bc-e2d9a5affc6d\",\n            \"image\": \"https://be.inatrading.co.id/api/v1.0/file/image/10291129_4.jpg\",\n            \"market\": \"Local Market\",\n            \"maxPrice\": 21000,\n            \"minPrice\": 21000,\n            \"name\": \"BOWL KUKURUYUK 4 INCH KPR-4B\",\n            \"totalStock\": 20\n        },\n        {\n            \"id\": \"60326b03-b754-4c20-9c43-7cc9085ffb2f\",\n            \"image\": null,\n            \"market\": \"Local Market\",\n            \"maxPrice\": 25500,\n            \"minPrice\": 25500,\n            \"name\": \"BOWL KUKURUYUK 5 INCH KPQ-5RB\",\n            \"totalStock\": 20\n        },\n        {\n            \"id\": \"46f22f7f-d0a9-4458-8f00-6484577fa2f7\",\n            \"image\": null,\n            \"market\": \"Local Market\",\n            \"maxPrice\": 30000,\n            \"minPrice\": 30000,\n            \"name\": \"BOWL KUKURUYUK 6 INCH KPC-6B\",\n            \"totalStock\": 20\n        },\n        {\n            \"id\": \"5a888b99-be16-48a4-b6d4-cc6846ff38a1\",\n            \"image\": null,\n            \"market\": \"Local Market\",\n            \"maxPrice\": 52500,\n            \"minPrice\": 52500,\n            \"name\": \"BOWL KUKURUYUK 8 INCH KPC-8VB\",\n            \"totalStock\": 20\n        },\n        {\n            \"id\": \"1624ee28-7e9c-4cf3-b99f-4bedf4283c04\",\n            \"image\": null,\n            \"market\": \"Local Market\",\n            \"maxPrice\": 72400,\n            \"minPrice\": 72400,\n            \"name\": \"BOWL KUKURUYUK 9 INCH KPC-9VB\",\n            \"totalStock\": 20\n        },\n        {\n            \"id\": \"6596562f-a02e-4dea-b47c-066e07fbb8bd\",\n            \"image\": \"https://be.inatrading.co.id/api/v1.0/file/image/10213681_4.jpg\",\n            \"market\": \"Local Market\",\n            \"maxPrice\": 17500,\n            \"minPrice\": 17500,\n            \"name\": \"BOWL PORCELAIN KUKURUYUK KPZ 4CRB\",\n            \"totalStock\": 20\n        },\n        {\n            \"id\": \"a1e5de2b-107b-485d-a9b3-d4a61db8b986\",\n            \"image\": null,\n            \"market\": \"Local Market\",\n            \"maxPrice\": 17500,\n            \"minPrice\": 17500,\n            \"name\": \"BOWL PORCELAIN KUKURUYUK KPZ 4RB\",\n            \"totalStock\": 20\n        },\n        {\n            \"id\": \"28e8dfde-6cc1-458e-9e0d-d25e8a863fb2\",\n            \"image\": null,\n            \"market\": \"Local Market\",\n            \"maxPrice\": 29500,\n            \"minPrice\": 29500,\n            \"name\": \"BUNGA JADUL MUG PORCELAIN KPZ-02CM\",\n            \"totalStock\": 20\n        }\n    ],\n    \"totalItem\": 86,\n    \"totalPage\": 9\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Product Detail",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Request-Time",
+								"value": "2023-07-08 10:00:00",
+								"type": "text"
+							},
+							{
+								"key": "Channel-Id",
+								"value": "{{channel-id}}",
+								"type": "text"
+							},
+							{
+								"key": "Reference-Number",
+								"value": "REF20230708100000001",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Tenant-Id",
+								"value": "{{tenantId}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{hostname}}/api/v1.0/product/895a8d23-869f-41f5-af9b-f0e59794f111",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"api",
+								"v1.0",
+								"product",
+								"895a8d23-869f-41f5-af9b-f0e59794f111"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get Product Detail",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Request-Time",
+										"value": "2023-07-08 10:00:00",
+										"type": "text"
+									},
+									{
+										"key": "Channel-Id",
+										"value": "{{channel-id}}",
+										"type": "text"
+									},
+									{
+										"key": "Reference-Number",
+										"value": "REF20230708100000001",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									},
+									{
+										"key": "Tenant-Id",
+										"value": "{{tenantId}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{hostname}}/api/v1.0/product/7cade601-0bed-42d6-a660-a21c142653c6",
+									"host": [
+										"{{hostname}}"
+									],
+									"path": [
+										"api",
+										"v1.0",
+										"product",
+										"7cade601-0bed-42d6-a660-a21c142653c6"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "vary",
+									"value": "Origin"
+								},
+								{
+									"key": "vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "x-content-type-options",
+									"value": "nosniff"
+								},
+								{
+									"key": "x-xss-protection",
+									"value": "0"
+								},
+								{
+									"key": "cache-control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "expires",
+									"value": "0"
+								},
+								{
+									"key": "x-frame-options",
+									"value": "DENY"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								},
+								{
+									"key": "transfer-encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "date",
+									"value": "Thu, 01 Jan 2026 23:33:18 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"responseCode\": \"0000\",\n    \"data\": {\n        \"description\": \"Pendopo menghadirkan koleksi Asbak Kukuruyuk Keramik yang berfungsi sebagai tempat untuk menampungabu rokok agar abu tidak mengotori meja atau tersebar di lantai sehingga menjaga ruangantetap rapih dan bersih. Tempat penampung abu rokok ini terbuat dari keramik berkualitas yang kuat dan tahan lama.Permukaan asbak ini tidak akan berubah warna atau menggelap karena terkena api dari rokok.\",\n        \"id\": \"7cade601-0bed-42d6-a660-a21c142653c6\",\n        \"image\": null,\n        \"name\": \"ASHTRAY KUKURUYUK KPB-4AT\",\n        \"productImages\": [\n            {\n                \"id\": \"02512668-8e66-42e0-83ce-f428d56a950e\",\n                \"image\": \"https://be.inatrading.co.id/api/v1.0/file/image/10291155_1.jpg\",\n                \"sequence\": 1\n            },\n            {\n                \"id\": \"0d0fd787-bb89-49a6-9a78-d12433205623\",\n                \"image\": \"https://be.inatrading.co.id/api/v1.0/file/image/10291155_2.jpg\",\n                \"sequence\": 2\n            },\n            {\n                \"id\": \"b14a15df-32a1-4694-a4a2-f41430877439\",\n                \"image\": \"https://be.inatrading.co.id/api/v1.0/file/image/10291155_3.jpg\",\n                \"sequence\": 3\n            }\n        ],\n        \"productInformations\": [\n            {\n                \"id\": \"c79b49c8-b03f-487c-b2ed-104833f3e657\",\n                \"paramName\": \"Brand\",\n                \"paramValue\": \"KOPIN PORCELAIN\"\n            }\n        ],\n        \"productModels\": [\n            {\n                \"id\": \"e475e998-5292-456c-bfa9-700b5b87c21d\",\n                \"name\": \"ASHTRAY KUKURUYUK KPB-4AT\",\n                \"sku\": \"10291155\",\n                \"price\": 25000,\n                \"currency\": null,\n                \"length\": 30,\n                \"width\": 30,\n                \"height\": 30,\n                \"dimensionType\": \"CM\",\n                \"weight\": 1,\n                \"weightType\": \"kg\",\n                \"isMeasurement\": false,\n                \"image\": \"https://be.inatrading.co.id/api/v1.0/file/image/10291155_1.jpg\",\n                \"wareHouses\": [\n                    {\n                        \"id\": \"1a341e2a-006d-4b66-8a28-72c05a081384\",\n                        \"address\": \"Jl. Merdeka No. 123\",\n                        \"country\": \"Indonesia\",\n                        \"province\": \"Jawa Barat\",\n                        \"city\": \"Bandung\",\n                        \"postalCode\": \"40123\",\n                        \"coordinate\": null,\n                        \"stock\": 20\n                    }\n                ]\n            }\n        ],\n        \"seller\": {\n            \"id\": \"8f461fb5-81cd-4acf-bbd9-bd2ffd47d3f0\",\n            \"name\": \"PT Contoh Seller\",\n            \"image\": null\n        },\n        \"subCategories\": [\n            {\n                \"id\": \"e2d1e365-5ac5-4528-b769-1cabf73a99d3\",\n                \"name\": \"Kitchen & Dining\",\n                \"category\": {\n                    \"id\": \"3800918e-5e2e-4113-82fc-7b9fffa203b5\",\n                    \"name\": \"Kitchen & Dining\"\n                }\n            }\n        ]\n    },\n    \"responseDesc\": \"Success\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Seller Product",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Request-Time",
+								"value": "2023-07-08 10:00:00",
+								"type": "text"
+							},
+							{
+								"key": "Channel-Id",
+								"value": "{{channel-id}}",
+								"type": "text"
+							},
+							{
+								"key": "Reference-Number",
+								"value": "REF20230708100000001",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{hostname}}/api/v1.0/seller/product",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"api",
+								"v1.0",
+								"seller",
+								"product"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get Seller Product",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Request-Time",
+										"value": "2023-07-08 10:00:00",
+										"type": "text"
+									},
+									{
+										"key": "Channel-Id",
+										"value": "{{channel-id}}",
+										"type": "text"
+									},
+									{
+										"key": "Reference-Number",
+										"value": "REF20230708100000001",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									},
+									{
+										"key": "Tenant-Id",
+										"value": "{{tenantId}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{hostname}}/api/v1.0/seller/product",
+									"host": [
+										"{{hostname}}"
+									],
+									"path": [
+										"api",
+										"v1.0",
+										"seller",
+										"product"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "vary",
+									"value": "Origin"
+								},
+								{
+									"key": "vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "x-content-type-options",
+									"value": "nosniff"
+								},
+								{
+									"key": "x-xss-protection",
+									"value": "0"
+								},
+								{
+									"key": "cache-control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "expires",
+									"value": "0"
+								},
+								{
+									"key": "x-frame-options",
+									"value": "DENY"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								},
+								{
+									"key": "transfer-encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "date",
+									"value": "Thu, 01 Jan 2026 23:33:25 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"responseCode\": \"0000\",\n    \"responseDesc\": \"Success\",\n    \"rows\": [],\n    \"totalItem\": 0,\n    \"totalPage\": 0\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Seller Product Draft",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Request-Time",
+								"value": "2023-07-08 10:00:00",
+								"type": "text"
+							},
+							{
+								"key": "Channel-Id",
+								"value": "{{channel-id}}",
+								"type": "text"
+							},
+							{
+								"key": "Reference-Number",
+								"value": "REF20230708100000001",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Tenant-Id",
+								"value": "{{tenantId}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{hostname}}/api/v1.0/seller/draft/product",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"api",
+								"v1.0",
+								"seller",
+								"draft",
+								"product"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get Seller Product Draft",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Request-Time",
+										"value": "2023-07-08 10:00:00",
+										"type": "text"
+									},
+									{
+										"key": "Channel-Id",
+										"value": "{{channel-id}}",
+										"type": "text"
+									},
+									{
+										"key": "Reference-Number",
+										"value": "REF20230708100000001",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									},
+									{
+										"key": "Tenant-Id",
+										"value": "{{tenantId}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{hostname}}/api/v1.0/seller/draft/product",
+									"host": [
+										"{{hostname}}"
+									],
+									"path": [
+										"api",
+										"v1.0",
+										"seller",
+										"draft",
+										"product"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "vary",
+									"value": "Origin"
+								},
+								{
+									"key": "vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "x-content-type-options",
+									"value": "nosniff"
+								},
+								{
+									"key": "x-xss-protection",
+									"value": "0"
+								},
+								{
+									"key": "cache-control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "expires",
+									"value": "0"
+								},
+								{
+									"key": "x-frame-options",
+									"value": "DENY"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								},
+								{
+									"key": "transfer-encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "date",
+									"value": "Thu, 01 Jan 2026 23:33:37 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"responseCode\": \"0000\",\n    \"responseDesc\": \"Success\",\n    \"rows\": [],\n    \"totalItem\": 0,\n    \"totalPage\": 0\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Seller Product International",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Request-Time",
+								"value": "2023-07-08 10:00:00",
+								"type": "text"
+							},
+							{
+								"key": "Channel-Id",
+								"value": "{{channel-id}}",
+								"type": "text"
+							},
+							{
+								"key": "Reference-Number",
+								"value": "REF20230708100000001",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Tenant-Id",
+								"value": "{{tenantId}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{hostname}}/api/v1.0/seller/international/product",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"api",
+								"v1.0",
+								"seller",
+								"international",
+								"product"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get Seller Product International",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Request-Time",
+										"value": "2023-07-08 10:00:00",
+										"type": "text"
+									},
+									{
+										"key": "Channel-Id",
+										"value": "{{channel-id}}",
+										"type": "text"
+									},
+									{
+										"key": "Reference-Number",
+										"value": "REF20230708100000001",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									},
+									{
+										"key": "Tenant-Id",
+										"value": "{{tenantId}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{hostname}}/api/v1.0/seller/international/product",
+									"host": [
+										"{{hostname}}"
+									],
+									"path": [
+										"api",
+										"v1.0",
+										"seller",
+										"international",
+										"product"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "vary",
+									"value": "Origin"
+								},
+								{
+									"key": "vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "x-content-type-options",
+									"value": "nosniff"
+								},
+								{
+									"key": "x-xss-protection",
+									"value": "0"
+								},
+								{
+									"key": "cache-control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "expires",
+									"value": "0"
+								},
+								{
+									"key": "x-frame-options",
+									"value": "DENY"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								},
+								{
+									"key": "transfer-encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "date",
+									"value": "Thu, 01 Jan 2026 23:33:43 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"responseCode\": \"0000\",\n    \"responseDesc\": \"Success\",\n    \"rows\": [],\n    \"totalItem\": 0,\n    \"totalPage\": 0\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Seller Product Local",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Request-Time",
+								"value": "2023-07-08 10:00:00",
+								"type": "text"
+							},
+							{
+								"key": "Channel-Id",
+								"value": "{{channel-id}}",
+								"type": "text"
+							},
+							{
+								"key": "Reference-Number",
+								"value": "REF20230708100000001",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Tenant-Id",
+								"value": "{{tenantId}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{hostname}}/api/v1.0/seller/local/product",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"api",
+								"v1.0",
+								"seller",
+								"local",
+								"product"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get Seller Product Local",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Request-Time",
+										"value": "2023-07-08 10:00:00",
+										"type": "text"
+									},
+									{
+										"key": "Channel-Id",
+										"value": "{{channel-id}}",
+										"type": "text"
+									},
+									{
+										"key": "Reference-Number",
+										"value": "REF20230708100000001",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									},
+									{
+										"key": "Tenant-Id",
+										"value": "{{tenantId}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{hostname}}/api/v1.0/seller/local/product",
+									"host": [
+										"{{hostname}}"
+									],
+									"path": [
+										"api",
+										"v1.0",
+										"seller",
+										"local",
+										"product"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "vary",
+									"value": "Origin"
+								},
+								{
+									"key": "vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "x-content-type-options",
+									"value": "nosniff"
+								},
+								{
+									"key": "x-xss-protection",
+									"value": "0"
+								},
+								{
+									"key": "cache-control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "expires",
+									"value": "0"
+								},
+								{
+									"key": "x-frame-options",
+									"value": "DENY"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								},
+								{
+									"key": "transfer-encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "date",
+									"value": "Thu, 01 Jan 2026 23:33:48 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"responseCode\": \"0000\",\n    \"responseDesc\": \"Success\",\n    \"rows\": [],\n    \"totalItem\": 0,\n    \"totalPage\": 0\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Seller Product Out Of Stock",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Request-Time",
+								"value": "2023-07-08 10:00:00",
+								"type": "text"
+							},
+							{
+								"key": "Channel-Id",
+								"value": "{{channel-id}}",
+								"type": "text"
+							},
+							{
+								"key": "Reference-Number",
+								"value": "REF20230708100000001",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Tenant-Id",
+								"value": "{{tenantId}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{hostname}}/api/v1.0/seller/outofstock/product",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"api",
+								"v1.0",
+								"seller",
+								"outofstock",
+								"product"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get Seller Product Out Of Stock",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Request-Time",
+										"value": "2023-07-08 10:00:00",
+										"type": "text"
+									},
+									{
+										"key": "Channel-Id",
+										"value": "{{channel-id}}",
+										"type": "text"
+									},
+									{
+										"key": "Reference-Number",
+										"value": "REF20230708100000001",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									},
+									{
+										"key": "Tenant-Id",
+										"value": "{{tenantId}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{hostname}}/api/v1.0/seller/outofstock/product",
+									"host": [
+										"{{hostname}}"
+									],
+									"path": [
+										"api",
+										"v1.0",
+										"seller",
+										"outofstock",
+										"product"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "vary",
+									"value": "Origin"
+								},
+								{
+									"key": "vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "x-content-type-options",
+									"value": "nosniff"
+								},
+								{
+									"key": "x-xss-protection",
+									"value": "0"
+								},
+								{
+									"key": "cache-control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "expires",
+									"value": "0"
+								},
+								{
+									"key": "x-frame-options",
+									"value": "DENY"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								},
+								{
+									"key": "transfer-encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "date",
+									"value": "Thu, 01 Jan 2026 23:33:55 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"responseCode\": \"0000\",\n    \"responseDesc\": \"Success\",\n    \"rows\": [],\n    \"totalItem\": 0,\n    \"totalPage\": 0\n}"
+						}
+					]
+				},
+				{
+					"name": "Create Product",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Request-Time",
+								"value": "2023-07-08 10:00:00",
+								"type": "text"
+							},
+							{
+								"key": "Channel-Id",
+								"value": "{{channel-id}}",
+								"type": "text"
+							},
+							{
+								"key": "Reference-Number",
+								"value": "REF20230708100000001",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"subCategory\": {\n        \"id\": \"SUBCAT-001\"\n    },\n    \"name\": \"Produk Contoh\",\n    \"description\": \"Ini adalah deskripsi produk contoh\",\n    \"isPreOrder\": true,\n    \"preOrderDay\": 7,\n    \"isNew\": true,\n    \"isEligibleToExport\": false,\n    \"fileId\": \"FILE-HEADER-001\",\n    \"state\": \"DRAFT\", \n    \"productKeyWords\": [\n        \"elektronik\",\n        \"gadget\",\n        \"baru\"\n    ],\n    \"productFeatures\": [\n        \"Hemat listrik\",\n        \"Desain modern\"\n    ],\n    \"productImages\": [\n        {\n            \"imageId\": \"IMG-001\",\n            \"sequence\": 1\n        },\n        {\n            \"imageId\": \"IMG-002\",\n            \"sequence\": 2\n        }\n    ],\n    \"productModels\": [\n        {\n            \"name\": \"Model A\",\n            \"price\": 1500000,\n            \"currency\": \"IDR\",\n            \"weight\": 1.2,\n            \"weightType\": \"KG\",\n            \"length\": 20,\n            \"width\": 10,\n            \"height\": 5,\n            \"dimensionType\": \"CM\",\n            \"isMeasurement\": true,\n            \"imageId\": \"IMG-MODEL-A\",\n            \"sku\": \"SKU-A-001\",\n            \"isConfigurePromotionPrice\": true,\n            \"promotionPrice\": 1400000,\n            \"promotionCurrency\": \"IDR\",\n            \"promotionStartDate\": \"2026-01-01\",\n            \"promotionEndDate\": \"2026-01-31\",\n            \"packagingWeight\": 1.5,\n            \"packagingWeightType\": \"KG\",\n            \"packagingLength\": 25,\n            \"packagingWidth\": 15,\n            \"packagingHeight\": 10,\n            \"packagingDimensionType\": \"CM\",\n            \"warehouses\": [\n                {\n                    \"id\": \"WH-001\",\n                    \"stock\": 50\n                },\n                {\n                    \"id\": \"WH-002\",\n                    \"stock\": 30\n                }\n            ],\n            \"productMeasurements\": [\n                {\n                    \"price\": 1600000,\n                    \"currency\": \"IDR\",\n                    \"weight\": 1.3,\n                    \"weightType\": \"KG\",\n                    \"length\": 22,\n                    \"width\": 12,\n                    \"height\": 6,\n                    \"dimensionType\": \"CM\",\n                    \"measurementType\": \"SIZE\",\n                    \"measurementValue\": \"L\",\n                    \"isConfigurePromotionPrice\": false,\n                    \"promotionPrice\": null,\n                    \"promotionCurrency\": null,\n                    \"promotionStartDate\": null,\n                    \"promotionEndDate\": null,\n                    \"packagingWeight\": 1.6,\n                    \"packagingWeightType\": \"KG\",\n                    \"packagingLength\": 26,\n                    \"packagingWidth\": 16,\n                    \"packagingHeight\": 11,\n                    \"packagingDimensionType\": \"CM\",\n                    \"warehouses\": [\n                        {\n                            \"id\": \"WH-001\",\n                            \"stock\": 20\n                        }\n                    ]\n                }\n            ]\n        }\n    ],\n    \"productInformations\": [\n        {\n            \"paramName\": \"Material\",\n            \"paramValue\": \"Aluminium\"\n        },\n        {\n            \"paramName\": \"Garansi\",\n            \"paramValue\": \"1 Tahun\"\n        }\n    ],\n    \"categoryInformations\": [\n        {\n            \"paramName\": \"Kategori Utama\",\n            \"paramValue\": \"Elektronik\"\n        }\n    ],\n    \"complianceInformation\": {\n        \"safetyWarning\": \"Jauhkan dari air\",\n        \"countryOfOrigin\": \"Indonesia\",\n        \"isDangerousGoodRegulation\": false,\n        \"fileId\": \"FILE-COMPLIANCE-001\"\n    },\n    \"warrantyInformation\": {\n        \"type\": \"Official\",\n        \"duration\": 12,\n        \"durationType\": \"MONTH\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostname}}/api/v1.0/product",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"api",
+								"v1.0",
+								"product"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Favorite",
+			"item": [
+				{
+					"name": "Get Favorite",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Request-Time",
+								"value": "2023-07-08 10:00:00",
+								"type": "text"
+							},
+							{
+								"key": "Channel-Id",
+								"value": "{{channel-id}}",
+								"type": "text"
+							},
+							{
+								"key": "Reference-Number",
+								"value": "REF20230708100000001",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Tenant-Id",
+								"value": "{{tenantId}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{hostname}}/api/v1.0/favorites",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"api",
+								"v1.0",
+								"favorites"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get Favorite",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Request-Time",
+										"value": "2023-07-08 10:00:00",
+										"type": "text"
+									},
+									{
+										"key": "Channel-Id",
+										"value": "{{channel-id}}",
+										"type": "text"
+									},
+									{
+										"key": "Reference-Number",
+										"value": "REF20230708100000001",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									},
+									{
+										"key": "Tenant-Id",
+										"value": "{{tenantId}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{hostname}}/api/v1.0/favorites",
+									"host": [
+										"{{hostname}}"
+									],
+									"path": [
+										"api",
+										"v1.0",
+										"favorites"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "vary",
+									"value": "Origin"
+								},
+								{
+									"key": "vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "x-content-type-options",
+									"value": "nosniff"
+								},
+								{
+									"key": "x-xss-protection",
+									"value": "0"
+								},
+								{
+									"key": "cache-control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "expires",
+									"value": "0"
+								},
+								{
+									"key": "x-frame-options",
+									"value": "DENY"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								},
+								{
+									"key": "transfer-encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "date",
+									"value": "Thu, 01 Jan 2026 23:34:29 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"responseCode\": \"0000\",\n    \"responseDesc\": \"Success\",\n    \"rows\": [\n        {\n            \"id\": \"b59cca4b-2b32-45de-bc7c-45b699910a63\",\n            \"isDefault\": false,\n            \"name\": \"favorite saya\"\n        }\n    ],\n    \"totalItem\": 1,\n    \"totalPage\": 1\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Favorite Item",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Request-Time",
+								"value": "2023-07-08 10:00:00",
+								"type": "text"
+							},
+							{
+								"key": "Channel-Id",
+								"value": "{{channel-id}}",
+								"type": "text"
+							},
+							{
+								"key": "Reference-Number",
+								"value": "REF20230708100000001",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Tenant-Id",
+								"value": "{{tenantId}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{hostname}}/api/v1.0/favorite/item/d0208cd1-ea2e-418a-bd9a-7f6553ee3272",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"api",
+								"v1.0",
+								"favorite",
+								"item",
+								"d0208cd1-ea2e-418a-bd9a-7f6553ee3272"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Favorite",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Request-Time",
+								"value": "2023-07-08 10:00:00",
+								"type": "text"
+							},
+							{
+								"key": "Channel-Id",
+								"value": "{{channel-id}}",
+								"type": "text"
+							},
+							{
+								"key": "Reference-Number",
+								"value": "REF20230708100000001",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"favorite saya\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostname}}/api/v1.0/favorite",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"api",
+								"v1.0",
+								"favorite"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Favorite",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Request-Time",
+								"value": "2023-07-08 10:00:00",
+								"type": "text"
+							},
+							{
+								"key": "Channel-Id",
+								"value": "{{channel-id}}",
+								"type": "text"
+							},
+							{
+								"key": "Reference-Number",
+								"value": "REF20230708100000001",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"favorite aja\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostname}}/api/v1.0/favorite/ce530b30-7040-4c77-b561-5438a69c9d5c",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"api",
+								"v1.0",
+								"favorite",
+								"ce530b30-7040-4c77-b561-5438a69c9d5c"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add To Favorite",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Request-Time",
+								"value": "2023-07-08 10:00:00",
+								"type": "text"
+							},
+							{
+								"key": "Channel-Id",
+								"value": "{{channel-id}}",
+								"type": "text"
+							},
+							{
+								"key": "Reference-Number",
+								"value": "REF20230708100000001",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"favoriteId\": \"\",\n    \"productId\": \"895a8d23-869f-41f5-af9b-f0e59794f111\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostname}}/api/v1.0/favorite/add",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"api",
+								"v1.0",
+								"favorite",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Favorite",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Request-Time",
+								"value": "2023-07-08 10:00:00",
+								"type": "text"
+							},
+							{
+								"key": "Channel-Id",
+								"value": "{{channel-id}}",
+								"type": "text"
+							},
+							{
+								"key": "Reference-Number",
+								"value": "REF20230708100000001",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{hostname}}/api/v1.0/favorite/product/f97c388b-a0a2-4641-8e98-974d39351071",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"api",
+								"v1.0",
+								"favorite",
+								"product",
+								"f97c388b-a0a2-4641-8e98-974d39351071"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Address",
+			"item": [
+				{
+					"name": "Get Address",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Request-Time",
+								"value": "2023-07-08 10:00:00",
+								"type": "text"
+							},
+							{
+								"key": "Channel-Id",
+								"value": "{{channel-id}}",
+								"type": "text"
+							},
+							{
+								"key": "Reference-Number",
+								"value": "REF20230708100000001",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Tenant-Id",
+								"value": "{{tenantId}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{hostname}}/api/v1.0/addresses",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"api",
+								"v1.0",
+								"addresses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Address",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Request-Time",
+								"value": "2023-07-08 10:00:00",
+								"type": "text"
+							},
+							{
+								"key": "Channel-Id",
+								"value": "{{channel-id}}",
+								"type": "text"
+							},
+							{
+								"key": "Reference-Number",
+								"value": "REF20230708100000001",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"address\": \"jln depok\",\n    \"country\": \"indonesia\",\n    \"province\": \"jawa barat\",\n    \"city\": \"depok2\",\n    \"postalCode\": \"12345\",\n    \"isPrimary\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostname}}/api/v1.0/addresses",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"api",
+								"v1.0",
+								"addresses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Address",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Request-Time",
+								"value": "2023-07-08 10:00:00",
+								"type": "text"
+							},
+							{
+								"key": "Channel-Id",
+								"value": "{{channel-id}}",
+								"type": "text"
+							},
+							{
+								"key": "Reference-Number",
+								"value": "REF20230708100000001",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"address\": \"jln depok\",\n    \"country\": \"indonesia\",\n    \"province\": \"jawa barat\",\n    \"city\": \"depok4\",\n    \"postalCode\": \"12345\",\n    \"isPrimary\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostname}}/api/v1.0/addresses/92a53086-ab77-4b6d-ae90-e92f2f00133e",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"api",
+								"v1.0",
+								"addresses",
+								"92a53086-ab77-4b6d-ae90-e92f2f00133e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Address",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Request-Time",
+								"value": "2023-07-08 10:00:00",
+								"type": "text"
+							},
+							{
+								"key": "Channel-Id",
+								"value": "{{channel-id}}",
+								"type": "text"
+							},
+							{
+								"key": "Reference-Number",
+								"value": "REF20230708100000001",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{hostname}}/api/v1.0/addresses/4e0e0a33-5dc2-4bad-9b17-92ba74bc80da",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"api",
+								"v1.0",
+								"addresses",
+								"4e0e0a33-5dc2-4bad-9b17-92ba74bc80da"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Warehouse",
+			"item": [
+				{
+					"name": "Get Warehouse",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Request-Time",
+								"value": "2023-07-08 10:00:00",
+								"type": "text"
+							},
+							{
+								"key": "Channel-Id",
+								"value": "{{channel-id}}",
+								"type": "text"
+							},
+							{
+								"key": "Reference-Number",
+								"value": "REF20230708100000001",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Tenant-Id",
+								"value": "{{tenantId}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{hostname}}/api/v1.0/warehouses",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"api",
+								"v1.0",
+								"warehouses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Warehouse",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Request-Time",
+								"value": "2023-07-08 10:00:00",
+								"type": "text"
+							},
+							{
+								"key": "Channel-Id",
+								"value": "{{channel-id}}",
+								"type": "text"
+							},
+							{
+								"key": "Reference-Number",
+								"value": "REF20230708100000001",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"address\": \"Jl. Teuku Umar No. 123\",\n  \"country\": \"Indonesia\",\n  \"province\": \"Aceh\",\n  \"city\": \"Banda Aceh\",\n  \"postalCode\": \"23111\",\n  \"latitude\": 5.548290,\n  \"longitude\": 95.323753,\n  \"warehouseType\": \"INA\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostname}}/api/v1.0/warehouses",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"api",
+								"v1.0",
+								"warehouses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Warehouse",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Request-Time",
+								"value": "2023-07-08 10:00:00",
+								"type": "text"
+							},
+							{
+								"key": "Channel-Id",
+								"value": "{{channel-id}}",
+								"type": "text"
+							},
+							{
+								"key": "Reference-Number",
+								"value": "REF20230708100000001",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"address\": \"Jl. Teuku Umar No. 123\",\n  \"country\": \"Indonesia\",\n  \"province\": \"Aceh\",\n  \"city\": \"Banda Aceh\",\n  \"postalCode\": \"23111\",\n  \"latitude\": 5.548290,\n  \"longitude\": 95.323753,\n  \"warehouseType\": \"OTHER\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostname}}/api/v1.0/warehouses/92a53086-ab77-4b6d-ae90-e92f2f00133e",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"api",
+								"v1.0",
+								"warehouses",
+								"92a53086-ab77-4b6d-ae90-e92f2f00133e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Warehouse",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Request-Time",
+								"value": "2023-07-08 10:00:00",
+								"type": "text"
+							},
+							{
+								"key": "Channel-Id",
+								"value": "{{channel-id}}",
+								"type": "text"
+							},
+							{
+								"key": "Reference-Number",
+								"value": "REF20230708100000001",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{hostname}}/api/v1.0/warehouses/4e0e0a33-5dc2-4bad-9b17-92ba74bc80da",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"api",
+								"v1.0",
+								"warehouses",
+								"4e0e0a33-5dc2-4bad-9b17-92ba74bc80da"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Cart",
+			"item": [
+				{
+					"name": "Get Cart",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Request-Time",
+								"value": "2023-07-08 10:00:00",
+								"type": "text"
+							},
+							{
+								"key": "Channel-Id",
+								"value": "{{channel-id}}",
+								"type": "text"
+							},
+							{
+								"key": "Reference-Number",
+								"value": "REF20230708100000001",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Tenant-Id",
+								"value": "{{tenantId}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{hostname}}/api/v1.0/carts",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"api",
+								"v1.0",
+								"carts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Cart",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Request-Time",
+								"value": "2023-07-08 10:00:00",
+								"type": "text"
+							},
+							{
+								"key": "Channel-Id",
+								"value": "{{channel-id}}",
+								"type": "text"
+							},
+							{
+								"key": "Reference-Number",
+								"value": "REF20230708100000001",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"sellerId\": \"fc711dae-a98f-4782-9489-d5c0de3f3ca5\",\n    \"quantity\": 1,\n    \"productModelId\": \"5efebc36-07ca-47dd-b37b-590f77d76ee7\",\n    \"productMeasurementId\": \"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostname}}/api/v1.0/cart",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"api",
+								"v1.0",
+								"cart"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Cart",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Request-Time",
+								"value": "2023-07-08 10:00:00",
+								"type": "text"
+							},
+							{
+								"key": "Channel-Id",
+								"value": "{{channel-id}}",
+								"type": "text"
+							},
+							{
+								"key": "Reference-Number",
+								"value": "REF20230708100000001",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"cartItemId\": \"176370af-1f97-4f03-900e-20c515b85d02\",\n    \"quantity\": 3\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostname}}/api/v1.0/cart",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"api",
+								"v1.0",
+								"cart"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Category",
+			"item": [
+				{
+					"name": "Get Categories",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Request-Time",
+								"value": "2023-07-08 10:00:00",
+								"type": "text"
+							},
+							{
+								"key": "Channel-Id",
+								"value": "{{channel-id}}",
+								"type": "text"
+							},
+							{
+								"key": "Reference-Number",
+								"value": "REF20230708100000001",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Tenant-Id",
+								"value": "{{tenantId}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{hostname}}/api/v1.0/categories",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"api",
+								"v1.0",
+								"categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Categories",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Request-Time",
+								"value": "2023-07-08 10:00:00",
+								"type": "text"
+							},
+							{
+								"key": "Channel-Id",
+								"value": "{{channel-id}}",
+								"type": "text"
+							},
+							{
+								"key": "Reference-Number",
+								"value": "REF20230708100000001",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Tenant-Id",
+								"value": "{{tenantId}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"contoh category\",\n    \"description\": \"contoh aja\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostname}}/api/v1.0/categories",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"api",
+								"v1.0",
+								"categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Sub Categories",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Request-Time",
+								"value": "2023-07-08 10:00:00",
+								"type": "text"
+							},
+							{
+								"key": "Channel-Id",
+								"value": "{{channel-id}}",
+								"type": "text"
+							},
+							{
+								"key": "Reference-Number",
+								"value": "REF20230708100000001",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Tenant-Id",
+								"value": "{{tenantId}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{hostname}}/api/v1.0/sub/1/categories",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"api",
+								"v1.0",
+								"sub",
+								"1",
+								"categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Sub Categories",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Request-Time",
+								"value": "2023-07-08 10:00:00",
+								"type": "text"
+							},
+							{
+								"key": "Channel-Id",
+								"value": "{{channel-id}}",
+								"type": "text"
+							},
+							{
+								"key": "Reference-Number",
+								"value": "REF20230708100000001",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Tenant-Id",
+								"value": "{{tenantId}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"contoh sub category\",\n    \"description\": \"contoh sub aja\",\n    \"subCategoryAttributes\": [\n        \"abc\",\n        \"cde\",\n        \"xyz\"\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostname}}/api/v1.0/sub/1/categories",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"api",
+								"v1.0",
+								"sub",
+								"1",
+								"categories"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Province",
+			"item": [
+				{
+					"name": "Get Province",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Request-Time",
+								"value": "2023-07-08 10:00:00",
+								"type": "text"
+							},
+							{
+								"key": "Channel-Id",
+								"value": "{{channel-id}}",
+								"type": "text"
+							},
+							{
+								"key": "Reference-Number",
+								"value": "REF20230708100000001",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Tenant-Id",
+								"value": "{{tenantId}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{hostname}}/api/v1.0/provinces",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"api",
+								"v1.0",
+								"provinces"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get Province",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Request-Time",
+										"value": "2023-07-08 10:00:00",
+										"type": "text"
+									},
+									{
+										"key": "Channel-Id",
+										"value": "{{channel-id}}",
+										"type": "text"
+									},
+									{
+										"key": "Reference-Number",
+										"value": "REF20230708100000001",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									},
+									{
+										"key": "Tenant-Id",
+										"value": "{{tenantId}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{hostname}}/api/v1.0/provinces",
+									"host": [
+										"{{hostname}}"
+									],
+									"path": [
+										"api",
+										"v1.0",
+										"provinces"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "vary",
+									"value": "Origin"
+								},
+								{
+									"key": "vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "x-content-type-options",
+									"value": "nosniff"
+								},
+								{
+									"key": "x-xss-protection",
+									"value": "0"
+								},
+								{
+									"key": "cache-control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "expires",
+									"value": "0"
+								},
+								{
+									"key": "x-frame-options",
+									"value": "DENY"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								},
+								{
+									"key": "transfer-encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "date",
+									"value": "Fri, 02 Jan 2026 00:40:32 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"responseCode\": \"0000\",\n    \"responseDesc\": \"Success\",\n    \"rows\": [\n        {\n            \"code\": \"03111111\",\n            \"createdBy\": \"admin@admin.com\",\n            \"createdTime\": \"2025-04-30 22:49:18\",\n            \"id\": \"4593db16-f802-4a7b-801a-241e941fd7ad\",\n            \"name\": \"Nanggro Aceh Darussalam (TOBEDELETED)\"\n        },\n        {\n            \"code\": \"11\",\n            \"createdBy\": \"SYSTEM\",\n            \"createdTime\": \"2025-05-18 16:06:00\",\n            \"id\": \"b9d8b019-76d8-c7d5-d434-3faf2271c9ae\",\n            \"name\": \"Aceh (NAD)\"\n        },\n        {\n            \"code\": \"12\",\n            \"createdBy\": \"SYSTEM\",\n            \"createdTime\": \"2025-05-18 16:06:00\",\n            \"id\": \"2484ba69-ff32-5a4d-f70e-c0aeaa4fa5d4\",\n            \"name\": \"Sumatera Utara\"\n        },\n        {\n            \"code\": \"13\",\n            \"createdBy\": \"SYSTEM\",\n            \"createdTime\": \"2025-05-18 16:06:00\",\n            \"id\": \"7a47e056-af58-834d-b941-c5cbf7a3f66f\",\n            \"name\": \"Sumatera Barat\"\n        },\n        {\n            \"code\": \"14\",\n            \"createdBy\": \"SYSTEM\",\n            \"createdTime\": \"2025-05-18 16:06:00\",\n            \"id\": \"4bc217db-b185-19c4-6225-a3a24172b557\",\n            \"name\": \"Riau\"\n        },\n        {\n            \"code\": \"15\",\n            \"createdBy\": \"SYSTEM\",\n            \"createdTime\": \"2025-05-18 16:06:00\",\n            \"id\": \"5bd372ba-1c53-a675-3e50-ccc8fc7fe2c5\",\n            \"name\": \"Jambi\"\n        },\n        {\n            \"code\": \"16\",\n            \"createdBy\": \"SYSTEM\",\n            \"createdTime\": \"2025-05-18 16:06:00\",\n            \"id\": \"5447f9bb-5345-fa59-5b6e-57ebbb46b2f8\",\n            \"name\": \"Sumatera Selatan\"\n        },\n        {\n            \"code\": \"17\",\n            \"createdBy\": \"SYSTEM\",\n            \"createdTime\": \"2025-05-18 16:06:00\",\n            \"id\": \"664c1310-f7ef-c178-2107-f5fd7c18f9dd\",\n            \"name\": \"Bengkulu\"\n        },\n        {\n            \"code\": \"18\",\n            \"createdBy\": \"SYSTEM\",\n            \"createdTime\": \"2025-05-18 16:06:00\",\n            \"id\": \"da107dfc-52b5-c67c-a638-ec0aaca61302\",\n            \"name\": \"Lampung\"\n        },\n        {\n            \"code\": \"19\",\n            \"createdBy\": \"SYSTEM\",\n            \"createdTime\": \"2025-05-18 16:06:00\",\n            \"id\": \"b18f475b-3558-9072-9250-99fcd50307fa\",\n            \"name\": \"Kepulauan Bangka Belitung\"\n        }\n    ],\n    \"totalItem\": 39,\n    \"totalPage\": 4\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "City",
+			"item": [
+				{
+					"name": "Get City",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Request-Time",
+								"value": "2023-07-08 10:00:00",
+								"type": "text"
+							},
+							{
+								"key": "Channel-Id",
+								"value": "{{channel-id}}",
+								"type": "text"
+							},
+							{
+								"key": "Reference-Number",
+								"value": "REF20230708100000001",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Tenant-Id",
+								"value": "{{tenantId}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{hostname}}/api/v1.0/cities?provinceId=2484ba69-ff32-5a4d-f70e-c0aeaa4fa5d4",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"api",
+								"v1.0",
+								"cities"
+							],
+							"query": [
+								{
+									"key": "provinceId",
+									"value": "2484ba69-ff32-5a4d-f70e-c0aeaa4fa5d4"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get City",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Request-Time",
+										"value": "2023-07-08 10:00:00",
+										"type": "text"
+									},
+									{
+										"key": "Channel-Id",
+										"value": "{{channel-id}}",
+										"type": "text"
+									},
+									{
+										"key": "Reference-Number",
+										"value": "REF20230708100000001",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									},
+									{
+										"key": "Tenant-Id",
+										"value": "{{tenantId}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{hostname}}/api/v1.0/cities?provinceId=2484ba69-ff32-5a4d-f70e-c0aeaa4fa5d4",
+									"host": [
+										"{{hostname}}"
+									],
+									"path": [
+										"api",
+										"v1.0",
+										"cities"
+									],
+									"query": [
+										{
+											"key": "provinceId",
+											"value": "2484ba69-ff32-5a4d-f70e-c0aeaa4fa5d4"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "vary",
+									"value": "Origin"
+								},
+								{
+									"key": "vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "x-content-type-options",
+									"value": "nosniff"
+								},
+								{
+									"key": "x-xss-protection",
+									"value": "0"
+								},
+								{
+									"key": "cache-control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "expires",
+									"value": "0"
+								},
+								{
+									"key": "x-frame-options",
+									"value": "DENY"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								},
+								{
+									"key": "transfer-encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "date",
+									"value": "Fri, 02 Jan 2026 00:42:18 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"responseCode\": \"0000\",\n    \"responseDesc\": \"Success\",\n    \"rows\": [\n        {\n            \"code\": \"12.01\",\n            \"createdBy\": \"SYSTEM\",\n            \"createdTime\": \"2025-05-18 16:14:02\",\n            \"id\": \"f9bd1450-945a-102f-967e-0b9daf73a331\",\n            \"name\": \"Tapanuli Tengah\",\n            \"provinceId\": \"2484ba69-ff32-5a4d-f70e-c0aeaa4fa5d4\",\n            \"provinceName\": \"Sumatera Utara\"\n        },\n        {\n            \"code\": \"12.02\",\n            \"createdBy\": \"SYSTEM\",\n            \"createdTime\": \"2025-05-18 16:14:02\",\n            \"id\": \"383f4f6a-281c-c233-c571-1c75628c3a5c\",\n            \"name\": \"Tapanuli Utara\",\n            \"provinceId\": \"2484ba69-ff32-5a4d-f70e-c0aeaa4fa5d4\",\n            \"provinceName\": \"Sumatera Utara\"\n        },\n        {\n            \"code\": \"12.03\",\n            \"createdBy\": \"SYSTEM\",\n            \"createdTime\": \"2025-05-18 16:14:02\",\n            \"id\": \"30ba9a0a-c027-a47a-5564-42aa9b25a252\",\n            \"name\": \"Tapanuli Selatan\",\n            \"provinceId\": \"2484ba69-ff32-5a4d-f70e-c0aeaa4fa5d4\",\n            \"provinceName\": \"Sumatera Utara\"\n        },\n        {\n            \"code\": \"12.04\",\n            \"createdBy\": \"SYSTEM\",\n            \"createdTime\": \"2025-05-18 16:14:02\",\n            \"id\": \"793aa669-821a-f6ed-3898-d8d32a4904d5\",\n            \"name\": \"Nias\",\n            \"provinceId\": \"2484ba69-ff32-5a4d-f70e-c0aeaa4fa5d4\",\n            \"provinceName\": \"Sumatera Utara\"\n        },\n        {\n            \"code\": \"12.05\",\n            \"createdBy\": \"SYSTEM\",\n            \"createdTime\": \"2025-05-18 16:14:01\",\n            \"id\": \"96dfdf73-5833-7fa9-7b22-1c0dae65c5da\",\n            \"name\": \"Langkat\",\n            \"provinceId\": \"2484ba69-ff32-5a4d-f70e-c0aeaa4fa5d4\",\n            \"provinceName\": \"Sumatera Utara\"\n        },\n        {\n            \"code\": \"12.06\",\n            \"createdBy\": \"SYSTEM\",\n            \"createdTime\": \"2025-05-18 16:14:01\",\n            \"id\": \"efef59f2-47ee-4272-b7ff-a8644b9c0a96\",\n            \"name\": \"Karo\",\n            \"provinceId\": \"2484ba69-ff32-5a4d-f70e-c0aeaa4fa5d4\",\n            \"provinceName\": \"Sumatera Utara\"\n        },\n        {\n            \"code\": \"12.07\",\n            \"createdBy\": \"SYSTEM\",\n            \"createdTime\": \"2025-05-18 16:14:01\",\n            \"id\": \"080f5388-c18a-24bd-9f8b-f29f710ea184\",\n            \"name\": \"Deli Serdang\",\n            \"provinceId\": \"2484ba69-ff32-5a4d-f70e-c0aeaa4fa5d4\",\n            \"provinceName\": \"Sumatera Utara\"\n        },\n        {\n            \"code\": \"12.08\",\n            \"createdBy\": \"SYSTEM\",\n            \"createdTime\": \"2025-05-18 16:14:02\",\n            \"id\": \"c500cb37-7505-f47e-bd8d-ffb02ee091c9\",\n            \"name\": \"Simalungun\",\n            \"provinceId\": \"2484ba69-ff32-5a4d-f70e-c0aeaa4fa5d4\",\n            \"provinceName\": \"Sumatera Utara\"\n        },\n        {\n            \"code\": \"12.09\",\n            \"createdBy\": \"SYSTEM\",\n            \"createdTime\": \"2025-05-18 16:14:01\",\n            \"id\": \"dd0f8375-1efc-3fb3-e561-ca88fee27188\",\n            \"name\": \"Asahan\",\n            \"provinceId\": \"2484ba69-ff32-5a4d-f70e-c0aeaa4fa5d4\",\n            \"provinceName\": \"Sumatera Utara\"\n        },\n        {\n            \"code\": \"12.10\",\n            \"createdBy\": \"SYSTEM\",\n            \"createdTime\": \"2025-05-18 16:14:01\",\n            \"id\": \"91a842f5-8778-5e26-6ac2-7f6843f6ac75\",\n            \"name\": \"Labuhanbatu\",\n            \"provinceId\": \"2484ba69-ff32-5a4d-f70e-c0aeaa4fa5d4\",\n            \"provinceName\": \"Sumatera Utara\"\n        }\n    ],\n    \"totalItem\": 33,\n    \"totalPage\": 4\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Region",
+			"item": [
+				{
+					"name": "Get Region",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Request-Time",
+								"value": "2023-07-08 10:00:00",
+								"type": "text"
+							},
+							{
+								"key": "Channel-Id",
+								"value": "{{channel-id}}",
+								"type": "text"
+							},
+							{
+								"key": "Reference-Number",
+								"value": "REF20230708100000001",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Tenant-Id",
+								"value": "{{tenantId}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{hostname}}/api/v1.0/regions?cityId=f9bd1450-945a-102f-967e-0b9daf73a331",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"api",
+								"v1.0",
+								"regions"
+							],
+							"query": [
+								{
+									"key": "cityId",
+									"value": "f9bd1450-945a-102f-967e-0b9daf73a331"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get Region",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Request-Time",
+										"value": "2023-07-08 10:00:00",
+										"type": "text"
+									},
+									{
+										"key": "Channel-Id",
+										"value": "{{channel-id}}",
+										"type": "text"
+									},
+									{
+										"key": "Reference-Number",
+										"value": "REF20230708100000001",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									},
+									{
+										"key": "Tenant-Id",
+										"value": "{{tenantId}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{hostname}}/api/v1.0/regions?cityId=f9bd1450-945a-102f-967e-0b9daf73a331",
+									"host": [
+										"{{hostname}}"
+									],
+									"path": [
+										"api",
+										"v1.0",
+										"regions"
+									],
+									"query": [
+										{
+											"key": "cityId",
+											"value": "f9bd1450-945a-102f-967e-0b9daf73a331"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "vary",
+									"value": "Origin"
+								},
+								{
+									"key": "vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "x-content-type-options",
+									"value": "nosniff"
+								},
+								{
+									"key": "x-xss-protection",
+									"value": "0"
+								},
+								{
+									"key": "cache-control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "expires",
+									"value": "0"
+								},
+								{
+									"key": "x-frame-options",
+									"value": "DENY"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								},
+								{
+									"key": "transfer-encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "date",
+									"value": "Fri, 02 Jan 2026 00:42:36 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"responseCode\": \"0000\",\n    \"responseDesc\": \"Success\",\n    \"rows\": [\n        {\n            \"cityId\": \"f9bd1450-945a-102f-967e-0b9daf73a331\",\n            \"cityName\": \"Tapanuli Tengah\",\n            \"code\": \"12.01.01\",\n            \"createdBy\": \"SYSTEM\",\n            \"createdTime\": \"2025-05-18 16:14:10\",\n            \"id\": \"7e83f182-e6cb-bf18-bf36-8f55487114d5\",\n            \"name\": \"Barus\",\n            \"provinceId\": \"2484ba69-ff32-5a4d-f70e-c0aeaa4fa5d4\",\n            \"provinceName\": \"Sumatera Utara\"\n        },\n        {\n            \"cityId\": \"f9bd1450-945a-102f-967e-0b9daf73a331\",\n            \"cityName\": \"Tapanuli Tengah\",\n            \"code\": \"12.01.02\",\n            \"createdBy\": \"SYSTEM\",\n            \"createdTime\": \"2025-05-18 16:14:18\",\n            \"id\": \"782428ba-2b6c-296d-8961-b3d827951cca\",\n            \"name\": \"Sorkam\",\n            \"provinceId\": \"2484ba69-ff32-5a4d-f70e-c0aeaa4fa5d4\",\n            \"provinceName\": \"Sumatera Utara\"\n        },\n        {\n            \"cityId\": \"f9bd1450-945a-102f-967e-0b9daf73a331\",\n            \"cityName\": \"Tapanuli Tengah\",\n            \"code\": \"12.01.03\",\n            \"createdBy\": \"SYSTEM\",\n            \"createdTime\": \"2025-05-18 16:14:16\",\n            \"id\": \"a022a82b-31e9-64fa-d7b1-4ab002c905f6\",\n            \"name\": \"Pandan\",\n            \"provinceId\": \"2484ba69-ff32-5a4d-f70e-c0aeaa4fa5d4\",\n            \"provinceName\": \"Sumatera Utara\"\n        },\n        {\n            \"cityId\": \"f9bd1450-945a-102f-967e-0b9daf73a331\",\n            \"cityName\": \"Tapanuli Tengah\",\n            \"code\": \"12.01.04\",\n            \"createdBy\": \"SYSTEM\",\n            \"createdTime\": \"2025-05-18 16:14:16\",\n            \"id\": \"aa0da17c-c91b-0518-c714-2964a76dddff\",\n            \"name\": \"Pinangsori\",\n            \"provinceId\": \"2484ba69-ff32-5a4d-f70e-c0aeaa4fa5d4\",\n            \"provinceName\": \"Sumatera Utara\"\n        },\n        {\n            \"cityId\": \"f9bd1450-945a-102f-967e-0b9daf73a331\",\n            \"cityName\": \"Tapanuli Tengah\",\n            \"code\": \"12.01.05\",\n            \"createdBy\": \"SYSTEM\",\n            \"createdTime\": \"2025-05-18 16:14:14\",\n            \"id\": \"0772481d-584f-6f77-8a39-c4bf46acdaa2\",\n            \"name\": \"Manduamas\",\n            \"provinceId\": \"2484ba69-ff32-5a4d-f70e-c0aeaa4fa5d4\",\n            \"provinceName\": \"Sumatera Utara\"\n        },\n        {\n            \"cityId\": \"f9bd1450-945a-102f-967e-0b9daf73a331\",\n            \"cityName\": \"Tapanuli Tengah\",\n            \"code\": \"12.01.06\",\n            \"createdBy\": \"SYSTEM\",\n            \"createdTime\": \"2025-05-18 16:14:13\",\n            \"id\": \"ef09d92b-bf23-7fa0-685c-727d019e063f\",\n            \"name\": \"Kolang\",\n            \"provinceId\": \"2484ba69-ff32-5a4d-f70e-c0aeaa4fa5d4\",\n            \"provinceName\": \"Sumatera Utara\"\n        },\n        {\n            \"cityId\": \"f9bd1450-945a-102f-967e-0b9daf73a331\",\n            \"cityName\": \"Tapanuli Tengah\",\n            \"code\": \"12.01.07\",\n            \"createdBy\": \"SYSTEM\",\n            \"createdTime\": \"2025-05-18 16:14:18\",\n            \"id\": \"d91fcd23-5cd7-c0af-823e-9d0019006cee\",\n            \"name\": \"Tapian Nauli\",\n            \"provinceId\": \"2484ba69-ff32-5a4d-f70e-c0aeaa4fa5d4\",\n            \"provinceName\": \"Sumatera Utara\"\n        },\n        {\n            \"cityId\": \"f9bd1450-945a-102f-967e-0b9daf73a331\",\n            \"cityName\": \"Tapanuli Tengah\",\n            \"code\": \"12.01.08\",\n            \"createdBy\": \"SYSTEM\",\n            \"createdTime\": \"2025-05-18 16:14:17\",\n            \"id\": \"32520442-b0aa-db7c-bfe0-84d1956e25ba\",\n            \"name\": \"Sibabangun\",\n            \"provinceId\": \"2484ba69-ff32-5a4d-f70e-c0aeaa4fa5d4\",\n            \"provinceName\": \"Sumatera Utara\"\n        },\n        {\n            \"cityId\": \"f9bd1450-945a-102f-967e-0b9daf73a331\",\n            \"cityName\": \"Tapanuli Tengah\",\n            \"code\": \"12.01.09\",\n            \"createdBy\": \"SYSTEM\",\n            \"createdTime\": \"2025-05-18 16:14:18\",\n            \"id\": \"3e546dfb-6c52-5e39-1ed1-4a05c89d0cd4\",\n            \"name\": \"Sosorgadong (Sosor Gadong)\",\n            \"provinceId\": \"2484ba69-ff32-5a4d-f70e-c0aeaa4fa5d4\",\n            \"provinceName\": \"Sumatera Utara\"\n        },\n        {\n            \"cityId\": \"f9bd1450-945a-102f-967e-0b9daf73a331\",\n            \"cityName\": \"Tapanuli Tengah\",\n            \"code\": \"12.01.10\",\n            \"createdBy\": \"SYSTEM\",\n            \"createdTime\": \"2025-05-18 16:14:18\",\n            \"id\": \"08e614cd-449b-d805-ceed-e839f8dab2b3\",\n            \"name\": \"Sorkam Barat\",\n            \"provinceId\": \"2484ba69-ff32-5a4d-f70e-c0aeaa4fa5d4\",\n            \"provinceName\": \"Sumatera Utara\"\n        }\n    ],\n    \"totalItem\": 20,\n    \"totalPage\": 2\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Sub Region",
+			"item": [
+				{
+					"name": "Get Sub Region",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Request-Time",
+								"value": "2023-07-08 10:00:00",
+								"type": "text"
+							},
+							{
+								"key": "Channel-Id",
+								"value": "{{channel-id}}",
+								"type": "text"
+							},
+							{
+								"key": "Reference-Number",
+								"value": "REF20230708100000001",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Tenant-Id",
+								"value": "{{tenantId}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{hostname}}/api/v1.0/subregions?regionid=a022a82b-31e9-64fa-d7b1-4ab002c905f6",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"api",
+								"v1.0",
+								"subregions"
+							],
+							"query": [
+								{
+									"key": "regionid",
+									"value": "a022a82b-31e9-64fa-d7b1-4ab002c905f6"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Location",
+			"item": [
+				{
+					"name": "Get Location",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Request-Time",
+								"value": "2023-07-08 10:00:00",
+								"type": "text"
+							},
+							{
+								"key": "Channel-Id",
+								"value": "{{channel-id}}",
+								"type": "text"
+							},
+							{
+								"key": "Reference-Number",
+								"value": "REF20230708100000001",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Tenant-Id",
+								"value": "{{tenantId}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{hostname}}/api/v1.0/locations",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"api",
+								"v1.0",
+								"locations"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get Location",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Request-Time",
+										"value": "2023-07-08 10:00:00",
+										"type": "text"
+									},
+									{
+										"key": "Channel-Id",
+										"value": "{{channel-id}}",
+										"type": "text"
+									},
+									{
+										"key": "Reference-Number",
+										"value": "REF20230708100000001",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									},
+									{
+										"key": "Tenant-Id",
+										"value": "{{tenantId}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{hostname}}/api/v1.0/locations",
+									"host": [
+										"{{hostname}}"
+									],
+									"path": [
+										"api",
+										"v1.0",
+										"locations"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "vary",
+									"value": "Origin"
+								},
+								{
+									"key": "vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "x-content-type-options",
+									"value": "nosniff"
+								},
+								{
+									"key": "x-xss-protection",
+									"value": "0"
+								},
+								{
+									"key": "cache-control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "expires",
+									"value": "0"
+								},
+								{
+									"key": "x-frame-options",
+									"value": "DENY"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								},
+								{
+									"key": "transfer-encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "date",
+									"value": "Thu, 01 Jan 2026 23:38:00 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"responseCode\": \"0000\",\n    \"responseDesc\": \"Success\",\n    \"rows\": [\n        {\n            \"address\": \"Jl. Melawai Raya No.69-70, Kramat Pela, Kec. Kby. Baru, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12130, Indonesia\",\n            \"city\": \"Kota Jakarta Selatan\",\n            \"contact\": \"217237659\",\n            \"country\": \"Indonesia\",\n            \"description\": \"Batik Danar Hadi is one of Indonesia’s most prestigious batik brands, known for preserving and promoting the country’s cultural heritage through exquisite batik craftsmanship.\",\n            \"id\": \"72eca605-72a1-4e2c-9717-a467f90c7330\",\n            \"image1\": \"https://be.inatrading.co.id/api/v1.0/file/image/Screenshot 2025-12-20 212935.png\",\n            \"image2\": null,\n            \"image3\": null,\n            \"image4\": null,\n            \"image5\": null,\n            \"latitude\": 73.2030208,\n            \"longitude\": -6.245636025,\n            \"name\": \"Batik Danar Hadi\",\n            \"province\": \"Daerah Khusus Ibukota Jakarta\",\n            \"status\": \"APPROVED\",\n            \"type\": \"Shop\",\n            \"userInput\": null\n        },\n        {\n            \"address\": null,\n            \"city\": null,\n            \"contact\": null,\n            \"country\": null,\n            \"description\": \"Expansive, scenic botanical garden showcasing a wide range of tropical flowers & plants.\",\n            \"id\": \"c0cef057-a907-475c-acf4-d1c17809c393\",\n            \"image1\": \"https://be.inatrading.co.id/api/v1.0/file/image/Kebun_Raya_Bogor_19.jpg\",\n            \"image2\": null,\n            \"image3\": null,\n            \"image4\": null,\n            \"image5\": null,\n            \"latitude\": 73.20004268247276,\n            \"longitude\": -6.597378166724661,\n            \"name\": \"Bogor Botanical Gardens\",\n            \"province\": null,\n            \"status\": null,\n            \"type\": null,\n            \"userInput\": null\n        },\n        {\n            \"address\": \"Citaringgul, Sentul City, Kec. Babakan Madang, Kabupaten Bogor, Jawa Barat 16810\",\n            \"city\": \"Kota Bogor\",\n            \"contact\": \"81370006531\",\n            \"country\": \"Indonesia\",\n            \"description\": \"Bumi Aki Signature Sentul is a modern-style restaurant with a traditional touch located in Citaringgul, Sentul City, Bogor Regency. Opened in December 2023, this restaurant is the latest branch of Bumi Aki which was previously known in the Puncak and Bandung areas.\",\n            \"id\": \"d283b4c8-6366-4266-9a92-0a56443f0eb1\",\n            \"image1\": \"https://be.inatrading.co.id/api/v1.0/file/image/2025-09-21.jpg\",\n            \"image2\": null,\n            \"image3\": null,\n            \"image4\": null,\n            \"image5\": null,\n            \"latitude\": 73.1379537,\n            \"longitude\": -6.566800666,\n            \"name\": \"Bumi Aki Signature Sentul\",\n            \"province\": \"Jawa Barat\",\n            \"status\": \"APPROVED\",\n            \"type\": \"Restaurant\",\n            \"userInput\": null\n        },\n        {\n            \"address\": null,\n            \"city\": null,\n            \"contact\": null,\n            \"country\": null,\n            \"description\": \"Trails, viewpoints & campsites surround these falls \",\n            \"id\": \"77f7dfef-edd9-4cac-a4e8-6256b55c9fa1\",\n            \"image1\": \"https://be.inatrading.co.id/api/v1.0/file/image/2022-07-18.png\",\n            \"image2\": null,\n            \"image3\": null,\n            \"image4\": null,\n            \"image5\": null,\n            \"latitude\": 73.0534118731393,\n            \"longitude\": -6.660926821435346,\n            \"name\": \"Cilember Waterfall\",\n            \"province\": null,\n            \"status\": null,\n            \"type\": null,\n            \"userInput\": null\n        },\n        {\n            \"address\": \"Jl. Raya Puncak, Cipayung Girang, Kec. Megamendung, Kabupaten Bogor, Jawa Barat, Indonesia\",\n            \"city\": \"Kabupaten Bogor\",\n            \"contact\": \"81226392048\",\n            \"country\": \"Indonesia\",\n            \"description\": \"Dairyland Farm Theme Park Puncak is a family tourism destination that offers an agricultural-themed educational and entertainment experience in the Puncak area, Bogor. With a cool mountain atmosphere and a variety of interesting rides, this place is suitable for visiting with family or friends.\",\n            \"id\": \"9642f878-6ede-4621-8c7d-ca38cca7926a\",\n            \"image1\": \"https://be.inatrading.co.id/api/v1.0/file/image/WhatsApp Image 2021-04-29 at 14.00.36.jpg\",\n            \"image2\": null,\n            \"image3\": null,\n            \"image4\": null,\n            \"image5\": null,\n            \"latitude\": 73.097223,\n            \"longitude\": -6.649784505,\n            \"name\": \"Dairyland Farm Theme Park\",\n            \"province\": \"Jawa Barat\",\n            \"status\": \"APPROVED\",\n            \"type\": \"Park\",\n            \"userInput\": null\n        },\n        {\n            \"address\": null,\n            \"city\": null,\n            \"contact\": null,\n            \"country\": null,\n            \"description\": \"Internationally themed amusement park offering roller coasters, interactive rides, flumes & shows.\",\n            \"id\": \"0a9feb66-d82e-4ae4-88b0-cdef23d01aa3\",\n            \"image1\": \"https://be.inatrading.co.id/api/v1.0/file/image/Zamperla_Backflash.jpg\",\n            \"image2\": null,\n            \"image3\": null,\n            \"image4\": null,\n            \"image5\": null,\n            \"latitude\": 73.16630208292223,\n            \"longitude\": -6.124657469115397,\n            \"name\": \"Dunia fantasi\",\n            \"province\": null,\n            \"status\": null,\n            \"type\": null,\n            \"userInput\": null\n        },\n        {\n            \"address\": \"Jl. Jend. Sudirman kav 52-53 Galeria SCBD Lot No.6, RT.5/RW.3, Kuningan, Senayan, Kec. Kby. Baru, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12190, Indonesia\",\n            \"city\": \"South Jakarta City\",\n            \"contact\": \"81188850000\",\n            \"country\": \"Indonesia\",\n            \"description\": \"Habitat Park SCBD is a green public space located in the heart of South Jakarta's business district, precisely at SCBD Park Lot 6, Jalan Jenderal Sudirman No. 6, Senayan, Kebayoran Baru. This place offers an urban oasis that brings together nature, culinary and recreation in one location.\",\n            \"id\": \"0f01940b-b103-44ff-88be-f585063b5e35\",\n            \"image1\": \"https://be.inatrading.co.id/api/v1.0/file/image/IMG_3343-scaled.jpeg\",\n            \"image2\": null,\n            \"image3\": null,\n            \"image4\": null,\n            \"image5\": null,\n            \"latitude\": 73.1901361,\n            \"longitude\": -6.225818883,\n            \"name\": \"Habitat Park\",\n            \"province\": \"Jakarta\",\n            \"status\": \"APPROVED\",\n            \"type\": \"Park\",\n            \"userInput\": null\n        },\n        {\n            \"address\": \"Jl. Jenderal Sudirman No.54-55, RT.1/RW.3, Gelora, Kecamatan Tanah Abang, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 10270, Indonesia\",\n            \"city\": \"Kota Jakarta Selatan\",\n            \"contact\": \"2122531199\",\n            \"country\": \"Indonesia\",\n            \"description\": \"Hutan Kota by Plataran is a sophisticated urban sanctuary nestled within Jakarta's Gelora Bung Karno (GBK) complex. Spanning 3.2 hectares, this venue masterfully blends Indonesia's rich cultural heritage with modern design, offering a serene escape amidst the city's hustle and bustle. \",\n            \"id\": \"6e4ef923-8388-49b1-8198-887f7525d94d\",\n            \"image1\": \"https://be.inatrading.co.id/api/v1.0/file/image/2024-06-25.jpg\",\n            \"image2\": null,\n            \"image3\": null,\n            \"image4\": null,\n            \"image5\": null,\n            \"latitude\": 73.1932337,\n            \"longitude\": -6.221785278,\n            \"name\": \"Hutan Kota by Plataran\",\n            \"province\": \"Daerah Khusus Ibukota Jakarta\",\n            \"status\": \"APPROVED\",\n            \"type\": \"Restaurant\",\n            \"userInput\": null\n        },\n        {\n            \"address\": \"Jl. Banten Raya, Bencongan Indah, Kec. Klp. Dua, Kabupaten Tangerang, Banten, Indonesia\",\n            \"city\": \"Kabupaten Tangerang\",\n            \"contact\": null,\n            \"country\": \"Indonesia\",\n            \"description\": \"Indonesia In Your Hand are Aggregator, Eksportir Indonesian Product\",\n            \"id\": \"81672706-c2f1-41a0-b110-08ee0ef5a38c\",\n            \"image1\": \"https://be.inatrading.co.id/api/v1.0/file/image/Revenue-Tower_20200217_8ba3fb26-b75c-e711-8112-e0071b72b701_004.jpg\",\n            \"image2\": null,\n            \"image3\": null,\n            \"image4\": null,\n            \"image5\": null,\n            \"latitude\": 73.4004051,\n            \"longitude\": -6.207759839,\n            \"name\": \"Indonesia In Your Hand\",\n            \"province\": \"Banten\",\n            \"status\": \"APPROVED\",\n            \"type\": \"Business\",\n            \"userInput\": null\n        },\n        {\n            \"address\": \"Jl. Taman Wijaya Kusuma, Cilandak Bar., Kec. Cilandak, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta, Indonesia\",\n            \"city\": \"Kota Jakarta Selatan\",\n            \"contact\": \"213811708\",\n            \"country\": \"Indonesia\",\n            \"description\": \"Istiqlal Mosque in Jakarta, Indonesia is the largest mosque in Southeast Asia and the ninth largest mosque in the world in terms of worshipper capacity. Built to commemorate Indonesian independence, this national mosque of Indonesia was named \\\"Istiqlal\\\", an Arabic word for \\\"independence\\\".\",\n            \"id\": \"233511d3-afc6-4d3b-9633-899c4f0f45f7\",\n            \"image1\": \"https://be.inatrading.co.id/api/v1.0/file/image/2020-10-15.jpg\",\n            \"image2\": null,\n            \"image3\": null,\n            \"image4\": null,\n            \"image5\": null,\n            \"latitude\": 73.1689018,\n            \"longitude\": -6.170082127,\n            \"name\": \"Istiqlal Mosque\",\n            \"province\": \"Daerah Khusus Ibukota Jakarta\",\n            \"status\": \"APPROVED\",\n            \"type\": \"Worship\",\n            \"userInput\": null\n        }\n    ],\n    \"totalItem\": 29,\n    \"totalPage\": 3\n}"
+						}
+					]
+				},
+				{
+					"name": "Create Location",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Request-Time",
+								"value": "2023-07-08 10:00:00",
+								"type": "text"
+							},
+							{
+								"key": "Channel-Id",
+								"value": "{{channel-id}}",
+								"type": "text"
+							},
+							{
+								"key": "Reference-Number",
+								"value": "REF20230708100000001",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Pantai Ujong Blang\",\n  \"description\": \"Pantai wisata populer di Aceh dengan pemandangan matahari terbenam\",\n  \"longitude\": 97.1425,\n  \"latitude\": 5.1801,\n  \"image1\": \"pantai-ujong-blang-1.jpg\",\n  \"image2\": \"pantai-ujong-blang-2.jpg\",\n  \"image3\": \"pantai-ujong-blang-3.jpg\",\n  \"image4\": \"pantai-ujong-blang-4.jpg\",\n  \"image5\": \"pantai-ujong-blang-5.jpg\",\n  \"type\": \"WISATA\",\n  \"address\": \"Ujong Blang, Banda Sakti\",\n  \"country\": \"Indonesia\",\n  \"province\": \"Aceh\",\n  \"city\": \"Lhokseumawe\",\n  \"contact\": \"081234567890\",\n  \"userInput\": \"rizki.mufrizal\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostname}}/api/v1.0/locations",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"api",
+								"v1.0",
+								"locations"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Create Location",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Request-Time",
+										"value": "2023-07-08 10:00:00",
+										"type": "text"
+									},
+									{
+										"key": "Channel-Id",
+										"value": "{{channel-id}}",
+										"type": "text"
+									},
+									{
+										"key": "Reference-Number",
+										"value": "REF20230708100000001",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"Pantai Ujong Blang\",\n  \"description\": \"Pantai wisata populer di Aceh dengan pemandangan matahari terbenam\",\n  \"longitude\": 97.1425,\n  \"latitude\": 5.1801,\n  \"image1\": \"pantai-ujong-blang-1.jpg\",\n  \"image2\": \"pantai-ujong-blang-2.jpg\",\n  \"image3\": \"pantai-ujong-blang-3.jpg\",\n  \"image4\": \"pantai-ujong-blang-4.jpg\",\n  \"image5\": \"pantai-ujong-blang-5.jpg\",\n  \"type\": \"WISATA\",\n  \"address\": \"Ujong Blang, Banda Sakti\",\n  \"country\": \"Indonesia\",\n  \"province\": \"Aceh\",\n  \"city\": \"Lhokseumawe\",\n  \"contact\": \"081234567890\",\n  \"userInput\": \"rizki.mufrizal\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{hostname}}/api/v1.0/locations",
+									"host": [
+										"{{hostname}}"
+									],
+									"path": [
+										"api",
+										"v1.0",
+										"locations"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "vary",
+									"value": "Origin"
+								},
+								{
+									"key": "vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "x-content-type-options",
+									"value": "nosniff"
+								},
+								{
+									"key": "x-xss-protection",
+									"value": "0"
+								},
+								{
+									"key": "cache-control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "expires",
+									"value": "0"
+								},
+								{
+									"key": "x-frame-options",
+									"value": "DENY"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								},
+								{
+									"key": "transfer-encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "date",
+									"value": "Thu, 01 Jan 2026 23:37:52 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"responseCode\": \"0000\",\n    \"data\": null,\n    \"responseDesc\": \"Success\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Update Location",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Request-Time",
+								"value": "2023-07-08 10:00:00",
+								"type": "text"
+							},
+							{
+								"key": "Channel-Id",
+								"value": "{{channel-id}}",
+								"type": "text"
+							},
+							{
+								"key": "Reference-Number",
+								"value": "REF20230708100000001",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Pantai Ujong Blang\",\n    \"description\": \"Pantai wisata populer di Aceh dengan pemandangan matahari terbenam\",\n    \"longitude\": 97.1425,\n    \"latitude\": 5.1801,\n    \"image1\": \"pantai-ujong-blang-1.jpg\",\n    \"image2\": \"pantai-ujong-blang-2.jpg\",\n    \"image3\": \"pantai-ujong-blang-3.jpg\",\n    \"image4\": \"pantai-ujong-blang-4.jpg\",\n    \"image5\": \"pantai-ujong-blang-5.jpg\",\n    \"type\": \"WISATA\",\n    \"address\": \"Ujong Blang, Banda Sakti\",\n    \"country\": \"Indonesia\",\n    \"province\": \"Aceh\",\n    \"city\": \"Lhokseumawe\",\n    \"contact\": \"081234567890\",\n    \"userInput\": \"rizki.mufrizal\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostname}}/api/v1.0/addresses/92a53086-ab77-4b6d-ae90-e92f2f00133e",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"api",
+								"v1.0",
+								"addresses",
+								"92a53086-ab77-4b6d-ae90-e92f2f00133e"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "News Article",
+			"item": [
+				{
+					"name": "Get News Articles",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Request-Time",
+								"value": "2023-07-08 10:00:00",
+								"type": "text"
+							},
+							{
+								"key": "Channel-Id",
+								"value": "{{channel-id}}",
+								"type": "text"
+							},
+							{
+								"key": "Reference-Number",
+								"value": "REF20230708100000001",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Tenant-Id",
+								"value": "{{tenantId}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{hostname}}/api/v1.0/newsarticles",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"api",
+								"v1.0",
+								"newsarticles"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get News Articles",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Request-Time",
+										"value": "2023-07-08 10:00:00",
+										"type": "text"
+									},
+									{
+										"key": "Channel-Id",
+										"value": "{{channel-id}}",
+										"type": "text"
+									},
+									{
+										"key": "Reference-Number",
+										"value": "REF20230708100000001",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									},
+									{
+										"key": "Tenant-Id",
+										"value": "{{tenantId}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{hostname}}/api/v1.0/newsarticles",
+									"host": [
+										"{{hostname}}"
+									],
+									"path": [
+										"api",
+										"v1.0",
+										"newsarticles"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "vary",
+									"value": "Origin"
+								},
+								{
+									"key": "vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "x-content-type-options",
+									"value": "nosniff"
+								},
+								{
+									"key": "x-xss-protection",
+									"value": "0"
+								},
+								{
+									"key": "cache-control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "expires",
+									"value": "0"
+								},
+								{
+									"key": "x-frame-options",
+									"value": "DENY"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								},
+								{
+									"key": "transfer-encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "date",
+									"value": "Thu, 01 Jan 2026 23:40:35 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"responseCode\": \"0000\",\n    \"responseDesc\": \"Success\",\n    \"rows\": [\n        {\n            \"category\": \"Searching for products to purchase\",\n            \"id\": \"fd72fb37-0aa7-468c-9639-2ca08ffdcc1f\",\n            \"image1\": \"https://be.inatrading.co.id/api/v1.0/file/image/Programmidyeareurope.jpg\",\n            \"image2\": null,\n            \"image3\": null,\n            \"image4\": null,\n            \"image5\": null,\n            \"reporter\": \"admin\",\n            \"section1\": \"FURNILUX & INDONESIA IN YOUR HAND - EU looking for outdoor furniture products from raw materials: Rattan and Bamboo.\",\n            \"section2\": \"FURNILUX & INDONESIA IN YOUR HAND - EU looking for outdoor furniture products from raw materials: Rattan and Bamboo.\\nIf you have export quality products and good prices, FURNILUX & INDONESIA IN YOUR HAND - EU will buy your products.\\nContact: Indonesia In Your Hand +6281181190222 / admin@indonesiainyourhand.com\",\n            \"section3\": null,\n            \"subtitle\": \"Rattan and bamboo furniture\",\n            \"summary\": null,\n            \"title\": \"Buy furniture products\"\n        },\n        {\n            \"category\": \"Export\",\n            \"id\": \"a87b3344-7333-4dfa-96b0-6532a0f84d40\",\n            \"image1\": \"https://be.inatrading.co.id/api/v1.0/file/image/Screenshot 2025-12-22 005628.jpg\",\n            \"image2\": null,\n            \"image3\": null,\n            \"image4\": null,\n            \"image5\": null,\n            \"reporter\": \"admin\",\n            \"section1\": \"Indonesia In Your Hand X UKMBOX has shipping facilities using Containers and Air Cargo.\",\n            \"section2\": \"Indonesia In Your Hand X UKMBOX has shipping facilities using Containers and Air Cargo.\\nAnd also equipped with Fulfillment Centers in the Netherlands and Australia.\\nPlease contact : www.ukmbox.co.id\",\n            \"section3\": null,\n            \"subtitle\": \"By Air or by Sea\",\n            \"summary\": null,\n            \"title\": \"Export Services from Indonesia\"\n        },\n        {\n            \"category\": \"EKONOMI\",\n            \"id\": \"1c912298-8074-4067-92d4-aefc73e36fa6\",\n            \"image1\": \"https://be.inatrading.co.id/api/v1.0/file/image/infrastruktur-aceh-1.jpg\",\n            \"image2\": \"https://be.inatrading.co.id/api/v1.0/file/image/infrastruktur-aceh-2.jpg\",\n            \"image3\": \"https://be.inatrading.co.id/api/v1.0/file/image/infrastruktur-aceh-3.jpg\",\n            \"image4\": \"https://be.inatrading.co.id/api/v1.0/file/image/infrastruktur-aceh-4.jpg\",\n            \"image5\": \"https://be.inatrading.co.id/api/v1.0/file/image/infrastruktur-aceh-5.jpg\",\n            \"reporter\": \"Rizki Mufrizal\",\n            \"section1\": \"Pemerintah Aceh terus menggenjot pembangunan infrastruktur di berbagai wilayah.\",\n            \"section2\": \"Beberapa proyek strategis nasional telah memasuki tahap akhir dan mulai digunakan masyarakat.\",\n            \"section3\": \"Dampak positif mulai terlihat pada sektor ekonomi dan penyerapan tenaga kerja.\",\n            \"subtitle\": \"Proyek strategis nasional mulai berdampak pada ekonomi daerah\",\n            \"summary\": \"Pemerintah Aceh mencatat peningkatan signifikan pada sektor infrastruktur yang mendorong pertumbuhan ekonomi lokal.\",\n            \"title\": \"Pembangunan Infrastruktur Aceh Meningkat\"\n        },\n        {\n            \"category\": \"Store\",\n            \"id\": \"5347b9cb-0023-46ae-86d6-c35c59650320\",\n            \"image1\": \"https://be.inatrading.co.id/api/v1.0/file/image/91ae80f4-6cf8-4eec-983d-8266061b5e76.jpg\",\n            \"image2\": null,\n            \"image3\": null,\n            \"image4\": null,\n            \"image5\": null,\n            \"reporter\": \"admin\",\n            \"section1\": \"As a home for local MSMEs, Pendopo, which is a business brand, has collaborated with more than 200 MSMEs. Pendopo curates more than 5,000 products divided into various categories.\",\n            \"section2\": \"As a home for local MSMEs, Pendopo, which is a business brand, has collaborated with more than 200 MSMEs. Pendopo curates more than 5,000 products divided into various categories. \\nThrough the slogan Ragam Satu Negeri (One Country, Many Varieties), Pendopo acts as an ecosystem that drives the development of local products and the preservation of Indonesian culture. \\nEnjoy the beauty of local creations by visiting Pendopo stores at Living World Alam Sutera, Living World Denpasar, Living Plaza Puri, and at 77 AZKO stores throughout Indonesia.\",\n            \"section3\": null,\n            \"subtitle\": \"Exploring the Riches of the Archipelago Together  Pendopo Indonesia\",\n            \"summary\": null,\n            \"title\": \"Pendopo Indonesia\"\n        },\n        {\n            \"category\": \"business\",\n            \"id\": \"f811ee00-f14e-4887-b33d-25d7f15b4d27\",\n            \"image1\": \"https://be.inatrading.co.id/api/v1.0/file/image/shipping to australia_LE_upscale_balanced_x4.jpg\",\n            \"image2\": null,\n            \"image3\": null,\n            \"image4\": null,\n            \"image5\": null,\n            \"reporter\": \"admin\",\n            \"section1\": \"Are you looking to penetrate the market in Australia? Do you want to make sure your products are accepted in Australia? Or do you already have a regular buyer and need Fulfillment?\",\n            \"section2\": \"Are you looking to penetrate the market in Australia? Do you want to make sure your products are accepted in Australia? Or do you already have a regular buyer and need Fulfillment?\\nINA TRADING and Trade Attaché Canberra collaborate with UKM Box Fulfillment Center @Melbourne, online store: madeinindonesia.au and aggregator: Indonesia In Your Hand. \\nProviding Air Shipping facilities using Garuda Indonesia, UKM Box Fulfillment Center & sales at madeinindonesia.au\\nContact WA : +6281181190222\",\n            \"section3\": null,\n            \"subtitle\": \"Marketing & Sales in Australia\",\n            \"summary\": null,\n            \"title\": \"SEND - STORAGE - SELL in Australia\"\n        },\n        {\n            \"category\": \"business\",\n            \"id\": \"4ce185e7-2400-4402-9904-4ce76f7d938a\",\n            \"image1\": \"https://be.inatrading.co.id/api/v1.0/file/image/artwork.png\",\n            \"image2\": null,\n            \"image3\": null,\n            \"image4\": null,\n            \"image5\": null,\n            \"reporter\": \"admin\",\n            \"section1\": \"Are you looking to penetrate the market in Europe ? Do you want to make sure your products are accepted in Europe ? Or do you already have a regular buyer and\",\n            \"section2\": \"Are you looking to penetrate the market in Europe ? Do you want to make sure your products are accepted in Europe ? Or do you already have a regular buyer and need Fulfillment?\\nINA TRADING, FURNILUX & Indonesia In Your Hand - EU collaborate with UKM Box Fulfillment Center @Holland, online store: bol.com and aggregator: Indonesia In Your Hand. \\nProviding Air Shipping facilities using Garuda Indonesia, UKM Box Fulfillment Center & sales at bol.com\\nContact WA : +6281181190222\",\n            \"section3\": null,\n            \"subtitle\": \"Marketing & Sales in Europe need Fulfillment?\",\n            \"summary\": null,\n            \"title\": \"SEND - STORAGE - SELL in Europe\"\n        }\n    ],\n    \"totalItem\": 6,\n    \"totalPage\": 1\n}"
+						}
+					]
+				},
+				{
+					"name": "Create News Articles",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Request-Time",
+								"value": "2023-07-08 10:00:00",
+								"type": "text"
+							},
+							{
+								"key": "Channel-Id",
+								"value": "{{channel-id}}",
+								"type": "text"
+							},
+							{
+								"key": "Reference-Number",
+								"value": "REF20230708100000001",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Pembangunan Infrastruktur Aceh Meningkat\",\n  \"reporter\": \"Rizki Mufrizal\",\n  \"subtitle\": \"Proyek strategis nasional mulai berdampak pada ekonomi daerah\",\n  \"category\": \"EKONOMI\",\n  \"summary\": \"Pemerintah Aceh mencatat peningkatan signifikan pada sektor infrastruktur yang mendorong pertumbuhan ekonomi lokal.\",\n  \"section1\": \"Pemerintah Aceh terus menggenjot pembangunan infrastruktur di berbagai wilayah.\",\n  \"section2\": \"Beberapa proyek strategis nasional telah memasuki tahap akhir dan mulai digunakan masyarakat.\",\n  \"section3\": \"Dampak positif mulai terlihat pada sektor ekonomi dan penyerapan tenaga kerja.\",\n  \"image1\": \"infrastruktur-aceh-1.jpg\",\n  \"image2\": \"infrastruktur-aceh-2.jpg\",\n  \"image3\": \"infrastruktur-aceh-3.jpg\",\n  \"image4\": \"infrastruktur-aceh-4.jpg\",\n  \"image5\": \"infrastruktur-aceh-5.jpg\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostname}}/api/v1.0/newsarticles",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"api",
+								"v1.0",
+								"newsarticles"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Create News Articles",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Request-Time",
+										"value": "2023-07-08 10:00:00",
+										"type": "text"
+									},
+									{
+										"key": "Channel-Id",
+										"value": "{{channel-id}}",
+										"type": "text"
+									},
+									{
+										"key": "Reference-Number",
+										"value": "REF20230708100000001",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"title\": \"Pembangunan Infrastruktur Aceh Meningkat\",\n  \"reporter\": \"Rizki Mufrizal\",\n  \"subtitle\": \"Proyek strategis nasional mulai berdampak pada ekonomi daerah\",\n  \"category\": \"EKONOMI\",\n  \"summary\": \"Pemerintah Aceh mencatat peningkatan signifikan pada sektor infrastruktur yang mendorong pertumbuhan ekonomi lokal.\",\n  \"section1\": \"Pemerintah Aceh terus menggenjot pembangunan infrastruktur di berbagai wilayah.\",\n  \"section2\": \"Beberapa proyek strategis nasional telah memasuki tahap akhir dan mulai digunakan masyarakat.\",\n  \"section3\": \"Dampak positif mulai terlihat pada sektor ekonomi dan penyerapan tenaga kerja.\",\n  \"image1\": \"infrastruktur-aceh-1.jpg\",\n  \"image2\": \"infrastruktur-aceh-2.jpg\",\n  \"image3\": \"infrastruktur-aceh-3.jpg\",\n  \"image4\": \"infrastruktur-aceh-4.jpg\",\n  \"image5\": \"infrastruktur-aceh-5.jpg\"\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{hostname}}/api/v1.0/newsarticles",
+									"host": [
+										"{{hostname}}"
+									],
+									"path": [
+										"api",
+										"v1.0",
+										"newsarticles"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "vary",
+									"value": "Origin"
+								},
+								{
+									"key": "vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "x-content-type-options",
+									"value": "nosniff"
+								},
+								{
+									"key": "x-xss-protection",
+									"value": "0"
+								},
+								{
+									"key": "cache-control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "expires",
+									"value": "0"
+								},
+								{
+									"key": "x-frame-options",
+									"value": "DENY"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								},
+								{
+									"key": "transfer-encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "date",
+									"value": "Thu, 01 Jan 2026 23:40:24 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"responseCode\": \"0000\",\n    \"data\": null,\n    \"responseDesc\": \"Success\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Update News Articles",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Request-Time",
+								"value": "2023-07-08 10:00:00",
+								"type": "text"
+							},
+							{
+								"key": "Channel-Id",
+								"value": "{{channel-id}}",
+								"type": "text"
+							},
+							{
+								"key": "Reference-Number",
+								"value": "REF20230708100000001",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Pembangunan Infrastruktur Aceh Meningkat\",\n  \"reporter\": \"Rizki Mufrizal\",\n  \"subtitle\": \"Proyek strategis nasional mulai berdampak pada ekonomi daerah\",\n  \"category\": \"EKONOMI\",\n  \"summary\": \"Pemerintah Aceh mencatat peningkatan signifikan pada sektor infrastruktur yang mendorong pertumbuhan ekonomi lokal.\",\n  \"section1\": \"Pemerintah Aceh terus menggenjot pembangunan infrastruktur di berbagai wilayah.\",\n  \"section2\": \"Beberapa proyek strategis nasional telah memasuki tahap akhir dan mulai digunakan masyarakat.\",\n  \"section3\": \"Dampak positif mulai terlihat pada sektor ekonomi dan penyerapan tenaga kerja.\",\n  \"image1\": \"infrastruktur-aceh-1.jpg\",\n  \"image2\": \"infrastruktur-aceh-2.jpg\",\n  \"image3\": \"infrastruktur-aceh-3.jpg\",\n  \"image4\": \"infrastruktur-aceh-4.jpg\",\n  \"image5\": \"infrastruktur-aceh-5.jpg\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{hostname}}/api/v1.0/newsarticles/92a53086-ab77-4b6d-ae90-e92f2f00133e",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"api",
+								"v1.0",
+								"newsarticles",
+								"92a53086-ab77-4b6d-ae90-e92f2f00133e"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Tmp",
+			"item": [
+				{
+					"name": "Location",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Request-Time",
+								"value": "2023-07-08 10:00:00",
+								"type": "text"
+							},
+							{
+								"key": "Channel-Id",
+								"value": "{{channel-id}}",
+								"type": "text"
+							},
+							{
+								"key": "Reference-Number",
+								"value": "REF20230708100000001",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Tenant-Id",
+								"value": "{{tenantId}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{hostname}}/test/csv/location",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"test",
+								"csv",
+								"location"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Location",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Request-Time",
+								"value": "2023-07-08 10:00:00",
+								"type": "text"
+							},
+							{
+								"key": "Channel-Id",
+								"value": "{{channel-id}}",
+								"type": "text"
+							},
+							{
+								"key": "Reference-Number",
+								"value": "REF20230708100000001",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Tenant-Id",
+								"value": "{{tenantId}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{hostname}}/test/csv/newlocation",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"test",
+								"csv",
+								"newlocation"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "News",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Request-Time",
+								"value": "2023-07-08 10:00:00",
+								"type": "text"
+							},
+							{
+								"key": "Channel-Id",
+								"value": "{{channel-id}}",
+								"type": "text"
+							},
+							{
+								"key": "Reference-Number",
+								"value": "REF20230708100000001",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Tenant-Id",
+								"value": "{{tenantId}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{hostname}}/test/csv/news",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"test",
+								"csv",
+								"news"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Product",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Request-Time",
+								"value": "2023-07-08 10:00:00",
+								"type": "text"
+							},
+							{
+								"key": "Channel-Id",
+								"value": "{{channel-id}}",
+								"type": "text"
+							},
+							{
+								"key": "Reference-Number",
+								"value": "REF20230708100000001",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Tenant-Id",
+								"value": "{{tenantId}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{hostname}}/test/csv/products",
+							"host": [
+								"{{hostname}}"
+							],
+							"path": [
+								"test",
+								"csv",
+								"products"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

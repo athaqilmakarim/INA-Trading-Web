@@ -1,6 +1,6 @@
 import { auth, firestore } from '../firebase';
-import { 
-  createUserWithEmailAndPassword, 
+import {
+  createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   sendEmailVerification,
   applyActionCode,
@@ -20,59 +20,36 @@ export const UserType = {
 class UserService {
   async register(email, password, userType, profileData) {
     try {
-      // Store credentials temporarily for after verification
-      localStorage.setItem('pendingEmail', email);
-      localStorage.setItem('pendingPassword', password);
+      const API_BASE_URL = 'http://localhost:3001/api/v1.0';
+      const endpoint = userType === UserType.B2B_SUPPLIER ? '/seller/register' : '/buyer/register';
 
-      // Create user with email and password
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-
-      // Send verification email
-      const actionCodeSettings = {
-        url: window.location.origin,
-        handleCodeInApp: false
+      const payload = {
+        name: `${profileData.firstName} ${profileData.lastName}`,
+        email: email,
+        mobile: profileData.phoneNumber,
+        password: password
       };
 
-      await sendEmailVerification(user, actionCodeSettings);
+      const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
 
-      // Create user profile in Firestore
-      const userData = {
-        email: user.email,
-        id: user.uid,
-        userType: userType,
-        firstName: profileData.firstName,
-        lastName: profileData.lastName,
-        address: profileData.address,
-        phoneNumber: profileData.phoneNumber,
-        createdAt: serverTimestamp(),
-        lastUpdated: serverTimestamp(),
-        emailVerified: false
-      };
+      const data = await response.json();
 
-      // Add company name if user is B2B Supplier
-      if (userType === UserType.B2B_SUPPLIER && profileData.companyName) {
-        userData.companyName = profileData.companyName;
+      if (!response.ok) {
+        throw new Error(data.message || 'Registration failed');
       }
-
-      await setDoc(doc(firestore, 'users', user.uid), userData);
-
-      // Sign out the user until they verify their email
-      await signOut(auth);
 
       return {
         success: true,
-        message: 'Registration successful. Please check your email for verification.'
+        message: 'Registration successful. Please login.'
       };
     } catch (error) {
       console.error('Error in registration:', error);
-      if (error.code === 'auth/email-already-in-use') {
-        throw new Error('This email is already registered. Please use a different email or try logging in.');
-      } else if (error.code === 'auth/invalid-email') {
-        throw new Error('Invalid email address. Please check your email and try again.');
-      } else if (error.code === 'auth/weak-password') {
-        throw new Error('Password is too weak. Please use a stronger password.');
-      }
       throw error;
     }
   }
@@ -80,11 +57,11 @@ class UserService {
   async verifyEmail(actionCode) {
     try {
       await applyActionCode(auth, actionCode);
-      
+
       // Get the email from the current user or from local storage
       const user = auth.currentUser;
       const email = localStorage.getItem('pendingEmail');
-      
+
       if (email) {
         // Try to sign in with stored credentials
         const password = localStorage.getItem('pendingPassword');
@@ -192,9 +169,9 @@ class UserService {
         url: window.location.origin + '/login',
         handleCodeInApp: false
       };
-      
+
       await sendPasswordResetEmail(auth, email, actionCodeSettings);
-      
+
       return {
         success: true,
         message: 'Password reset email sent successfully.'
