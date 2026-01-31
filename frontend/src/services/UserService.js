@@ -20,7 +20,7 @@ export const UserType = {
 class UserService {
   async register(email, password, userType, profileData) {
     try {
-      const API_BASE_URL = 'http://localhost:3001/api/v1.0';
+      const API_BASE_URL = 'https://be.inatrading.co.id/api/v1.0';
       const endpoint = userType === UserType.B2B_SUPPLIER ? '/seller/register' : '/buyer/register';
 
       const payload = {
